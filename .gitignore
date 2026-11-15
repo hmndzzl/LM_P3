@@ -1,0 +1,10 @@
+# Archivos locales que no forman parte de las bases ni del producto
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+node_modules/
+.env
+.env.*
+!.env.example
+.DS_Store
