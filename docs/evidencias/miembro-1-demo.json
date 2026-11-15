@@ -1,0 +1,757 @@
+{
+  "evaluations": [
+    {
+      "value": true,
+      "trace": {
+        "node_id": "0",
+        "trace_id": "0",
+        "formula": "∃x (P(x))",
+        "span": null,
+        "environment": [],
+        "value": true,
+        "reason": "existential_witness",
+        "children": [
+          {
+            "node_id": "0.0",
+            "trace_id": "0@0.0",
+            "formula": "P(x)",
+            "span": null,
+            "environment": [
+              [
+                "x",
+                "a"
+              ]
+            ],
+            "value": true,
+            "reason": "predicate_member",
+            "children": [],
+            "terms": [
+              {
+                "term": "x",
+                "value": "a",
+                "reason": "variable_assignment",
+                "children": []
+              }
+            ],
+            "variable": null,
+            "decisive_element": null,
+            "checked_elements": [],
+            "unvisited_elements": [],
+            "domain_size": null,
+            "complete": true
+          }
+        ],
+        "terms": [],
+        "variable": "x",
+        "decisive_element": "a",
+        "checked_elements": [
+          "a"
+        ],
+        "unvisited_elements": [
+          "b"
+        ],
+        "domain_size": 2,
+        "complete": false
+      },
+      "steps": 3
+    },
+    {
+      "value": false,
+      "trace": {
+        "node_id": "0",
+        "trace_id": "0",
+        "formula": "∀x (P(x))",
+        "span": null,
+        "environment": [],
+        "value": false,
+        "reason": "universal_counterexample",
+        "children": [
+          {
+            "node_id": "0.0",
+            "trace_id": "0@0.0",
+            "formula": "P(x)",
+            "span": null,
+            "environment": [
+              [
+                "x",
+                "a"
+              ]
+            ],
+            "value": true,
+            "reason": "predicate_member",
+            "children": [],
+            "terms": [
+              {
+                "term": "x",
+                "value": "a",
+                "reason": "variable_assignment",
+                "children": []
+              }
+            ],
+            "variable": null,
+            "decisive_element": null,
+            "checked_elements": [],
+            "unvisited_elements": [],
+            "domain_size": null,
+            "complete": true
+          },
+          {
+            "node_id": "0.0",
+            "trace_id": "0@1.0",
+            "formula": "P(x)",
+            "span": null,
+            "environment": [
+              [
+                "x",
+                "b"
+              ]
+            ],
+            "value": false,
+            "reason": "predicate_not_member",
+            "children": [],
+            "terms": [
+              {
+                "term": "x",
+                "value": "b",
+                "reason": "variable_assignment",
+                "children": []
+              }
+            ],
+            "variable": null,
+            "decisive_element": null,
+            "checked_elements": [],
+            "unvisited_elements": [],
+            "domain_size": null,
+            "complete": true
+          }
+        ],
+        "terms": [],
+        "variable": "x",
+        "decisive_element": "b",
+        "checked_elements": [
+          "a",
+          "b"
+        ],
+        "unvisited_elements": [],
+        "domain_size": 2,
+        "complete": true
+      },
+      "steps": 5
+    },
+    {
+      "value": true,
+      "trace": {
+        "node_id": "0",
+        "trace_id": "0",
+        "formula": "∀x ((P(x) ∨ ¬(P(x))))",
+        "span": null,
+        "environment": [],
+        "value": true,
+        "reason": "universal_complete",
+        "children": [
+          {
+            "node_id": "0.0",
+            "trace_id": "0@0.0",
+            "formula": "(P(x) ∨ ¬(P(x)))",
+            "span": null,
+            "environment": [
+              [
+                "x",
+                "a"
+              ]
+            ],
+            "value": true,
+            "reason": "disjunction",
+            "children": [
+              {
+                "node_id": "0.0.0",
+                "trace_id": "0@0.0.0",
+                "formula": "P(x)",
+                "span": null,
+                "environment": [
+                  [
+                    "x",
+                    "a"
+                  ]
+                ],
+                "value": true,
+                "reason": "predicate_member",
+                "children": [],
+                "terms": [
+                  {
+                    "term": "x",
+                    "value": "a",
+                    "reason": "variable_assignment",
+                    "children": []
+                  }
+                ],
+                "variable": null,
+                "decisive_element": null,
+                "checked_elements": [],
+                "unvisited_elements": [],
+                "domain_size": null,
+                "complete": true
+              },
+              {
+                "node_id": "0.0.1",
+                "trace_id": "0@0.0.1",
+                "formula": "¬(P(x))",
+                "span": null,
+                "environment": [
+                  [
+                    "x",
+                    "a"
+                  ]
+                ],
+                "value": false,
+                "reason": "negation",
+                "children": [
+                  {
+                    "node_id": "0.0.1.0",
+                    "trace_id": "0@0.0.1.0",
+                    "formula": "P(x)",
+                    "span": null,
+                    "environment": [
+                      [
+                        "x",
+                        "a"
+                      ]
+                    ],
+                    "value": true,
+                    "reason": "predicate_member",
+                    "children": [],
+                    "terms": [
+                      {
+                        "term": "x",
+                        "value": "a",
+                        "reason": "variable_assignment",
+                        "children": []
+                      }
+                    ],
+                    "variable": null,
+                    "decisive_element": null,
+                    "checked_elements": [],
+                    "unvisited_elements": [],
+                    "domain_size": null,
+                    "complete": true
+                  }
+                ],
+                "terms": [],
+                "variable": null,
+                "decisive_element": null,
+                "checked_elements": [],
+                "unvisited_elements": [],
+                "domain_size": null,
+                "complete": true
+              }
+            ],
+            "terms": [],
+            "variable": null,
+            "decisive_element": null,
+            "checked_elements": [],
+            "unvisited_elements": [],
+            "domain_size": null,
+            "complete": true
+          },
+          {
+            "node_id": "0.0",
+            "trace_id": "0@1.0",
+            "formula": "(P(x) ∨ ¬(P(x)))",
+            "span": null,
+            "environment": [
+              [
+                "x",
+                "b"
+              ]
+            ],
+            "value": true,
+            "reason": "disjunction",
+            "children": [
+              {
+                "node_id": "0.0.0",
+                "trace_id": "0@1.0.0",
+                "formula": "P(x)",
+                "span": null,
+                "environment": [
+                  [
+                    "x",
+                    "b"
+                  ]
+                ],
+                "value": false,
+                "reason": "predicate_not_member",
+                "children": [],
+                "terms": [
+                  {
+                    "term": "x",
+                    "value": "b",
+                    "reason": "variable_assignment",
+                    "children": []
+                  }
+                ],
+                "variable": null,
+                "decisive_element": null,
+                "checked_elements": [],
+                "unvisited_elements": [],
+                "domain_size": null,
+                "complete": true
+              },
+              {
+                "node_id": "0.0.1",
+                "trace_id": "0@1.0.1",
+                "formula": "¬(P(x))",
+                "span": null,
+                "environment": [
+                  [
+                    "x",
+                    "b"
+                  ]
+                ],
+                "value": true,
+                "reason": "negation",
+                "children": [
+                  {
+                    "node_id": "0.0.1.0",
+                    "trace_id": "0@1.0.1.0",
+                    "formula": "P(x)",
+                    "span": null,
+                    "environment": [
+                      [
+                        "x",
+                        "b"
+                      ]
+                    ],
+                    "value": false,
+                    "reason": "predicate_not_member",
+                    "children": [],
+                    "terms": [
+                      {
+                        "term": "x",
+                        "value": "b",
+                        "reason": "variable_assignment",
+                        "children": []
+                      }
+                    ],
+                    "variable": null,
+                    "decisive_element": null,
+                    "checked_elements": [],
+                    "unvisited_elements": [],
+                    "domain_size": null,
+                    "complete": true
+                  }
+                ],
+                "terms": [],
+                "variable": null,
+                "decisive_element": null,
+                "checked_elements": [],
+                "unvisited_elements": [],
+                "domain_size": null,
+                "complete": true
+              }
+            ],
+            "terms": [],
+            "variable": null,
+            "decisive_element": null,
+            "checked_elements": [],
+            "unvisited_elements": [],
+            "domain_size": null,
+            "complete": true
+          }
+        ],
+        "terms": [],
+        "variable": "x",
+        "decisive_element": null,
+        "checked_elements": [
+          "a",
+          "b"
+        ],
+        "unvisited_elements": [],
+        "domain_size": 2,
+        "complete": true
+      },
+      "steps": 13
+    },
+    {
+      "value": false,
+      "trace": {
+        "node_id": "0",
+        "trace_id": "0",
+        "formula": "∃x ((P(x) ∧ ¬(P(x))))",
+        "span": null,
+        "environment": [],
+        "value": false,
+        "reason": "existential_complete",
+        "children": [
+          {
+            "node_id": "0.0",
+            "trace_id": "0@0.0",
+            "formula": "(P(x) ∧ ¬(P(x)))",
+            "span": null,
+            "environment": [
+              [
+                "x",
+                "a"
+              ]
+            ],
+            "value": false,
+            "reason": "conjunction",
+            "children": [
+              {
+                "node_id": "0.0.0",
+                "trace_id": "0@0.0.0",
+                "formula": "P(x)",
+                "span": null,
+                "environment": [
+                  [
+                    "x",
+                    "a"
+                  ]
+                ],
+                "value": true,
+                "reason": "predicate_member",
+                "children": [],
+                "terms": [
+                  {
+                    "term": "x",
+                    "value": "a",
+                    "reason": "variable_assignment",
+                    "children": []
+                  }
+                ],
+                "variable": null,
+                "decisive_element": null,
+                "checked_elements": [],
+                "unvisited_elements": [],
+                "domain_size": null,
+                "complete": true
+              },
+              {
+                "node_id": "0.0.1",
+                "trace_id": "0@0.0.1",
+                "formula": "¬(P(x))",
+                "span": null,
+                "environment": [
+                  [
+                    "x",
+                    "a"
+                  ]
+                ],
+                "value": false,
+                "reason": "negation",
+                "children": [
+                  {
+                    "node_id": "0.0.1.0",
+                    "trace_id": "0@0.0.1.0",
+                    "formula": "P(x)",
+                    "span": null,
+                    "environment": [
+                      [
+                        "x",
+                        "a"
+                      ]
+                    ],
+                    "value": true,
+                    "reason": "predicate_member",
+                    "children": [],
+                    "terms": [
+                      {
+                        "term": "x",
+                        "value": "a",
+                        "reason": "variable_assignment",
+                        "children": []
+                      }
+                    ],
+                    "variable": null,
+                    "decisive_element": null,
+                    "checked_elements": [],
+                    "unvisited_elements": [],
+                    "domain_size": null,
+                    "complete": true
+                  }
+                ],
+                "terms": [],
+                "variable": null,
+                "decisive_element": null,
+                "checked_elements": [],
+                "unvisited_elements": [],
+                "domain_size": null,
+                "complete": true
+              }
+            ],
+            "terms": [],
+            "variable": null,
+            "decisive_element": null,
+            "checked_elements": [],
+            "unvisited_elements": [],
+            "domain_size": null,
+            "complete": true
+          },
+          {
+            "node_id": "0.0",
+            "trace_id": "0@1.0",
+            "formula": "(P(x) ∧ ¬(P(x)))",
+            "span": null,
+            "environment": [
+              [
+                "x",
+                "b"
+              ]
+            ],
+            "value": false,
+            "reason": "conjunction",
+            "children": [
+              {
+                "node_id": "0.0.0",
+                "trace_id": "0@1.0.0",
+                "formula": "P(x)",
+                "span": null,
+                "environment": [
+                  [
+                    "x",
+                    "b"
+                  ]
+                ],
+                "value": false,
+                "reason": "predicate_not_member",
+                "children": [],
+                "terms": [
+                  {
+                    "term": "x",
+                    "value": "b",
+                    "reason": "variable_assignment",
+                    "children": []
+                  }
+                ],
+                "variable": null,
+                "decisive_element": null,
+                "checked_elements": [],
+                "unvisited_elements": [],
+                "domain_size": null,
+                "complete": true
+              },
+              {
+                "node_id": "0.0.1",
+                "trace_id": "0@1.0.1",
+                "formula": "¬(P(x))",
+                "span": null,
+                "environment": [
+                  [
+                    "x",
+                    "b"
+                  ]
+                ],
+                "value": true,
+                "reason": "negation",
+                "children": [
+                  {
+                    "node_id": "0.0.1.0",
+                    "trace_id": "0@1.0.1.0",
+                    "formula": "P(x)",
+                    "span": null,
+                    "environment": [
+                      [
+                        "x",
+                        "b"
+                      ]
+                    ],
+                    "value": false,
+                    "reason": "predicate_not_member",
+                    "children": [],
+                    "terms": [
+                      {
+                        "term": "x",
+                        "value": "b",
+                        "reason": "variable_assignment",
+                        "children": []
+                      }
+                    ],
+                    "variable": null,
+                    "decisive_element": null,
+                    "checked_elements": [],
+                    "unvisited_elements": [],
+                    "domain_size": null,
+                    "complete": true
+                  }
+                ],
+                "terms": [],
+                "variable": null,
+                "decisive_element": null,
+                "checked_elements": [],
+                "unvisited_elements": [],
+                "domain_size": null,
+                "complete": true
+              }
+            ],
+            "terms": [],
+            "variable": null,
+            "decisive_element": null,
+            "checked_elements": [],
+            "unvisited_elements": [],
+            "domain_size": null,
+            "complete": true
+          }
+        ],
+        "terms": [],
+        "variable": "x",
+        "decisive_element": null,
+        "checked_elements": [
+          "a",
+          "b"
+        ],
+        "unvisited_elements": [],
+        "domain_size": 2,
+        "complete": true
+      },
+      "steps": 13
+    }
+  ],
+  "comparison": {
+    "change": {
+      "kind": "function",
+      "symbol": "f",
+      "arguments": [
+        "a"
+      ],
+      "before": "b",
+      "after": "a"
+    },
+    "before": {
+      "value": false,
+      "trace": {
+        "node_id": "0",
+        "trace_id": "0",
+        "formula": "P(f(a()))",
+        "span": null,
+        "environment": [],
+        "value": false,
+        "reason": "predicate_not_member",
+        "children": [],
+        "terms": [
+          {
+            "term": "f(a())",
+            "value": "b",
+            "reason": "function_lookup",
+            "children": [
+              {
+                "term": "a()",
+                "value": "a",
+                "reason": "function_lookup",
+                "children": []
+              }
+            ]
+          }
+        ],
+        "variable": null,
+        "decisive_element": null,
+        "checked_elements": [],
+        "unvisited_elements": [],
+        "domain_size": null,
+        "complete": true
+      },
+      "steps": 3
+    },
+    "after": {
+      "value": true,
+      "trace": {
+        "node_id": "0",
+        "trace_id": "0",
+        "formula": "P(f(a()))",
+        "span": null,
+        "environment": [],
+        "value": true,
+        "reason": "predicate_member",
+        "children": [],
+        "terms": [
+          {
+            "term": "f(a())",
+            "value": "a",
+            "reason": "function_lookup",
+            "children": [
+              {
+                "term": "a()",
+                "value": "a",
+                "reason": "function_lookup",
+                "children": []
+              }
+            ]
+          }
+        ],
+        "variable": null,
+        "decisive_element": null,
+        "checked_elements": [],
+        "unvisited_elements": [],
+        "domain_size": null,
+        "complete": true
+      },
+      "steps": 3
+    },
+    "evidence_changes": [
+      {
+        "trace_id": "0",
+        "before": {
+          "node_id": "0",
+          "trace_id": "0",
+          "formula": "P(f(a()))",
+          "span": null,
+          "environment": [],
+          "value": false,
+          "reason": "predicate_not_member",
+          "children": [],
+          "terms": [
+            {
+              "term": "f(a())",
+              "value": "b",
+              "reason": "function_lookup",
+              "children": [
+                {
+                  "term": "a()",
+                  "value": "a",
+                  "reason": "function_lookup",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "variable": null,
+          "decisive_element": null,
+          "checked_elements": [],
+          "unvisited_elements": [],
+          "domain_size": null,
+          "complete": true
+        },
+        "after": {
+          "node_id": "0",
+          "trace_id": "0",
+          "formula": "P(f(a()))",
+          "span": null,
+          "environment": [],
+          "value": true,
+          "reason": "predicate_member",
+          "children": [],
+          "terms": [
+            {
+              "term": "f(a())",
+              "value": "a",
+              "reason": "function_lookup",
+              "children": [
+                {
+                  "term": "a()",
+                  "value": "a",
+                  "reason": "function_lookup",
+                  "children": []
+                }
+              ]
+            }
+          ],
+          "variable": null,
+          "decisive_element": null,
+          "checked_elements": [],
+          "unvisited_elements": [],
+          "domain_size": null,
+          "complete": true
+        }
+      }
+    ],
+    "truth_changed": true
+  }
+}

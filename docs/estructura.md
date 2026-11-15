@@ -2,7 +2,7 @@
 
 ## Estado y convención
 
-Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. Se crearon directorios, paquetes vacíos y documentos; **no se implementó ni adaptó funcionalidad**. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
+Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. La estructura fue creada inicialmente con paquetes vacíos. **M1 ya implementó modelos mínimos, motor, frontera defensiva, comparación y servicio con parser inyectado**; ver [semantica.md](semantica.md). Parser, validación externa, servidor e interfaz siguen pendientes de M2/M3. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
 
 Python 3.10 o posterior como mínimo inicial, coherente con los proyectos de referencia; registrar la versión concreta usada por el equipo en H0. Frontend con HTML/CSS/JavaScript nativos, servido localmente por Python. No hay dependencias externas nuevas ni paso de compilación del frontend. El paquete está en la raíz para poder importarlo y ejecutar pruebas desde allí sin modificar `sys.path` ni exigir instalación editable.
 
@@ -100,7 +100,7 @@ Todos los módulos Python anteriores ──> models
 - Módulos/rutas Python en inglés `snake_case`; clases `PascalCase`, funciones/variables `snake_case`. JavaScript en `camelCase`; mensajes y documentación de usuario en español. Conservar los nombres que el usuario declara en su lenguaje sin traducirlos.
 - No llamar archivos propios `ast.py` o `http.py` en la raíz: se confundirían con bibliotecas estándar. Los nombres dentro de paquetes, como `lm_p3.models.ast`, se usan con imports absolutos del paquete.
 - Usar imports `from lm_p3...`; no manipular `sys.path`, no depender de importar desde la carpeta de otro miembro y no crear `utils.py` como contenedor de todo.
-- Funciones públicas tipadas y contrato documentado. Sin estado global mutable de interpretación/entorno: cada solicitud tiene su contexto.
+- Comentarios de código en español; usar `#` para comentarios de una línea, sin docstrings de una línea. Funciones públicas tipadas y contrato documentado. Sin estado global mutable de interpretación/entorno: cada solicitud tiene su contexto.
 - HTML, CSS y JS en archivos separados. CSS consume tokens comunes; no copiar el estilo del laboratorio. En JS emplear módulos nativos cuando se creen los archivos y mantener compatibilidad con la política de contenido del servidor.
 - Ejemplos en `examples/` describen escenarios completos; fixtures de resultados esperados y casos de borde van en `tests/fixtures/`. Documentar su formato en contratos antes de llenarlos. No compartir un archivo mutable como almacenamiento de sesión.
 - Pruebas Python `test_*.py`, basadas inicialmente en `unittest`. No usar esos nombres para scripts de demo. Las pruebas de interfaz deben estar claramente diferenciadas de pruebas de datos/serialización.
@@ -116,7 +116,7 @@ python3 -m venv .venv
 python -m unittest discover -s tests -t . -v
 ```
 
-El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. Mientras los paquetes estén vacíos ejecutará **0 pruebas**, lo cual no acredita cobertura ni aceptación. En Windows puede usarse `py -3` para crear el entorno. No se requiere instalar dependencias externas ahora.
+El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. La suite propia ya cubre el motor y su frontera de aplicación; no equivale a cobertura del parser, servidor o interfaz todavía ausentes. En Windows puede usarse `py -3` para crear el entorno. No se requiere instalar dependencias externas ahora.
 
 Comando objetivo de aplicación, **todavía no disponible**: `python -m lm_p3`. M3 creará `lm_p3/__main__.py` en M3-01; hasta entonces no añadir un arranque que muestre resultados simulados. Los lanzadores propios se crean en `scripts/`, calculando la raíz como padre de esa carpeta. Los lanzadores guardados en `bases/` siguen abriendo el laboratorio original.
 
@@ -124,6 +124,6 @@ No agregar un `requirements.txt`, `package.json`, framework ni configuración de
 
 ## Encaje con los tickets y control de cambios
 
-H0 fija este mapa, y [contratos.md](contratos.md) cierra modelos y fronteras antes de consumidores incompatibles. M2-01/02 construye `models`/`syntax`; M2-03 `validation`; M1-01/02 `semantics`; M1/M2 integran `application`; M3-01 crea `server`, frontend mínimo y entrada. M1-03 añade comparación; M3-02/03 completa interacción y evidencia. Cada uno agrega sus pruebas/documentación durante su ticket.
+H0 fija este mapa, y [contratos.md](contratos.md) cierra modelos y fronteras antes de consumidores incompatibles. M2-01/02 construye `models`/`syntax`; M2-03 `validation`; M1-01/02 `semantics` y su frontera normalizada `semantics/inputs.py`; M1/M2 integran `application`; M3-01 crea `server`, frontend mínimo y entrada. M1-03 añade comparación; M3-02/03 completa interacción y evidencia. Cada uno agrega sus pruebas/documentación durante su ticket.
 
-La estructura y sus documentos están preparados; las tareas funcionales continúan pendientes. Mantener las 15 unidades estimadas por persona y recalibrar en H1 si integración/modelos modifican la carga real. Un cambio de ruta compartida requiere actualizar este mapa, contratos, imports, comandos y las guías afectadas en la misma entrega revisable. Los humanos gestionan ramas y commits según AGENTS.md.
+La entrega de implementación de M1 está descrita en semantica.md; la integración con M2/M3 y las revisiones humanas continúan pendientes. Mantener las 15 unidades estimadas por persona y recalibrar en H1 si integración/modelos modifican la carga real. Un cambio de ruta compartida requiere actualizar este mapa, contratos, imports, comandos y las guías afectadas en la misma entrega revisable. Los humanos gestionan ramas y commits según AGENTS.md.
