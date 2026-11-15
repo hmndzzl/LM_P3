@@ -2,7 +2,7 @@
 
 ## Estado y convención
 
-Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. La estructura fue creada inicialmente con paquetes vacíos. **M1 ya implementó modelos mínimos, motor, frontera defensiva, comparación y servicio con parser inyectado**; ver [semantica.md](semantica.md). Parser, validación externa, servidor e interfaz siguen pendientes de M2/M3. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
+Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. La estructura fue creada inicialmente con paquetes vacíos. **M1 implementó modelos, motor, frontera defensiva, comparación y servicio; M2 ya aporta lexer/parser real y variables libres**; ver [semantica.md](semantica.md) y [sintaxis.md](sintaxis.md). La validación externa integral M2-03, servidor e interfaz siguen pendientes de M2/M3. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
 
 Python 3.10 o posterior como mínimo inicial, coherente con los proyectos de referencia; registrar la versión concreta usada por el equipo en H0. Frontend con HTML/CSS/JavaScript nativos, servido localmente por Python. No hay dependencias externas nuevas ni paso de compilación del frontend. El paquete está en la raíz para poder importarlo y ejecutar pruebas desde allí sin modificar `sys.path` ni exigir instalación editable.
 
@@ -116,7 +116,7 @@ python3 -m venv .venv
 python -m unittest discover -s tests -t . -v
 ```
 
-El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. La suite propia ya cubre el motor y su frontera de aplicación; no equivale a cobertura del parser, servidor o interfaz todavía ausentes. En Windows puede usarse `py -3` para crear el entorno. No se requiere instalar dependencias externas ahora.
+El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. La suite propia cubre motor, parser y su integración de texto; no equivale a cobertura de validación externa integral, servidor ni interfaz. En Windows puede invocarse el intérprete `.venv/Scripts/python.exe` directamente. No se requiere instalar dependencias externas ahora.
 
 Comando objetivo de aplicación, **todavía no disponible**: `python -m lm_p3`. M3 creará `lm_p3/__main__.py` en M3-01; hasta entonces no añadir un arranque que muestre resultados simulados. Los lanzadores propios se crean en `scripts/`, calculando la raíz como padre de esa carpeta. Los lanzadores guardados en `bases/` siguen abriendo el laboratorio original.
 

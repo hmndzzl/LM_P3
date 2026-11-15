@@ -4,7 +4,7 @@
 
 Evaluación sobre un AST normalizado de términos, predicados, negación, conjunción, disyunción, implicación, bicondicional y cuantificadores. Produce evidencias estructuradas, respeta el alcance de variables y compara dos escenarios válidos que cambian exactamente un dato. Incluye límites de trabajo y cancelación cooperativa sin devolver verdad parcial.
 
-Todavía no hay parser de texto ni interfaz propia: corresponden a M2 y M3. El servicio acepta un parser inyectado; las pruebas de esa frontera usan adaptadores explícitos, no un parser ficticio presentado como producto. No se implementó CYK ni se importan módulos de `bases/`. La semántica es nueva; los árboles heredados se consultaron como referencia conceptual de estructura jerárquica, sin trasladar sus algoritmos ni código al motor.
+El servicio acepta un parser inyectado. M2 ya implementó el parser real descrito en [sintaxis.md](sintaxis.md), con pruebas de integración de texto; las pruebas originales de la frontera del servicio conservan sus adaptadores explícitos para verificar el protocolo. La validación externa integral M2-03 y la interfaz de M3 siguen pendientes. No se implementó CYK ni se importan módulos de `bases/`. La semántica es nueva; los árboles heredados se consultaron como referencia conceptual de estructura jerárquica, sin trasladar sus algoritmos ni código al motor.
 
 Se añadieron los modelos mínimos de AST/lenguaje/errores necesarios para ejecutar el motor porque esos módulos estaban vacíos. Son el contrato inicial compartido que M2 debe revisar y reutilizar; no son una implementación de sus tickets de parser o validación de entradas externas. Su procedencia y revisión pendiente constan en [contratos.md](contratos.md).
 
@@ -43,7 +43,7 @@ result = evaluate(request)
 assert result.value is True
 ```
 
-Los nombres de dominio son cadenas opacas y distintas. Un elemento de D no es automáticamente un símbolo constante: `Function("a")` requiere declarar la función de aridad cero y su tabla. El motor soporta aridad cero y ↔ como capacidades, sin afirmar que el curso exija admitirlos en el parser. La notación, igualdad y catálogo oficial siguen pendientes; no hay un nodo de igualdad implementado.
+Los nombres de dominio son cadenas opacas y distintas. Un elemento de D no es automáticamente un símbolo constante: `Function("a")` requiere declarar la función de aridad cero y su tabla. El usuario confirmó ↔ y aridad cero para el parser, junto con el resto de la notación descrita en sintaxis.md. No hay igualdad primitiva ni un nodo de igualdad implementado; se puede declarar un predicado binario con nombre.
 
 ### Datos y frontera certificada
 
@@ -59,7 +59,7 @@ La fábrica defensiva `semantics/inputs.py` permite trabajar mientras falta el v
 
 ### Servicio de aplicación
 
-`lm_p3.application.service.evaluate_formula(text, language, interpretation, environment, *, parse, validate=prepare_input, revision=0, limits=None, cancelled=None)` encadena parser → certificación → evaluación. `parse(text, language)` debe devolver el AST, o lanzar un error; no se provee un parser por defecto. `validate` debe tener la firma de `prepare_input` y devolver el mismo contexto y límites certificados, sin sustituirlos silenciosamente. La salida es `EvaluationOutcome(revision, evaluation)`.
+`lm_p3.application.service.evaluate_formula(text, language, interpretation, environment, *, parse, validate=prepare_input, revision=0, limits=None, cancelled=None)` encadena parser → certificación → evaluación. `parse(text, language)` debe devolver el AST, o lanzar un error; se inyecta explícitamente `syntax.parser.parse` de M2. `validate` debe tener la firma de `prepare_input` y devolver el mismo contexto y límites certificados, sin sustituirlos silenciosamente. La salida es `EvaluationOutcome(revision, evaluation)`.
 
 M2 conecta el parser real y puede aportar un validador compatible. M3 traduce la entrada HTTP a los modelos y la salida/errores a JSON. No usar `dataclasses.asdict()` sobre `ValidatedInput`: contiene mapas protegidos internos, no un contrato de transporte. El resultado/traza y la comparación sí pueden convertirse con `asdict` como demuestra el ejemplo; el codec final deberá acordarse y probarse por M3. El servicio no atrapa fallos inesperados para convertirlos en Falso.
 
@@ -124,7 +124,7 @@ Practicar manualmente con D={a,b}, P={a}, f intercambiando a/b y R={(a,b)}: reso
 
 ## Pendientes que no se pueden declarar completados todavía
 
-- Revisar el contrato inicial con M2/M3 y conectar parser, validación externa y codec reales.
+- Obtener revisión humana del contrato con M1/M2/M3 y conectar validación externa y codec reales. El parser de M2 ya tiene integración Python comprobada.
 - Ejecutar los recorridos H1/H2 y comparación desde la interfaz propia de M3.
 - Revisar el corpus nuevo de M2 cuando exista; los casos actuales son del motor, no revisión de un trabajo aún ausente.
 - Obtener revisión humana de otro miembro, enseñanza mutua, ensayo aleatorio y ejecución limpia de la aplicación completa por los tres.

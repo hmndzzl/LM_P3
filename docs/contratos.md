@@ -2,7 +2,7 @@
 
 ## Estado
 
-Documento inicial de coordinación asociado a [estructura.md](estructura.md). Las responsabilidades y dirección de dependencias están definidas. **M1 implementó el contrato Python mínimo descrito abajo para hacer verificable su motor**. Su revisión con M2/M3 y el esquema de transporte JSON siguen pendientes antes de integrar consumidores. No hay endpoints ni notación del curso confirmados por esta implementación.
+Documento de coordinación asociado a [estructura.md](estructura.md). **M1 implementó el contrato Python del motor y M2 implementó el lexer/parser real y el análisis previo de variables libres**. El usuario confirmó la notación y la asociatividad el 15 de noviembre de 2026; ver [sintaxis.md](sintaxis.md). La integración Python de texto con el motor está probada. La validación externa integral M2-03, el esquema JSON/HTTP y las revisiones humanas siguen pendientes; no hay endpoints implementados.
 
 ## Contrato Python inicial implementado por M1
 
@@ -17,7 +17,22 @@ Referencia completa, ejemplos y límites: [semantica.md](semantica.md). Los mód
 - `application.service.evaluate_formula(text, language, interpretation, environment, *, parse, validate=prepare_input, revision=0, limits=None, cancelled=None)` devuelve `EvaluationOutcome(revision, evaluation)`. `parse(text, language)` es obligatorio e inyectado; devuelve AST. `validate` tiene la firma de `prepare_input`. El servicio no permite sustituir contexto ni relajar límites silenciosamente.
 - `SemanticInputError(code, message, field="")`, `EvaluationLimitError`, `EvaluationCancelledError`: fallos sin atributo de verdad; el servidor decide la traducción HTTP.
 
-El motor soporta ¬, ∧, ∨, →, ↔, ∀ y ∃ y símbolos de aridad cero; esto declara capacidades implementadas, no el catálogo que el docente exige al parser. La igualdad no está implementada. Las convenciones de sintaxis textual, nombres y posiciones UTF-16 en navegador necesitan revisión por M2/M3.
+Los símbolos ¬, ∧, ∨, →, ↔, ∀ y ∃ y la admisión de aridad cero fueron confirmados por el usuario para esta implementación. No hay igualdad primitiva ni nodo especial de igualdad: puede declararse un predicado binario con nombre, por ejemplo `Igual(x,y)`, cuya interpretación aporta el usuario. La conversión de posiciones a UTF-16 en el navegador sigue a cargo de M3.
+
+## Contrato Python de análisis de M2
+
+- `syntax.lexer.tokenize(text) -> tuple[Token, ...]`: conserva `lexeme` y `Span` originales; `~`, `&`, `|`, `->` y `<->` producen operadores canónicos. Los identificadores se conservan completos; el parser resuelve `v` y `Ax`/`Ex` según contexto y declaraciones.
+- `syntax.parser.parse(text, language) -> Formula`: cumple el protocolo `Parser` existente de M1; devuelve exclusivamente el AST compartido. Puede inyectarse con `evaluate_formula(..., parse=parse)`. El servicio mantiene la certificación defensiva de M1 como validador predeterminado; esto todavía no equivale a M2-03.
+- `syntax.parser.analyze(text, language) -> AnalysisResult(formula, free_variables)`: no solicita interpretación ni entorno, no evalúa verdad y permite preparar los selectores de variables libres. M3 todavía debe elegir y construir la operación HTTP que lo exponga.
+- `syntax.free_variables.free_variables(formula) -> frozenset[str]`: respeta alcance mínimo, anidamientos y sombra. No modifica el AST ni necesita asignaciones.
+- `validation.validator.validate_language(language) -> None`: comprueba nombres identificables, aridades enteras no negativas y ausencia de colisiones función/predicado. No valida todavía tablas externas ni detecta duplicados ya descartados al construir mapas.
+- `FormulaSyntaxError(SemanticInputError)`: conserva `code`, `message`, `field="formula"`; añade `span: Span` y `details` inmutables. Los errores de aridad incluyen `symbol`, `expected` y `actual`. El codec debe convertir explícitamente `span` y `dict(error.details)` a JSON; no deducir códigos desde el mensaje. No contiene `value` ni resultado lógico.
+
+La gramática, precedencia, asociatividad, ejemplos y política de colisiones están en [sintaxis.md](sintaxis.md). No se cambiaron las firmas de M1 ni los campos de sus nodos. Esta es una entrega para revisión de los otros miembros, no una afirmación de aprobación por ellos.
+
+### Fixtures de análisis e integración (no son peticiones HTTP)
+
+`tests/fixtures/syntax_cases.json` usa `version: 1`, `language` con mapas `functions`/`predicates`, `interpretation` con `domain`, `function_rows` (listas de pares `[argumentos, salida]`) y `relations` (listas de tuplas), y `cases` con `text`, `environment`, `free_variables`, `value` y `reason` esperados. Son soluciones manuales para probar parser y motor; el test construye los modelos Python. No validan JSON externo ni fijan el futuro codec de M3. `value` es exclusivamente una expectativa de prueba, nunca evidencia confiada al navegador.
 
 ## Fronteras y responsables
 
@@ -36,7 +51,7 @@ El motor soporta ¬, ∧, ∨, →, ↔, ∀ y ∃ y símbolos de aridad cero; e
 1. La petición lleva lenguaje, interpretación, texto de fórmula, entorno y revisión del contexto; el servidor devuelve esa revisión para que la UI descarte respuestas obsoletas. No aceptar AST/traza aportados por el navegador como evidencia calculada.
 2. El resultado válido contiene un booleano y una traza estructurada. Entradas inválidas, error interno y límites no incluyen un booleano que la UI pueda confundir con verdad. Un resultado Falso válido no es error HTTP.
 3. Usar una estructura consistente de errores con código estable, mensaje en español y campo/rango cuando corresponda. La UI no deduce tipos de error analizando texto libre. Rechazar errores de JSON/tipos en frontera y errores lógicos mediante validación integral.
-4. El análisis debe permitir pedir asignaciones de variables libres antes de evaluar. Acordar si hay una operación separada de análisis o respuesta intermedia; no exigir a M3 un parser completo en JavaScript.
+4. `analyze` permite pedir asignaciones de variables libres antes de evaluar. Acordar con M3 cómo exponer esta operación mediante HTTP; no exigir un parser en JavaScript.
 5. Las funciones internas reciben modelos compartidos; el codec es el único traductor de JSON. El servidor no importa una interfaz CLI ni funciones de ejercicios previos. No devolver HTML desde el motor.
 6. Para un existencial falso/universal verdadero, la evidencia debe conservar comprobación de cada elemento. Paginación/colapso de UI no reduce esa obligación. No presentar el orden de recorrido como razón lógica.
 7. Versionar la edición no implica almacenar sesiones en el servidor: preferir peticiones autocontenidas y evitar estado global mutable. El entero de revisión no es control de seguridad ni un valor de verdad.
@@ -48,7 +63,7 @@ Las casillas de esta sección significan implementado y verificado por M1; **no 
 - [x] Firma del evaluador: `evaluate(request: ValidatedInput, *, cancelled=None) -> EvaluationResult`; errores de límite/cancelación sin verdad parcial.
 - [x] Firma de la frontera normalizada: `prepare_input(language, interpretation, formula, environment=None, *, limits=None) -> ValidatedInput`; copia inmutable, variables libres y comprobación completa previa. No sustituye la validación externa de M2.
 - [x] Firma de comparación: `compare(base: ValidatedInput, variant: ValidatedInput, *, cancelled=None) -> ComparisonResult`; exige un cambio válido, contexto fijo y vuelve a calcular ambos resultados.
-- [x] Firma del servicio: `evaluate_formula(text, language, interpretation, environment, *, parse, validate=prepare_input, revision=0, limits=None, cancelled=None) -> EvaluationOutcome`; los protocolos `Parser` y `Validator` están definidos en `application/service.py`. El parser real todavía no existe.
+- [x] Firma del servicio: `evaluate_formula(text, language, interpretation, environment, *, parse, validate=prepare_input, revision=0, limits=None, cancelled=None) -> EvaluationOutcome`; los protocolos `Parser` y `Validator` están definidos en `application/service.py`. M2 ya aporta un parser real compatible.
 - [x] Errores del motor definidos: `SemanticInputError(code, message, field)`, `EvaluationLimitError` y `EvaluationCancelledError`; no contienen resultado lógico. Los errores inesperados no se convierten en Falso.
 - [x] Modelo de evidencia definido y probado: `TermTrace`, `Trace` y `EvaluationResult`; identificadores, entorno, motivos, cobertura y elementos no visitados descritos abajo.
 - [x] Modelo de comparación definido y probado: `ScenarioChange`, `EvidenceChange` y `ComparisonResult`; se distingue cambio de testigo de cambio de verdad.
@@ -80,11 +95,11 @@ Estos puntos siguen abiertos; no se cierran por tener el motor probado.
 
 | Pendiente | Responsable de cierre | Qué falta concretamente |
 | --- | --- | --- |
-| Catálogo del curso y sintaxis textual | M2 con el equipo/docente | Conectivos exigidos, precedencia, asociatividad, alcance, igualdad, aridad cero y política de nombres; separar capacidades del motor de requisitos del curso |
-| Revisión del AST/lenguaje/errores iniciales | M2 con M1 | Revisar los modelos ya implementados, conectar el parser y evitar representaciones incompatibles |
+| Notación confirmada; revisión cruzada pendiente | M2 con el equipo | Confirmación del usuario registrada en sintaxis.md; M1/M3 deben revisar sus consumidores. No se presenta como una verificación independiente de apuntes del curso |
+| AST/lenguaje/errores integrados en Python; revisión humana pendiente | M2 con M1 | Se reutilizan los modelos existentes y se añade FormulaSyntaxError compatible. M1 debe revisar el contrato y los ejemplos |
 | Posiciones del editor | M2 y M3, consulta a M1 | Convertir puntos de código Unicode de `Span` a unidades UTF-16 cuando corresponda; probar caracteres fuera del plano básico |
 | Entrada JSON completa | M3 con M2 | Forma de D, tablas y entorno, nombres de campos, tuplas n-arias y rechazo de duplicados antes de construir mapas |
-| Parser, variables libres y validador externos | M2 con M1 | Implementar parser/análisis previo al entorno y adaptar el validador al protocolo; el cálculo defensivo interno no completa esos módulos |
+| Validación externa integral M2-03 | M2 con M1 | Parser y análisis previo ya implementados; faltan forma de entradas externas, duplicados y validador integral conectado al protocolo. La certificación de M1 sigue protegiendo modelos normalizados |
 | HTTP y errores de transporte | M3 con M1/M2 | Operaciones/rutas mínimas, códigos de estado, forma uniforme de respuesta, límites de petición/tiempo y serialización final; sin CRUD innecesario |
 | Revisión de evidencia y codec final | M3 con M1 | Consumir el contrato de salida definido, comprobar explorador/comparación y acordar cualquier cambio antes de implementarlo |
 | Casos JSON de entrada y fallos | M2 y M3; M1 verifica resultados | Peticiones reales de verdadero/falso, entorno pendiente, error sintáctico, interpretación inválida y comparación; convertirlos a fixtures de proveedor/consumidor |
