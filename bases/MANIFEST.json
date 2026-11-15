@@ -1,0 +1,130 @@
+{
+  "purpose": "Copias locales sin adaptación. No son la implementación de LM_P3.",
+  "source_kind": "local working-tree snapshots; remote freshness not verified",
+  "sources": [
+    {
+      "repository": "https://github.com/hmndzzl/TDLC_LAB12",
+      "local_source": "/Users/hugoml/Documents/U/A3/S2/TeoriaCompu/TDLC_LAB12",
+      "local_HEAD": "13df7f10a65f21ae2ba3ac1b4f3afad5c0a6396c",
+      "destination": "bases/tdlc_lab12",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "1a964c30333172c6004a1b19a9644b789da2a5141fe78c31985681bed9ae6028",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "interfaz.py",
+          "sha256": "ae6ea42cd5a5910f18988b9d5d38de656ec1bf9029b7203af20a1b53388e9c51",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "test_interfaz.py",
+          "sha256": "1157d71b4e4c8d5c2fc8805bb54c4f14e2b63e447f9262d02691c40f297c78c4",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "abrir_interfaz.command",
+          "sha256": "294df052def228c824129ba4305f2a5a441b0d9b306fcd5cd0e4dfeeb0343b59",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "abrir_interfaz.bat",
+          "sha256": "4dfadea2770938047025b0e1ab3a1f676f3bba549f92898da45fcce0916a9a6c",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "ejercicio1.py",
+          "sha256": "85b2a388abe142675e23732bff29cc4e4e5c016121a5cca54a476aa422b27557",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "ejercicio2.py",
+          "sha256": "8918149c478077734d664af696ca8459ed7b61f7a28c1b472b6fff4e217e8a6f",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "ejercicio3.py",
+          "sha256": "549dba0f618c15f36e064111f8161351566703f7c1f35b9d0f9847e670cb7d15",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "ejercicio4.py",
+          "sha256": "194f8c856894e0e526f200296085e1c4e8a4bec0492c0554e01e482cae58b196",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "interfaz/index.html",
+          "sha256": "7b75ba0139664e69bbe7bcd557f39ea4cdaf6b916fc2abc5a3e9d59fc07e2b08",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "interfaz/estilos.css",
+          "sha256": "a389b530ed564a741351d210db0079edb47c105477ba0f9259fa239424fd9748",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "interfaz/app.js",
+          "sha256": "8894e06bf27f86f143caebc36938a90ecf8b1726fa872f90b1dd53e38a7305af",
+          "matches_local_HEAD": true
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/Pxdro-410/proy1Teoria---G4",
+      "local_source": "/Users/hugoml/Documents/U/A3/S2/TeoriaCompu/proy1Teoria---G4",
+      "local_HEAD": "f8f86cdf10290e5d9754d4f534ecfd7f1ea13a97",
+      "destination": "bases/proyecto1_regex",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "14b24bfca6a0f7056633702342d2b0bcfe294e42ba4230e885cb16f85ee4e341",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "regex/__init__.py",
+          "sha256": "9ea05f921330e9693d0e28fa96f257b072c64c0555692cb06d276cd448c2fb9f",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "regex/tokens.py",
+          "sha256": "d05a66e81e459e5f038d64f5bf41f6d29a3f62a968f8b2374356583dad1e7493",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "regex/shunting_yard.py",
+          "sha256": "bf775a2b6f8860281ae4822bc6495af77823c2d68a8aafc71ed1ccac6a8056c8",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "regex/ast.py",
+          "sha256": "2e34f02a27465132b3a6ddb8d94980332367c44fafab9ea55c5093d66a9e5396",
+          "matches_local_HEAD": true
+        }
+      ]
+    },
+    {
+      "repository": "https://github.com/Pxdro-410/Proy2-Teoria-G4",
+      "local_source": "/Users/hugoml/Documents/U/A3/S2/TeoriaCompu/Proy2-Teoria-G4",
+      "local_HEAD": "1b2d830cf9195f35a575e894c049b79f0f4f1cfe",
+      "destination": "bases/proyecto2_arboles",
+      "files": [
+        {
+          "path": "README.md",
+          "sha256": "44a8868928228960b819ee76e85ff3c43fa53d7db39c22370082378bbece8eda",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "src/cyk/parse_tree.py",
+          "sha256": "9c83511836617168a6fe73f8c07c601e96107ec03a0c6b4e4b83ac7c3c4ed11b",
+          "matches_local_HEAD": true
+        },
+        {
+          "path": "src/ui/tree_visualizer.py",
+          "sha256": "328fa08acfa33ea0863115c5182da5128f16ce7292627704b0314eaa8921a169",
+          "matches_local_HEAD": true
+        }
+      ]
+    }
+  ]
+}

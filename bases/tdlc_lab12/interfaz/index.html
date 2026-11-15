@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Laboratorio 12 · Funciones lambda</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/estilos.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#formulario">Ir a los datos del ejercicio</a>
+  <aside class="sidebar">
+    <a class="brand" href="/" aria-label="Laboratorio 12, inicio"><span class="brand-icon" aria-hidden="true">λ</span><span>Teoría de la<br><strong>Computación</strong></span></a>
+    <p class="nav-label">Ejercicios del laboratorio</p>
+    <nav aria-label="Ejercicios">
+      <button class="exercise active" data-ejercicio="1" aria-current="page"><span class="exercise-number">1</span><span>Ordenar<br> diccionarios</span></button>
+      <button class="exercise" data-ejercicio="2"><span class="exercise-number">2</span><span>Calcular<br> potencias</span></button>
+      <button class="exercise" data-ejercicio="3"><span class="exercise-number">3</span><span>Transponer<br> una matriz</span></button>
+      <button class="exercise" data-ejercicio="4"><span class="exercise-number">4</span><span>Eliminar<br> elementos</span></button>
+    </nav>
+    <div class="sidebar-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8m-4-4v4"/></svg><div>Todo ocurre en tu equipo<p>Sin Internet.<br>Sin guardar tus datos.</p></div></div>
+  </aside>
+  <main>
+    <header class="topbar"><span><strong>Laboratorio 12</strong><span class="topbar-subtitle">Funciones lambda</span></span></header>
+    <section class="heading" aria-labelledby="titulo">
+      <h1 id="titulo">Ordenar diccionarios</h1>
+      <p id="descripcion">Organiza una lista de diccionarios a partir de una de sus claves.</p>
+    </section>
+    <div class="workspace">
+      <section class="panel input-panel" aria-labelledby="entrada-titulo">
+        <div class="panel-heading"><h2 id="entrada-titulo">Datos de entrada</h2><span class="input-mode" id="modo-entrada">Ejemplo del enunciado</span></div>
+        <form id="formulario" tabindex="-1" novalidate>
+          <div class="error-summary" id="error" role="alert" tabindex="-1" hidden><strong>Revisa la entrada</strong><a id="error-enlace" href="#datos"></a></div>
+          <fieldset class="source"><legend>¿Qué datos quieres usar?</legend><div class="source-options">
+            <label><input type="radio" name="origen" value="ejemplo" checked><span>Datos de ejemplo</span></label>
+            <label><input type="radio" name="origen" value="propios"><span>Mis datos</span></label>
+          </div></fieldset>
+          <div class="field">
+            <label id="datos-etiqueta" for="datos">Lista de diccionarios</label>
+            <p class="help" id="datos-ayuda"></p>
+            <textarea id="datos" rows="6" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="datos-ayuda datos-error" readonly></textarea>
+            <p class="field-error" id="datos-error" hidden></p>
+            <p class="example-note" id="nota-ejemplo">Elige «Mis datos» para editar este ejemplo.</p>
+          </div>
+          <div class="field" id="extra-grupo">
+            <label id="extra-etiqueta" for="extra">Clave para ordenar</label>
+            <p class="help" id="extra-ayuda"></p>
+            <input id="extra" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="extra-ayuda extra-error">
+            <p class="field-error" id="extra-error" hidden></p>
+          </div>
+          <div class="actions"><button class="primary" id="calcular" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m9 5 10 7-10 7V5Z"/></svg><span id="calcular-texto">Calcular resultado</span></button><button class="secondary" id="restablecer" type="button">Restablecer ejemplo</button></div>
+          <div class="reset-notice" id="aviso-restablecer" role="status" hidden><span>Se cargaron los datos de ejemplo.</span><button class="secondary" id="deshacer" type="button">Deshacer</button></div>
+          <p class="keyboard-hint">También puedes usar <kbd id="atajo">Ctrl + Enter</kbd></p>
+        </form>
+      </section>
+      <section class="panel result-panel" aria-labelledby="resultado-titulo" aria-busy="false">
+        <div class="panel-heading"><h2 id="resultado-titulo">Resultado</h2><span class="result-state" id="estado">Por calcular</span></div>
+        <div class="empty" id="vacio"><div class="empty-flow" aria-hidden="true"><span>[ ]</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18m-6-6 6 6-6 6"/></svg><span class="lambda-symbol">λ</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 12h18m-6-6 6 6-6 6"/></svg><span>[ ]</span></div><h3>Tu lista transformada, aquí</h3><p>Usa el ejemplo o ingresa tus datos.<br>Después, pulsa «Calcular resultado».</p></div>
+        <div class="loading" id="cargando" hidden><div class="loading-line"></div><div class="loading-line"></div><div class="loading-line"></div><p>Calculando el resultado…</p></div>
+        <div id="salida" hidden><div class="output-toolbar"><span id="cantidad"></span><button id="copiar" class="copy" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg><span id="copiar-texto">Copiar lista</span></button></div><pre id="resultado" tabindex="0" aria-label="Lista resultante"></pre><p id="nota-copia" class="copy-note" role="status" hidden></p><p class="result-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>La lista original se conserva.</p></div>
+        <p class="sr-only" id="anuncio" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>
