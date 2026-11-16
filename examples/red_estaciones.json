@@ -1,0 +1,575 @@
+{
+  "version": 1,
+  "title": "Red de estaciones",
+  "world": {
+    "functions": [
+      [
+        "relevo",
+        1
+      ]
+    ],
+    "predicates": [
+      [
+        "Activa",
+        1
+      ],
+      [
+        "Enlaza",
+        2
+      ]
+    ],
+    "domain": [
+      "norte",
+      "centro",
+      "sur"
+    ],
+    "function_rows": {
+      "relevo": [
+        [
+          [
+            "norte"
+          ],
+          "centro"
+        ],
+        [
+          [
+            "centro"
+          ],
+          "sur"
+        ],
+        [
+          [
+            "sur"
+          ],
+          "norte"
+        ]
+      ]
+    },
+    "relations": {
+      "Activa": [
+        [
+          "norte"
+        ],
+        [
+          "centro"
+        ]
+      ],
+      "Enlaza": [
+        [
+          "norte",
+          "centro"
+        ],
+        [
+          "centro",
+          "sur"
+        ],
+        [
+          "sur",
+          "norte"
+        ]
+      ]
+    }
+  },
+  "scenarios": [
+    {
+      "id": "Q01",
+      "title": "Una estación activa basta",
+      "formula": "∃x Activa(x)",
+      "assignments": [],
+      "manual_reason": "norte pertenece a Activa. Un testigo basta; centro y sur quedan sin visitar, no son falsos por ello."
+    },
+    {
+      "id": "Q02",
+      "title": "No todas están activas",
+      "formula": "∀x Activa(x)",
+      "assignments": [],
+      "manual_reason": "Activa(norte) y Activa(centro) son verdaderas; Activa(sur) es falsa. sur es el contraejemplo aunque se haya recorrido todo D."
+    },
+    {
+      "id": "Q03",
+      "title": "Todas tienen algún enlace",
+      "formula": "∀x ∃y Enlaza(x,y)",
+      "assignments": [],
+      "manual_reason": "Para norte sirve y=centro; para centro sirve y=sur; para sur sirve y=norte. Se comprobaron las tres estaciones. El testigo depende de x; no se afirma que exista un mismo y para todas."
+    },
+    {
+      "id": "Q04",
+      "title": "Ningún ciclo empieza con tres activas seguidas",
+      "formula": "∃x (Activa(x) ∧ Activa(relevo(x)) ∧ Activa(relevo(relevo(x))))",
+      "assignments": [],
+      "manual_reason": "Desde norte se visitan norte, centro, sur: V,V,F. Desde centro: centro, sur, norte: V,F,V. Desde sur: sur, norte, centro: F,V,V. Todas las conjunciones son falsas; Activa y Enlaza siguen siendo relaciones no vacías."
+    },
+    {
+      "id": "S01",
+      "title": "El relevo de una variable libre",
+      "formula": "Activa(relevo(x))",
+      "assignments": [
+        [
+          "x",
+          "centro"
+        ]
+      ],
+      "manual_reason": "El entorno fija x=centro; relevo(centro)=sur y sur no pertenece a Activa. centro es un elemento de D, no una constante del lenguaje."
+    },
+    {
+      "id": "S02",
+      "title": "El cuantificador no abarca la conjunción",
+      "formula": "∃x Activa(x) ∧ ¬Activa(x)",
+      "assignments": [
+        [
+          "x",
+          "sur"
+        ]
+      ],
+      "manual_reason": "El primer x está ligado: norte hace verdadero ∃x Activa(x). El segundo x sigue libre y vale sur, de modo que ¬Activa(sur) es verdadero. No es una contradicción bajo este alcance."
+    },
+    {
+      "id": "S03",
+      "title": "Los paréntesis cambian el alcance",
+      "formula": "∃x (Activa(x) ∧ ¬Activa(x))",
+      "assignments": [],
+      "manual_reason": "Las dos ocurrencias de x quedan ligadas por el mismo cuantificador. Ningún elemento satisface A y no A; se recorren las tres estaciones, sin vaciar Activa."
+    },
+    {
+      "id": "S04",
+      "title": "La sombra no pierde el entorno exterior",
+      "formula": "(∀x (Activa(x) ∨ ∃x ¬Activa(x))) ∧ ¬Activa(x)",
+      "assignments": [
+        [
+          "x",
+          "sur"
+        ]
+      ],
+      "manual_reason": "El ∃x interior encuentra sur en cada instancia del cuerpo universal, haciendo verdadera su disyunción. Fuera del ∀x la variable libre conserva x=sur, así que la negación final es verdadera. Cada cuantificador tiene alcance propio."
+    },
+    {
+      "id": "S05",
+      "title": "Una activa puede relevar a una inactiva",
+      "formula": "∀x (Activa(x) → Activa(relevo(x)))",
+      "assignments": [],
+      "manual_reason": "En norte la implicación es V→V. En centro es V→F porque su relevo es sur. centro es contraejemplo; sur no necesita visitarse."
+    },
+    {
+      "id": "S06",
+      "title": "Actividad y actividad del relevo no coinciden siempre",
+      "formula": "Ax (Activa(x) <-> Activa(relevo(x)))",
+      "assignments": [],
+      "manual_reason": "El alias Ax liga x y <-> produce ↔ en el AST. En norte coinciden V y V; en centro difieren V y F, por lo que la equivalencia universal es falsa."
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "C01",
+      "title": "Un relevo distinto cambia la verdad",
+      "formula": "Activa(relevo(x))",
+      "assignments": [
+        [
+          "x",
+          "centro"
+        ]
+      ],
+      "change": {
+        "kind": "function",
+        "symbol": "relevo",
+        "arguments": [
+          "centro"
+        ],
+        "before": "sur",
+        "after": "norte"
+      },
+      "manual_reason": "Se sustituye solo relevo(centro)=sur por relevo(centro)=norte. sur no está activa y norte sí. La función sigue siendo total; el escenario base se conserva."
+    },
+    {
+      "id": "C02",
+      "title": "La verdad se mantiene y cambia el testigo",
+      "formula": "∃x Activa(x)",
+      "assignments": [],
+      "change": {
+        "kind": "relation",
+        "symbol": "Activa",
+        "arguments": [
+          "norte"
+        ],
+        "before": true,
+        "after": false
+      },
+      "manual_reason": "Se quita solamente la tupla (norte) de Activa. La relación conserva (centro), así que el existencial sigue verdadero y el primer testigo pasa de norte a centro. No cambiar la verdad no significa conservar la misma evidencia."
+    },
+    {
+      "id": "C03",
+      "title": "Una asignación libre cambia la respuesta",
+      "formula": "Activa(x)",
+      "assignments": [
+        [
+          "x",
+          "centro"
+        ]
+      ],
+      "change": {
+        "kind": "assignment",
+        "symbol": "x",
+        "arguments": [],
+        "before": "centro",
+        "after": "sur"
+      },
+      "manual_reason": "Solo cambia x=centro por x=sur. El lenguaje, dominio, tablas y fórmula se conservan; centro pertenece a Activa y sur no."
+    }
+  ],
+  "invalid_base": {
+    "formula": "Activa(x)",
+    "assignments": [
+      [
+        "x",
+        "centro"
+      ]
+    ]
+  },
+  "invalid_cases": [
+    {
+      "id": "E01",
+      "title": "Dominio vacío",
+      "overrides": {
+        "world": {
+          "domain": []
+        }
+      },
+      "repair": {
+        "world": {
+          "domain": [
+            "norte",
+            "centro",
+            "sur"
+          ]
+        }
+      },
+      "correction": "Restaurar el dominio ordenado norte, centro, sur; no asignar Falso al error."
+    },
+    {
+      "id": "E02",
+      "title": "Relación vacía",
+      "overrides": {
+        "world": {
+          "relations": {
+            "Activa": [],
+            "Enlaza": [
+              [
+                "norte",
+                "centro"
+              ],
+              [
+                "centro",
+                "sur"
+              ],
+              [
+                "sur",
+                "norte"
+              ]
+            ]
+          }
+        }
+      },
+      "repair": {
+        "world": {
+          "relations": {
+            "Activa": [
+              [
+                "norte"
+              ],
+              [
+                "centro"
+              ]
+            ],
+            "Enlaza": [
+              [
+                "norte",
+                "centro"
+              ],
+              [
+                "centro",
+                "sur"
+              ],
+              [
+                "sur",
+                "norte"
+              ]
+            ]
+          }
+        }
+      },
+      "correction": "Marcar nuevamente norte y centro como tuplas de Activa. El proyecto prohíbe una relación vacía."
+    },
+    {
+      "id": "E03",
+      "title": "Función parcial aunque no se use",
+      "overrides": {
+        "world": {
+          "function_rows": {
+            "relevo": [
+              [
+                [
+                  "norte"
+                ],
+                "centro"
+              ],
+              [
+                [
+                  "centro"
+                ],
+                "sur"
+              ]
+            ]
+          }
+        }
+      },
+      "repair": {
+        "world": {
+          "function_rows": {
+            "relevo": [
+              [
+                [
+                  "norte"
+                ],
+                "centro"
+              ],
+              [
+                [
+                  "centro"
+                ],
+                "sur"
+              ],
+              [
+                [
+                  "sur"
+                ],
+                "norte"
+              ]
+            ]
+          }
+        }
+      },
+      "correction": "Añadir relevo(sur)=norte. Activa(x) no usa relevo, pero toda la interpretación debe ser válida."
+    },
+    {
+      "id": "E04",
+      "title": "Dos salidas para una entrada",
+      "overrides": {
+        "world": {
+          "function_rows": {
+            "relevo": [
+              [
+                [
+                  "norte"
+                ],
+                "centro"
+              ],
+              [
+                [
+                  "centro"
+                ],
+                "sur"
+              ],
+              [
+                [
+                  "sur"
+                ],
+                "norte"
+              ],
+              [
+                [
+                  "centro"
+                ],
+                "norte"
+              ]
+            ]
+          }
+        }
+      },
+      "repair": {
+        "world": {
+          "function_rows": {
+            "relevo": [
+              [
+                [
+                  "norte"
+                ],
+                "centro"
+              ],
+              [
+                [
+                  "centro"
+                ],
+                "sur"
+              ],
+              [
+                [
+                  "sur"
+                ],
+                "norte"
+              ]
+            ]
+          }
+        }
+      },
+      "correction": "Quitar la segunda salida de relevo(centro), conservando centro→sur. Detectarlo antes de convertir filas a dict."
+    },
+    {
+      "id": "E05",
+      "title": "Símbolo desconocido",
+      "overrides": {
+        "formula": "Inactiva(x)"
+      },
+      "repair": {
+        "formula": "Activa(x)"
+      },
+      "correction": "Usar el predicado declarado Activa; un identificador desconocido no se puede invocar como predicado."
+    },
+    {
+      "id": "E06",
+      "title": "Aridad incorrecta en la fórmula",
+      "overrides": {
+        "formula": "Enlaza(x)"
+      },
+      "repair": {
+        "formula": "Enlaza(x,relevo(x))"
+      },
+      "correction": "Añadir el segundo término. Con x=centro, Enlaza(centro,sur) es verdadero."
+    },
+    {
+      "id": "E07",
+      "title": "Componente de tupla fuera del dominio",
+      "overrides": {
+        "world": {
+          "relations": {
+            "Activa": [
+              [
+                "norte"
+              ],
+              [
+                "centro"
+              ]
+            ],
+            "Enlaza": [
+              [
+                "norte",
+                "este"
+              ]
+            ]
+          }
+        }
+      },
+      "repair": {
+        "world": {
+          "relations": {
+            "Activa": [
+              [
+                "norte"
+              ],
+              [
+                "centro"
+              ]
+            ],
+            "Enlaza": [
+              [
+                "norte",
+                "centro"
+              ],
+              [
+                "centro",
+                "sur"
+              ],
+              [
+                "sur",
+                "norte"
+              ]
+            ]
+          }
+        }
+      },
+      "correction": "Restaurar los enlaces del mundo; este no pertenece a D. También se revisa una relación que esta fórmula no usa."
+    },
+    {
+      "id": "E08",
+      "title": "Variable libre sin asignar",
+      "overrides": {
+        "assignments": []
+      },
+      "repair": {
+        "assignments": [
+          [
+            "x",
+            "centro"
+          ]
+        ]
+      },
+      "correction": "El análisis previo identifica x; elegir centro en el selector del entorno antes de evaluar."
+    },
+    {
+      "id": "E09",
+      "title": "Asignación inválida",
+      "overrides": {
+        "assignments": [
+          [
+            "x",
+            "este"
+          ]
+        ]
+      },
+      "repair": {
+        "assignments": [
+          [
+            "x",
+            "centro"
+          ]
+        ]
+      },
+      "correction": "Elegir centro u otro elemento de D; este no es una asignación válida."
+    },
+    {
+      "id": "E10",
+      "title": "Paréntesis incompleto",
+      "overrides": {
+        "formula": "Activa(x"
+      },
+      "repair": {
+        "formula": "Activa(x)"
+      },
+      "correction": "Cerrar el paréntesis sin perder el texto introducido ni el entorno."
+    },
+    {
+      "id": "E11",
+      "title": "Falta la tabla de un símbolo declarado",
+      "overrides": {
+        "world": {
+          "function_rows": {}
+        }
+      },
+      "repair": {
+        "world": {
+          "function_rows": {
+            "relevo": [
+              [
+                [
+                  "norte"
+                ],
+                "centro"
+              ],
+              [
+                [
+                  "centro"
+                ],
+                "sur"
+              ],
+              [
+                [
+                  "sur"
+                ],
+                "norte"
+              ]
+            ]
+          }
+        }
+      },
+      "correction": "Definir la tabla total de relevo, sin borrar su declaración para esconder el error."
+    }
+  ]
+}

@@ -2,7 +2,7 @@
 
 ## Estado y convención
 
-Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. La estructura fue creada inicialmente con paquetes vacíos. **M1 ya implementó modelos mínimos, motor, frontera defensiva, comparación y servicio con parser inyectado**; ver [semantica.md](semantica.md). Parser, validación externa, servidor e interfaz siguen pendientes de M2/M3. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
+Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. La estructura fue creada inicialmente con paquetes vacíos. **M1 implementó modelos, motor, frontera defensiva, comparación y servicio; M2 aporta lexer/parser, variables libres y validación integral/externa por filas**; ver [semantica.md](semantica.md), [sintaxis.md](sintaxis.md) y [validacion.md](validacion.md). Codec, servidor e interfaz siguen pendientes de M3, junto con las revisiones humanas. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
 
 Python 3.10 o posterior como mínimo inicial, coherente con los proyectos de referencia; registrar la versión concreta usada por el equipo en H0. Frontend con HTML/CSS/JavaScript nativos, servido localmente por Python. No hay dependencias externas nuevas ni paso de compilación del frontend. El paquete está en la raíz para poder importarlo y ejecutar pruebas desde allí sin modificar `sys.path` ni exigir instalación editable.
 
@@ -59,6 +59,7 @@ Crear únicamente los necesarios para el ticket actual; dividir un módulo cuand
 | `lm_p3/syntax/parser.py` | AST con gramática documentada | M2 |
 | `lm_p3/syntax/free_variables.py` | Conjunto de variables libres por alcance | M2 |
 | `lm_p3/validation/validator.py` | Validación integral y entrada validada | M2 |
+| `lm_p3/validation/normalization.py` | Builders de declaraciones/tablas/entorno por filas; comprueban conflictos antes de crear mapas | M2; codec M3 los consume |
 | `lm_p3/semantics/evaluator.py` | Términos, conectivos, cuantificadores y traza | M1 |
 | `lm_p3/semantics/comparison.py` | Comparar base y variante válidas | M1 |
 | `lm_p3/application/service.py` | Analizar → validar → evaluar; sin HTTP | M1 integra; M2 aporta funciones de análisis/validación |
@@ -103,8 +104,10 @@ Todos los módulos Python anteriores ──> models
 - Comentarios de código en español; usar `#` para comentarios de una línea, sin docstrings de una línea. Funciones públicas tipadas y contrato documentado. Sin estado global mutable de interpretación/entorno: cada solicitud tiene su contexto.
 - HTML, CSS y JS en archivos separados. CSS consume tokens comunes; no copiar el estilo del laboratorio. En JS emplear módulos nativos cuando se creen los archivos y mantener compatibilidad con la política de contenido del servidor.
 - Ejemplos en `examples/` describen escenarios completos; fixtures de resultados esperados y casos de borde van en `tests/fixtures/`. Documentar su formato en contratos antes de llenarlos. No compartir un archivo mutable como almacenamiento de sesión.
+- El corpus M2-04 usa `examples/red_estaciones.json` y `examples/corpus.py`; sus expectativas están separadas en `tests/fixtures/corpus_expectations.json`. Soluciones y preparación de defensa en `docs/casos-didacticos.md`; revisión gráfica pendiente en la matriz general `docs/matriz-verificacion.md`.
 - Pruebas Python `test_*.py`, basadas inicialmente en `unittest`. No usar esos nombres para scripts de demo. Las pruebas de interfaz deben estar claramente diferenciadas de pruebas de datos/serialización.
 - Evidencia en `docs/evidencias/` con ticket, procedimiento, resultado real y limitaciones; no incluir entornos virtuales, secretos ni archivos generados masivos. No afirmar que una captura es prueba de todo el flujo.
+- No se exige un Markdown por ticket. M2 conserva gramática en `docs/sintaxis.md`, validación en `docs/validacion.md`, casos/defensa en `docs/casos-didacticos.md` y una evidencia única en `docs/evidencias/miembro-2.md`, con secciones por entrega. La matriz de requisitos es compartida por el proyecto. Consolidar documentos no elimina criterios, evidencia ni revisión humana.
 
 ## Comandos y estado real
 
@@ -116,7 +119,7 @@ python3 -m venv .venv
 python -m unittest discover -s tests -t . -v
 ```
 
-El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. La suite propia ya cubre el motor y su frontera de aplicación; no equivale a cobertura del parser, servidor o interfaz todavía ausentes. En Windows puede usarse `py -3` para crear el entorno. No se requiere instalar dependencias externas ahora.
+El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. La suite propia cubre motor, parser, validación externa/integral y su integración; no equivale a cobertura HTTP ni de interfaz. En Windows puede invocarse el intérprete `.venv/Scripts/python.exe` directamente. No se requiere instalar dependencias externas ahora.
 
 Comando objetivo de aplicación, **todavía no disponible**: `python -m lm_p3`. M3 creará `lm_p3/__main__.py` en M3-01; hasta entonces no añadir un arranque que muestre resultados simulados. Los lanzadores propios se crean en `scripts/`, calculando la raíz como padre de esa carpeta. Los lanzadores guardados en `bases/` siguen abriendo el laboratorio original.
 

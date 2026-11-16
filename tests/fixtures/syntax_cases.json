@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "language": {"functions": {"f": 1}, "predicates": {"P": 1}},
+  "interpretation": {
+    "domain": ["a", "b"],
+    "function_rows": {"f": [[["a"], "b"], [["b"], "a"]]},
+    "relations": {"P": [["a"]]}
+  },
+  "cases": [
+    {"text": "Ex P(x)", "environment": {}, "free_variables": [], "value": true, "reason": "existential_witness"},
+    {"text": "Ax P(x)", "environment": {}, "free_variables": [], "value": false, "reason": "universal_counterexample"},
+    {"text": "Ax (P(x) | ~P(x))", "environment": {}, "free_variables": [], "value": true, "reason": "universal_complete"},
+    {"text": "Ex (P(x) & ~P(x))", "environment": {}, "free_variables": [], "value": false, "reason": "existential_complete"},
+    {"text": "P(f(x))", "environment": {"x": "a"}, "free_variables": ["x"], "value": false, "reason": "predicate_not_member"},
+    {"text": "P(f(f(x)))", "environment": {"x": "a"}, "free_variables": ["x"], "value": true, "reason": "predicate_member"}
+  ]
+}

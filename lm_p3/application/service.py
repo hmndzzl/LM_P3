@@ -9,7 +9,8 @@ from lm_p3.models.errors import SemanticInputError
 from lm_p3.models.language import Interpretation, Language
 from lm_p3.models.trace import EvaluationResult
 from lm_p3.semantics.evaluator import evaluate
-from lm_p3.semantics.inputs import EvaluationLimits, ValidatedInput, prepare_input
+from lm_p3.semantics.inputs import EvaluationLimits, ValidatedInput
+from lm_p3.validation.validator import validate_input
 
 
 class Parser(Protocol):
@@ -30,7 +31,7 @@ class EvaluationOutcome:
 
 def evaluate_formula(text: str, language: Language, interpretation: Interpretation,
                      environment: Mapping[str, str], *, parse: Parser,
-                     validate: Validator = prepare_input, revision: int = 0,
+                     validate: Validator = validate_input, revision: int = 0,
                      limits: EvaluationLimits | None = None,
                      cancelled: Callable[[], bool] | None = None) -> EvaluationOutcome:
     # El servidor de M3 traduce errores esperados a JSON; aquí no se decide HTTP.

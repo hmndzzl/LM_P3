@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "base": {
+    "functions": [["f", 1]],
+    "predicates": [["P", 1]],
+    "domain": ["a", "b"],
+    "function_rows": {"f": [[["a"], "b"], [["b"], "a"]]},
+    "relations": {"P": [["a"]]},
+    "assignments": [["x", "a"]],
+    "text": "P(f(x))"
+  },
+  "cases": [
+    {"name": "entrada válida", "overrides": {}, "value": false},
+    {"name": "existencial con testigo", "overrides": {"text": "Ex P(x)", "assignments": []}, "value": true},
+    {"name": "dominio vacío", "overrides": {"domain": []}, "code": "invalid_domain", "field": "domain"},
+    {"name": "nombre ambiguo", "overrides": {"predicates": [["f", 1]]}, "code": "ambiguous_symbol", "field": "language.functions.f"},
+    {"name": "aridad inválida", "overrides": {"functions": [["f", true]]}, "code": "invalid_arity", "field": "language.functions[0]"},
+    {"name": "relación vacía", "overrides": {"relations": {"P": []}}, "code": "empty_interpretation", "field": "relations.P"},
+    {"name": "función parcial", "overrides": {"function_rows": {"f": [[["a"], "b"]]}}, "code": "partial_function", "field": "functions.f"},
+    {"name": "salidas contradictorias", "overrides": {"function_rows": {"f": [[["a"], "b"], [["a"], "a"], [["b"], "a"]]}}, "code": "conflicting_function_row", "field": "functions.f[1].output"},
+    {"name": "símbolo sin interpretación", "overrides": {"function_rows": {}}, "code": "missing_interpretation", "field": "functions.f"},
+    {"name": "tupla con aridad incorrecta", "overrides": {"relations": {"P": [["a", "b"]]}}, "code": "invalid_tuple_arity", "field": "relations.P[0]"},
+    {"name": "componente fuera de D", "overrides": {"relations": {"P": [["c"]]}}, "code": "outside_domain", "field": "relations.P[0][0]"},
+    {"name": "salida fuera de D", "overrides": {"function_rows": {"f": [[["a"], "c"], [["b"], "a"]]}}, "code": "outside_domain", "field": "functions.f[0].output"},
+    {"name": "entorno faltante", "overrides": {"assignments": []}, "code": "missing_assignment", "field": "environment.x"},
+    {"name": "asignación fuera de D", "overrides": {"assignments": [["x", "c"]]}, "code": "invalid_assignment", "field": "environment[0]"},
+    {"name": "asignaciones contradictorias", "overrides": {"assignments": [["x", "a"], ["x", "b"]]}, "code": "conflicting_assignment", "field": "environment[1]"},
+    {"name": "símbolo desconocido", "overrides": {"text": "NoDeclarado(x)"}, "code": "unknown_symbol", "field": "formula"},
+    {"name": "aridad de fórmula", "overrides": {"text": "P(x,x)"}, "code": "arity_mismatch", "field": "formula"},
+    {"name": "sintaxis incompleta", "overrides": {"text": "P(x"}, "code": "missing_parenthesis", "field": "formula"}
+  ]
+}
