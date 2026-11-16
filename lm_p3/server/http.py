@@ -24,6 +24,7 @@ STATIC_FILES = {
     '/js/errors.js': ('js/errors.js', 'text/javascript; charset=utf-8'),
     '/js/evidence.js': ('js/evidence.js', 'text/javascript; charset=utf-8'),
     '/js/formula.js': ('js/formula.js', 'text/javascript; charset=utf-8'),
+    '/js/comparison.js': ('js/comparison.js', 'text/javascript; charset=utf-8'),
 }
 
 
@@ -73,7 +74,7 @@ class LocalHandler(BaseHTTPRequestHandler):
         if not self._host_valid() or self.headers.get_all('Origin') != [origin]:
             self._send(403, error_response(SemanticInputError('invalid_origin', 'Abre la aplicación desde su dirección local.')))
             return
-        routes = {'/api/analyze': 'analyze', '/api/evaluate': 'evaluate'}
+        routes = {'/api/analyze': 'analyze', '/api/evaluate': 'evaluate', '/api/compare': 'compare'}
         if self.path not in routes:
             self._send(404, error_response(SemanticInputError('not_found', 'Operación no encontrada.')))
             return

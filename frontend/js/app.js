@@ -5,6 +5,7 @@ import {
 import { clearErrors, showErrors } from './errors.js';
 import { showResult } from './evidence.js';
 import { initializeFormulaEditor } from './formula.js';
+import { clearComparison, setComparisonBase, initializeComparison } from './comparison.js';
 
 const $ = (id) => document.getElementById(id);
 let revision = 0;
@@ -15,6 +16,7 @@ function invalidate(event) {
   revision += 1;
   dirty = true;
   clearErrors();
+  clearComparison();
   $('result').hidden = true;
   $('evidence').replaceChildren();
   $('empty-result').hidden = false;
@@ -53,6 +55,7 @@ async function run(evaluate) {
     const response = await request('evaluate', evaluatedData);
     if (version !== revision || response.revision !== version) return;
     showResult(data.formula, response.evaluation);
+    setComparisonBase(evaluatedData);
   } catch (error) {
     if (version === revision) showErrors(error.issues || [{ message: error.message, field: '' }], errorTarget);
   } finally {
@@ -71,6 +74,7 @@ $('workspace').addEventListener('submit', (event) => { event.preventDefault(); r
 $('analyze').addEventListener('click', () => run(false));
 initializeEditors();
 initializeFormulaEditor();
+initializeComparison();
 $('load-example').addEventListener('click', () => {
   if (dirty && !confirm('Se reemplazarán tus datos por el ejemplo. ¿Continuar?')) return;
   invalidate();

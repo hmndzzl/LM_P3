@@ -6,7 +6,7 @@ function node(tag, text = '') {
   return result;
 }
 
-function reasonText(trace) {
+export function reasonText(trace) {
   const checked = trace.checked_elements.length;
   const tuple = `(${trace.terms.map((term) => term.value).join(', ')})`;
   const predicate = trace.formula.split('(')[0];
@@ -26,22 +26,58 @@ function reasonText(trace) {
   return reasons[trace.reason] || 'Consulta la evidencia de las subfórmulas.';
 }
 
-function evidenceNode(trace) {
+function selectStep(trace, context) {
+  const characters = Array.from(context.formula);
+  context.formulaTarget.replaceChildren();
+  if (trace.span) {
+    context.formulaTarget.append(document.createTextNode(characters.slice(0, trace.span.start).join('')));
+    context.formulaTarget.append(node('mark', characters.slice(trace.span.start, trace.span.end).join('')));
+    context.formulaTarget.append(document.createTextNode(characters.slice(trace.span.end).join('')));
+  } else {
+    context.formulaTarget.textContent = context.formula;
+  }
+  context.selectionTarget.textContent = `Paso seleccionado: ${trace.formula}. Instancia ${trace.trace_id}.`;
+}
+
+function termNode(term) {
+  const item = node('li', `${term.term} = ${term.value} · ${term.reason === 'variable_assignment' ? 'asignación de variable' : 'consulta de función'}`);
+  if (term.children.length) {
+    const children = node('ul');
+    for (const child of term.children) children.append(termNode(child));
+    item.append(children);
+  }
+  return item;
+}
+
+function evidenceNode(trace, context) {
   const details = node('details');
-  details.append(node('summary', `${trace.formula} — ${trace.value ? 'Verdadero' : 'Falso'}`));
+  const changed = context.changedIds.has(trace.trace_id);
+  details.classList.toggle('evidence-changed', changed);
+  const summary = node('summary', `${trace.formula} — ${trace.value ? 'Verdadero' : 'Falso'}${changed ? ' · evidencia modificada' : ''}`);
+  summary.addEventListener('click', () => selectStep(trace, context));
+  details.append(summary);
   // El detalle se crea al abrirlo para no dibujar toda una traza grande de golpe.
   details.addEventListener('toggle', () => {
     if (!details.open || details.dataset.loaded) return;
+    selectStep(trace, context);
     details.dataset.loaded = 'true';
     details.append(node('p', reasonText(trace)));
     details.append(node('p', trace.environment.length
       ? `Entorno: ${trace.environment.map(([name, value]) => `${name} = ${value}`).join(', ')}`
       : 'Sin asignaciones en este alcance.'));
-    for (const term of trace.terms) details.append(node('p', `${term.term} = ${term.value}`));
+    if (trace.terms.length) {
+      const terms = node('ul');
+      for (const term of trace.terms) terms.append(termNode(term));
+      details.append(terms);
+    }
     if (trace.unvisited_elements.length) details.append(node('p', `No visitados: ${trace.unvisited_elements.join(', ')}.`));
-    for (const child of trace.children) details.append(evidenceNode(child));
+    for (const child of trace.children) details.append(evidenceNode(child, context));
   });
   return details;
+}
+
+export function createEvidence(trace, formula, formulaTarget, selectionTarget, changedIds = new Set()) {
+  return evidenceNode(trace, { formula, formulaTarget, selectionTarget, changedIds });
 }
 
 export function showResult(formula, result) {
@@ -49,7 +85,8 @@ export function showResult(formula, result) {
   $('result-value').textContent = result.value ? 'Verdadero' : 'Falso';
   $('result-value').dataset.value = String(result.value);
   $('result-reason').textContent = reasonText(result.trace);
-  $('evidence').replaceChildren(evidenceNode(result.trace));
+  $('evidence-selection').textContent = 'Selecciona un paso para resaltar su subfórmula.';
+  $('evidence').replaceChildren(createEvidence(result.trace, formula, $('result-formula'), $('evidence-selection')));
   $('empty-result').hidden = true;
   $('result').hidden = false;
   $('result-state').textContent = `Evaluación completada: ${result.value ? 'Verdadero' : 'Falso'}.`;

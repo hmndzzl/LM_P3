@@ -54,12 +54,27 @@ class LocalHTTPTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(result['free_variables'], ['y'])
 
+    def test_real_comparison_endpoint(self):
+        from copy import deepcopy
+        base = sample_request()
+        variant = deepcopy(base)
+        variant['assignments'] = [['x', 'b']]
+        status, result, _ = self.request('/api/compare', body=json.dumps(
+            {'revision': 5, 'base': base, 'variant': variant}))
+        self.assertEqual(status, 200)
+        self.assertTrue(result['comparison']['truth_changed'])
+        variant['relations']['P'] = []
+        status, result, _ = self.request('/api/compare', body=json.dumps(
+            {'revision': 5, 'base': base, 'variant': variant}))
+        self.assertEqual(status, 400)
+        self.assertNotIn('comparison', result)
+
     def test_frontend_assets_are_served_without_exposing_project_files(self):
         for path, expected_type in [('/', 'text/html'), ('/css/tokens.css', 'text/css'),
                                     ('/css/styles.css', 'text/css'), ('/js/app.js', 'text/javascript'),
                                     ('/js/api.js', 'text/javascript'), ('/js/editors.js', 'text/javascript'),
                                     ('/js/errors.js', 'text/javascript'), ('/js/evidence.js', 'text/javascript'),
-                                    ('/js/formula.js', 'text/javascript')]:
+                                    ('/js/formula.js', 'text/javascript'), ('/js/comparison.js', 'text/javascript')]:
             with self.subTest(path=path):
                 status, body, headers = self.request(path, method='GET')
                 self.assertEqual(status, 200)

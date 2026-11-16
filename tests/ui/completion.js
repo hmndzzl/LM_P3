@@ -1,0 +1,125 @@
+// Ejecutar con la aplicación abierta mediante agent-browser eval --stdin.
+(async () => {
+  const $ = (id) => document.getElementById(id);
+  const checks = [];
+  const assert = (value, message) => {
+    if (!value) throw new Error(message);
+    checks.push(message);
+  };
+  const until = async (predicate) => {
+    const deadline = Date.now() + 6000;
+    while (!predicate()) {
+      if (Date.now() > deadline) throw new Error('Tiempo de espera agotado.');
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+  };
+  const fill = (element, value) => {
+    element.value = value;
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+    element.dispatchEvent(new Event('change', { bubbles: true }));
+  };
+  const evaluate = async (formula) => {
+    if (formula) fill($('formula'), formula);
+    $('workspace').requestSubmit();
+    await until(() => !$('evaluate').disabled);
+  };
+  const compare = async () => {
+    $('compare').click();
+    await until(() => !$('compare').disabled);
+  };
+  const oldConfirm = window.confirm;
+  window.confirm = () => true;
+  try {
+    assert(document.title.startsWith('Evaluador semántico'), 'Nombre actualizado de la aplicación');
+    $('load-example').click();
+    const editor = $('formula');
+    const buttons = [...$('symbol-toolbar').querySelectorAll('button')];
+    assert(buttons.map((button) => button.textContent).join('') === '¬∧∨→↔∀∃()', 'Nueve botones lógicos disponibles');
+    for (const button of buttons) {
+      fill(editor, 'P(x)');
+      editor.focus();
+      editor.setSelectionRange(1, 3);
+      button.click();
+      assert(editor.value === `P${button.textContent})` && document.activeElement === editor,
+        `Inserción y selección: ${button.textContent}`);
+    }
+    document.execCommand('undo');
+    assert(editor.value === 'P(x)', 'Deshacer restaura la selección reemplazada');
+    document.execCommand('redo');
+    assert(editor.value === 'P))', 'Rehacer recupera la inserción lógica');
+
+    $('load-example').click();
+    const functionTable = [...document.querySelectorAll('.interpretation')].find((section) => section.querySelector('h3').textContent.startsWith('relevo'));
+    assert(functionTable.querySelector('select').options.length === 4, 'Las tuplas usan selectores del dominio');
+    assert(functionTable.querySelector('.help').textContent.includes('Faltan 0'), 'Conteo de salidas funcionales completas');
+    fill($('domain'), 'norte\ncentro');
+    assert([...document.querySelectorAll('#interpretations option')].some((option) => option.textContent === 'sur (fuera de D)'),
+      'Editar el dominio conserva valores recuperables fuera de D');
+    await evaluate();
+    const outputIssue = [...$('error-list').querySelectorAll('a')].find((link) => link.textContent.includes('salida'));
+    assert(Boolean(outputIssue), 'Salida fuera del dominio se rechaza');
+    outputIssue.click();
+    assert(document.activeElement.id.startsWith('output-'), 'Error funcional enfoca la salida exacta');
+
+    $('load-example').click();
+    await evaluate('Activa(relevo(relevo(x)))');
+    $('evidence').querySelector('details').open = true;
+    await until(() => $('evidence').querySelector('ul ul ul'));
+    assert($('evidence').textContent.includes('asignación de variable'), 'Los términos anidados exponen todas las consultas');
+    await evaluate('∀𝑥 (Activa(𝑥) ∨ ¬Activa(𝑥))');
+    $('evidence').querySelector('details').open = true;
+    await until(() => $('evidence').querySelectorAll('details').length > 1);
+    $('evidence').querySelectorAll('details')[1].open = true;
+    await until(() => $('result-formula').querySelector('mark')?.textContent.startsWith('('));
+    assert($('result-formula').querySelector('mark').textContent === '(Activa(𝑥) ∨ ¬Activa(𝑥))',
+      'Seleccionar una instancia resalta su subfórmula original Unicode');
+
+    $('load-example').click();
+    await evaluate('Activa(relevo(x))');
+    $('open-comparison').click();
+    fill($('comparison-target'), '1');
+    fill($('comparison-new-value'), 'norte');
+    await compare();
+    assert(!$('comparison-results').hidden && $('comparison-status').textContent.includes('Cambia el valor de verdad'),
+      'Cambiar una salida compara Falso con Verdadero');
+    assert($('result-value').textContent === 'Falso' && $('result-reason').textContent.includes('(sur)'),
+      'La comparación conserva el resultado base y la interpretación original');
+    assert($('comparison-results').querySelectorAll('.evidence-changed').length === 2,
+      'Las instancias afectadas quedan identificadas en ambos escenarios');
+
+    $('load-example').click();
+    await evaluate('∃x Activa(x)');
+    $('open-comparison').click();
+    fill($('comparison-kind'), 'relation');
+    $('comparison-member').checked = false;
+    $('comparison-member').dispatchEvent(new Event('input', { bubbles: true }));
+    await compare();
+    assert($('comparison-status').textContent.includes('se mantiene'), 'Cambiar el testigo conserva la verdad');
+    assert($('comparison-results').textContent.includes('Testigo: x = norte')
+      && $('comparison-results').textContent.includes('Testigo: x = centro'), 'Los dos testigos proceden de evaluaciones reales');
+
+    $('load-example').click();
+    await evaluate();
+    $('open-comparison').click();
+    fill($('comparison-kind'), 'assignment');
+    fill($('comparison-new-value'), 'sur');
+    await compare();
+    assert($('comparison-status').textContent.includes('Cambia el valor de verdad'), 'Comparación de asignación libre');
+    fill($('formula'), '¬Activa(x)');
+    assert($('comparison-panel').hidden && $('result').hidden, 'Editar el contexto obliga a renovar la base');
+
+    $('load-example').click();
+    [...document.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Quitar fila 2 de Activa').click();
+    await evaluate('∃x Activa(x)');
+    $('open-comparison').click();
+    fill($('comparison-kind'), 'relation');
+    $('comparison-member').checked = false;
+    $('comparison-member').dispatchEvent(new Event('input', { bubbles: true }));
+    await compare();
+    assert(!$('comparison-errors').hidden && $('comparison-results').hidden && !$('result').hidden,
+      'Variante que vacía la relación se rechaza y preserva el original');
+    return { passed: checks.length, checks };
+  } finally {
+    window.confirm = oldConfirm;
+  }
+})()

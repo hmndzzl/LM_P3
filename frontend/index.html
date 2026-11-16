@@ -67,6 +67,7 @@
             <p class="help">Abre la fórmula de abajo para examinar las asignaciones y los pasos de la evaluación.</p>
             <p id="evidence-selection" class="help" role="status"></p>
             <div id="evidence"></div>
+            <button id="open-comparison" type="button">Comparar un cambio</button>
           </div>
         </section>
       </div>
@@ -101,6 +102,23 @@
         </details>
       </aside>
     </form>
+    <section id="comparison-panel" class="panel comparison-panel" aria-labelledby="comparison-title" hidden>
+      <h2 id="comparison-title">Comparar un cambio</h2>
+      <p class="help">Conserva el escenario evaluado y cambia una salida, una tupla o una asignación en una copia. Ambos escenarios se evalúan de nuevo.</p>
+      <div class="comparison-controls">
+        <label>Tipo de cambio<select id="comparison-kind">
+          <option value="function">Salida de función</option>
+          <option value="relation">Pertenencia a relación</option>
+          <option value="assignment">Asignación libre</option>
+        </select></label>
+        <label>Dato que modificar<select id="comparison-target"></select></label>
+        <div id="comparison-value"></div>
+      </div>
+      <button id="compare" class="primary" type="button">Evaluar variante</button>
+      <p id="comparison-status" role="status" aria-live="polite">Elige un único cambio.</p>
+      <ul id="comparison-errors" class="comparison-error-list" tabindex="-1" aria-label="Errores de la variante" hidden></ul>
+      <div id="comparison-results" class="comparison-results" hidden></div>
+    </section>
   </main>
   <footer>Evaluación finita local · Las respuestas se calculan con la interpretación ingresada.</footer>
 </body>
