@@ -1,0 +1,130 @@
+// Ejecutar en la página local abierta: agent-browser eval --stdin < tests/ui/smoke.js
+(async () => {
+  const $ = (id) => document.getElementById(id);
+  const checks = [];
+  const assert = (condition, message) => {
+    if (!condition) throw new Error(message);
+    checks.push(message);
+  };
+  const until = async (predicate) => {
+    const deadline = Date.now() + 5000;
+    while (!predicate()) {
+      if (Date.now() > deadline) throw new Error('Se agotó el tiempo de espera de la interfaz.');
+      await new Promise((resolve) => setTimeout(resolve, 20));
+    }
+  };
+  const fill = (element, value) => {
+    element.value = value;
+    element.dispatchEvent(new Event('input', { bubbles: true }));
+  };
+  const evaluate = async () => {
+    $('workspace').requestSubmit();
+    await until(() => !$('evaluate').disabled);
+  };
+  const oldConfirm = window.confirm;
+  const realFetch = window.fetch;
+  window.confirm = () => true;
+  try {
+    $('load-example').click();
+    await evaluate();
+    assert(!$('result').hidden && $('result-value').textContent === 'Verdadero', 'Átomo verdadero calculado desde el formulario');
+
+    $('assignment-0').value = 'sur';
+    $('assignment-0').dispatchEvent(new Event('change', { bubbles: true }));
+    assert($('result').hidden, 'Cambiar el entorno invalida el resultado anterior');
+    await evaluate();
+    assert($('result-value').textContent === 'Falso' && $('errors').hidden, 'Falso válido se distingue de un error');
+
+    const cases = [
+      ['∃x Activa(x)', 'Verdadero', 'Testigo: x = norte'],
+      ['∀x Activa(x)', 'Falso', 'Contraejemplo: x = sur'],
+      ['∀x (Activa(x) ∨ ¬Activa(x))', 'Verdadero', 'Comprobados 3 de 3'],
+      ['∃x (Activa(x) ∧ ¬Activa(x))', 'Falso', 'comprobados 3 de 3'],
+    ];
+    for (const [formula, value, reason] of cases) {
+      fill($('formula'), formula);
+      await evaluate();
+      assert(!$('result').hidden && $('result-value').textContent === value
+        && $('result-reason').textContent.includes(reason), `Evidencia real: ${formula}`);
+      assert($('environment').children.length === 0, 'Fórmula cerrada no pide asignaciones');
+    }
+    $('evidence').querySelector('details').open = true;
+    await until(() => $('evidence').querySelectorAll('details').length === 4);
+    assert($('evidence').querySelectorAll('details').length === 4, 'Comprobación exhaustiva permite abrir sus tres asignaciones');
+
+    fill($('formula'), 'Activa(𝑥) ∧ Activa(x,x)');
+    await evaluate();
+    assert(!$('errors').hidden && $('result').hidden, 'Error sintáctico bloquea resultado');
+    $('error-list').querySelector('a').click();
+    const editor = $('formula');
+    assert(editor.value.slice(editor.selectionStart, editor.selectionEnd) === 'Activa(x,x)',
+      'El error selecciona el rango correcto tras convertir Unicode a UTF-16');
+
+    fill($('formula'), 'Activa(z)');
+    await evaluate();
+    assert($('error-list').textContent.includes('Falta asignar z'), 'Variable libre pendiente se informa sin valor de verdad');
+    fill($('domain'), '');
+    await evaluate();
+    assert($('result').hidden && $('error-list').textContent.includes('D no puede estar vacío'), 'Dominio vacío rechazado desde el servidor real');
+
+    $('load-example').click();
+    const name = [...document.querySelectorAll('#symbols input[type=text]')].find((input) => input.value === 'Activa');
+    fill(name, '__proto__');
+    name.dispatchEvent(new Event('change', { bubbles: true }));
+    fill($('formula'), '__proto__(x)');
+    await evaluate();
+    assert(!$('result').hidden && $('result-value').textContent === 'Verdadero', 'Nombre personalizado conserva su tabla sin colisión con objetos JavaScript');
+
+    $('load-example').click();
+    const remove = [...document.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Quitar fila 3 de relevo');
+    remove.click();
+    await evaluate();
+    assert($('result').hidden && $('error-list').textContent.includes('Falta definir relevo(sur)'),
+      'Función parcial bloquea incluso una fórmula que no la usa');
+
+    $('load-example').click();
+    let release;
+    let waiting = false;
+    window.fetch = async (...args) => {
+      const response = await realFetch(...args);
+      if (String(args[0]).endsWith('/api/evaluate')) {
+        waiting = true;
+        await new Promise((resolve) => { release = resolve; });
+      }
+      return response;
+    };
+    $('workspace').requestSubmit();
+    await until(() => waiting);
+    fill($('formula'), '¬Activa(x)');
+    release();
+    await until(() => !$('evaluate').disabled);
+    assert($('result').hidden && $('result-state').textContent.includes('Cambiaste los datos'),
+      'Una respuesta tardía nunca reemplaza el contexto editado');
+
+    window.fetch = realFetch;
+    while ($('symbols').querySelector('button')) $('symbols').querySelector('button').click();
+    fill($('domain'), 'uno\ndos');
+    $('add-predicate').click();
+    const customName = $('symbols').querySelector('input[type=text]');
+    fill(customName, 'Listo');
+    customName.dispatchEvent(new Event('change', { bubbles: true }));
+    $('interpretations').querySelector('button').click();
+    fill($('interpretations').querySelector('input'), 'uno');
+    fill($('formula'), 'Listo(z)');
+    $('analyze').click();
+    await until(() => !$('analyze').disabled);
+    $('assignment-0').value = 'uno';
+    $('assignment-0').dispatchEvent(new Event('change', { bubbles: true }));
+    await evaluate();
+    assert(!$('result').hidden && $('result-value').textContent === 'Verdadero',
+      'Lenguaje, dominio, tupla y entorno propios se configuran desde cero');
+    $('interpretations').querySelector('button').click();
+    await evaluate();
+    assert($('result').hidden && $('error-list').textContent.includes('La relación Listo está vacía'),
+      'Relación vacía se rechaza sin perder la fórmula del usuario');
+    return { passed: checks.length, checks };
+  } finally {
+    window.confirm = oldConfirm;
+    window.fetch = realFetch;
+  }
+})()

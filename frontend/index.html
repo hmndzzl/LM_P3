@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Detective semántico · MM3032</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/css/tokens.css">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script type="module" src="/js/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#formula">Saltar al editor</a>
+  <header class="page-header">
+    <div><p class="eyebrow">MM3032 · Lógica Matemática</p><h1>Detective semántico</h1>
+      <p>Configura un mundo, evalúa una fórmula y examina sus razones.</p></div>
+    <button id="load-example" type="button">Cargar ejemplo</button>
+  </header>
+  <main>
+    <p id="example-note" class="notice" hidden>Ejemplo editable · Estaciones activas. Puedes cambiar todos sus datos.</p>
+    <section id="errors" class="error-summary" tabindex="-1" aria-labelledby="errors-title" hidden>
+      <h2 id="errors-title">Revisa la entrada</h2><ul id="error-list"></ul>
+    </section>
+    <form id="workspace" novalidate>
+      <div class="configuration">
+        <section class="panel" aria-labelledby="language-title">
+          <h2 id="language-title">1. Lenguaje</h2>
+          <p class="help">Declara los símbolos y cuántos argumentos recibe cada uno.</p>
+          <div class="table-scroll" tabindex="0" role="region" aria-label="Símbolos del lenguaje">
+            <table><thead><tr><th>Tipo</th><th>Nombre</th><th>Aridad</th><th>Acción</th></tr></thead>
+              <tbody id="symbols"></tbody></table>
+          </div>
+          <div class="actions"><button type="button" id="add-function">Añadir función</button>
+            <button type="button" id="add-predicate">Añadir predicado</button></div>
+        </section>
+        <section class="panel" aria-labelledby="interpretation-title">
+          <h2 id="interpretation-title">2. Interpretación</h2>
+          <label for="domain">Dominio D</label>
+          <textarea id="domain" rows="3" aria-describedby="domain-help" placeholder="norte&#10;centro&#10;sur" spellcheck="false"></textarea>
+          <p id="domain-help" class="help">Un elemento por línea. D debe ser no vacío. El orden se conserva.</p>
+          <p class="help">Añade las tuplas de cada relación y todas las salidas de cada función. Editar un símbolo conserva sus filas: revisa su aridad.</p>
+          <div id="interpretations"><p class="help">Declara un símbolo para introducir sus tablas.</p></div>
+        </section>
+      </div>
+      <div class="work-area">
+        <section class="panel" aria-labelledby="formula-title">
+          <h2 id="formula-title">3. Fórmula y entorno</h2>
+          <label for="formula">Fórmula</label>
+          <textarea id="formula" class="formula" rows="3" spellcheck="false" aria-describedby="formula-help" placeholder="∃x Activa(x)"></textarea>
+          <p id="formula-help" class="help">Puedes escribir símbolos o alias como ~, &amp;, |, -&gt;, &lt;-&gt;, Ax y Ex. Usa paréntesis para ampliar el alcance de un cuantificador.</p>
+          <button id="analyze" type="button">Identificar variables libres</button>
+          <p id="environment-note" class="help">Analiza la fórmula para preparar sus asignaciones.</p>
+          <div id="environment" class="environment"></div>
+          <div class="actions"><button id="evaluate" class="primary" type="submit">Evaluar fórmula</button></div>
+        </section>
+        <section class="panel result-panel" aria-labelledby="result-title" aria-busy="false">
+          <h2 id="result-title">4. Resultado y evidencia</h2>
+          <p id="result-state" role="status" aria-live="polite">Sin evaluar</p>
+          <p id="empty-result" class="help">Evalúa una fórmula para ver su resultado y explicación.</p>
+          <div id="result" hidden>
+            <p id="result-formula" class="formula evaluated-formula"></p>
+            <p id="result-value" class="truth"></p>
+            <p id="result-reason"></p>
+            <div id="evidence"></div>
+          </div>
+        </section>
+      </div>
+    </form>
+  </main>
+  <footer>Evaluación finita local · Las respuestas se calculan con la interpretación ingresada.</footer>
+</body>
+</html>

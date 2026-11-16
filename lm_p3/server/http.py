@@ -42,7 +42,7 @@ class LocalHandler(BaseHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-store')
         self.send_header('X-Content-Type-Options', 'nosniff')
         self.send_header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self'; "
-                         "frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
+                         "img-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
         self.send_header('Connection', 'close')
         self.end_headers()
         self.close_connection = True

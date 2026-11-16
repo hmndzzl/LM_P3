@@ -54,6 +54,16 @@ class LocalHTTPTests(unittest.TestCase):
         self.assertEqual(status, 200)
         self.assertEqual(result['free_variables'], ['y'])
 
+    def test_frontend_assets_are_served_without_exposing_project_files(self):
+        for path, expected_type in [('/', 'text/html'), ('/css/tokens.css', 'text/css'),
+                                    ('/css/styles.css', 'text/css'), ('/js/app.js', 'text/javascript'),
+                                    ('/js/api.js', 'text/javascript')]:
+            with self.subTest(path=path):
+                status, body, headers = self.request(path, method='GET')
+                self.assertEqual(status, 200)
+                self.assertTrue(headers['Content-Type'].startswith(expected_type))
+                self.assertGreater(len(body), 0)
+
     def test_invalid_data_never_calls_engine(self):
         data = sample_request()
         data['relations']['P'] = []
