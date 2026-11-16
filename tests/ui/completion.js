@@ -31,6 +31,10 @@
     $('example-select').value = id;
     $('load-example').click();
   };
+  const chooseChange = (kind) => {
+    const option = [...$('comparison-target').options].find((item) => item.dataset.kind === kind);
+    fill($('comparison-target'), option.value);
+  };
   const oldConfirm = window.confirm;
   const realFetch = window.fetch;
   window.confirm = () => true;
@@ -96,9 +100,7 @@
     load();
     await evaluate('∃x P(x)');
     $('open-comparison').click();
-    fill($('comparison-kind'), 'relation');
-    $('comparison-member').checked = false;
-    $('comparison-member').dispatchEvent(new Event('input', { bubbles: true }));
+    chooseChange('relation');
     await compare();
     assert($('comparison-status').textContent.includes('se mantiene'), 'Cambiar el testigo conserva la verdad');
     assert($('comparison-results').textContent.includes('Testigo: x: 1')
@@ -107,7 +109,7 @@
     load();
     await evaluate();
     $('open-comparison').click();
-    fill($('comparison-kind'), 'assignment');
+    chooseChange('assignment');
     fill($('comparison-new-value'), '3');
     await compare();
     assert($('comparison-status').textContent.includes('Cambia el valor de verdad'), 'Comparación de asignación libre');
@@ -118,9 +120,7 @@
     [...document.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Quitar fila 2 de P').click();
     await evaluate('∃x P(x)');
     $('open-comparison').click();
-    fill($('comparison-kind'), 'relation');
-    $('comparison-member').checked = false;
-    $('comparison-member').dispatchEvent(new Event('input', { bubbles: true }));
+    chooseChange('relation');
     await compare();
     assert(!$('comparison-errors').hidden && $('comparison-results').hidden && !$('result').hidden,
       'Variante que vacía la relación se rechaza y preserva el original');
@@ -128,10 +128,9 @@
     load();
     await evaluate();
     $('open-comparison').click();
-    await compare();
-    assert(!$('comparison-errors').hidden && $('comparison-errors').textContent.includes('exactamente un dato'),
-      'Una variante sin cambios no se presenta como comparación válida');
-    fill($('comparison-kind'), 'assignment');
+    chooseChange('assignment');
+    assert($('compare').disabled && $('comparison-status').textContent.includes('diferente al original'),
+      'Una variante sin cambios mantiene la comparación deshabilitada');
     fill($('comparison-new-value'), '3');
     let release;
     let waiting = false;
@@ -146,10 +145,10 @@
     };
     $('compare').click();
     await until(() => waiting);
-    fill($('comparison-new-value'), '1');
+    fill($('comparison-new-value'), '2');
     release();
     await until(() => delivered);
-    assert($('comparison-results').hidden && $('comparison-status').textContent.includes('Variante modificada'),
+    assert($('comparison-results').hidden && $('comparison-status').textContent.includes('Cambio listo'),
       'Una comparación tardía no sobrescribe una variante editada');
     window.fetch = realFetch;
 

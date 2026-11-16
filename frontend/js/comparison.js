@@ -20,91 +20,99 @@ function valueSelect(value, id) {
   return select;
 }
 
+function relationArguments() {
+  const target = targets[Number($('comparison-target').value)];
+  return Array.from({ length: target.arity }, (_, index) => $(`comparison-arg-${index}`).value);
+}
+
+function relationMember(target, args) {
+  return base.relations[target.symbol].some((row) => JSON.stringify(row) === JSON.stringify(args));
+}
+
 function invalidateVariant() {
   version += 1;
   $('comparison-results').hidden = true;
   $('comparison-errors').hidden = true;
-  $('comparison-status').textContent = 'Variante modificada. Evalúala para comparar.';
-  $('compare').disabled = !targets.length;
+  const target = targets[Number($('comparison-target').value)];
+  $('compare').disabled = !target;
+  if (!target) {
+    $('comparison-status').textContent = 'No hay datos disponibles para modificar.';
+    return;
+  }
+  if (target.kind === 'relation') {
+    const args = relationArguments();
+    const member = relationMember(target, args);
+    const tuple = `(${args.join(', ')})`;
+    $('comparison-before').textContent = `${tuple} ${member ? 'pertenece' : 'no pertenece'} a ${target.symbol}.`;
+    $('comparison-after').textContent = `${member ? 'Quitar' : 'Añadir'} ${tuple} ${member ? 'de' : 'a'} ${target.symbol}.`;
+  } else {
+    const value = $('comparison-new-value').value;
+    $('comparison-before').textContent = `${target.label}`;
+    $('comparison-after').textContent = `${target.symbol}${target.kind === 'function' ? `(${target.arguments.join(', ')}) →` : ':'} ${value}`;
+    $('compare').disabled = value === target.before;
+  }
+  $('comparison-status').textContent = $('compare').disabled
+    ? 'Selecciona un valor diferente al original.' : 'Cambio listo para comparar.';
 }
 
 function renderValue() {
   $('comparison-value').replaceChildren();
   const target = targets[Number($('comparison-target').value)];
   if (!target) return;
-  const kind = $('comparison-kind').value;
-  if (kind !== 'relation') {
-    const label = node('label', `Nuevo valor (en la base: ${target.before})`);
+  if (target.kind !== 'relation') {
+    const label = node('label', target.kind === 'function' ? 'Nueva imagen' : 'Nueva asignación');
     label.append(valueSelect(target.before, 'comparison-new-value'));
     $('comparison-value').append(label);
-    return;
+  } else {
+    const tupleFields = node('div');
+    tupleFields.className = 'tuple-row';
+    for (let index = 0; index < target.arity; index += 1) {
+      const label = node('label', `Componente ${index + 1} de la tupla`);
+      label.append(valueSelect(base.domain[0], `comparison-arg-${index}`));
+      tupleFields.append(label);
+    }
+    if (target.arity === 0) tupleFields.append(node('p', 'Tupla vacía ()'));
+    $('comparison-value').append(tupleFields);
   }
-  const tupleFields = node('div');
-  tupleFields.className = 'tuple-row';
-  for (let index = 0; index < target.arity; index += 1) {
-    const label = node('label', `Argumento ${index + 1}`);
-    const select = valueSelect(base.domain[0], `comparison-arg-${index}`);
-    select.addEventListener('change', syncMembership);
-    label.append(select);
-    tupleFields.append(label);
-  }
-  if (target.arity === 0) tupleFields.append(node('p', 'Tupla vacía ()'));
-  const label = node('label');
-  const checkbox = node('input');
-  checkbox.type = 'checkbox';
-  checkbox.id = 'comparison-member';
-  label.append(checkbox, document.createTextNode('La tupla pertenece a la relación en la variante'));
-  $('comparison-value').append(tupleFields, node('p'), label);
-  $('comparison-value').children[1].id = 'comparison-membership';
-  syncMembership();
-}
-
-function relationArguments() {
-  const target = targets[Number($('comparison-target').value)];
-  return Array.from({ length: target.arity }, (_, index) => $(`comparison-arg-${index}`).value);
-}
-
-function syncMembership() {
-  const target = targets[Number($('comparison-target').value)];
-  const key = JSON.stringify(relationArguments());
-  const member = base.relations[target.symbol].some((row) => JSON.stringify(row) === key);
-  $('comparison-member').checked = member;
-  $('comparison-membership').textContent = `En la base, esta tupla ${member ? 'pertenece' : 'no pertenece'} a ${target.symbol}.`;
+  invalidateVariant();
 }
 
 function renderTargets() {
-  const kind = $('comparison-kind').value;
-  if (kind === 'function') {
-    targets = base.functions.flatMap(([symbol]) => base.function_rows[symbol].map(([arguments_, before], index) =>
-      ({ symbol, arguments: arguments_, before, index, label: `${symbol}(${arguments_.join(', ')}) → ${before}` })));
-  } else if (kind === 'assignment') {
-    targets = base.assignments.map(([symbol, before], index) => ({ symbol, before, index, label: `${symbol}: ${before}` }));
-  } else {
-    targets = base.predicates.map(([symbol, arity]) => ({ symbol, arity, label: symbol }));
-  }
+  targets = [
+    ...base.functions.flatMap(([symbol]) => base.function_rows[symbol].map(([args, before], index) =>
+      ({ kind: 'function', symbol, arguments: args, before, index, label: `${symbol}(${args.join(', ')}) → ${before}` }))),
+    ...base.predicates.map(([symbol, arity]) => ({ kind: 'relation', symbol, arity, label: symbol })),
+    ...base.assignments.map(([symbol, before], index) => ({ kind: 'assignment', symbol, before, index, label: `${symbol}: ${before}` })),
+  ];
   $('comparison-target').replaceChildren();
-  targets.forEach((target, index) => $('comparison-target').append(new Option(target.label, String(index))));
-  if (!targets.length) $('comparison-target').append(new Option('No hay datos de este tipo', ''));
+  for (const [kind, title] of [['function', 'Imágenes de funciones'], ['relation', 'Relaciones'], ['assignment', 'Asignaciones libres']]) {
+    const group = node('optgroup');
+    group.label = title;
+    targets.forEach((target, index) => {
+      if (target.kind !== kind) return;
+      const option = new Option(target.label, String(index));
+      option.dataset.kind = kind;
+      group.append(option);
+    });
+    if (group.children.length) $('comparison-target').append(group);
+  }
+  if (!targets.length) $('comparison-target').append(new Option('Sin datos disponibles', ''));
   renderValue();
-  invalidateVariant();
 }
 
 function variantFromControls() {
   const variant = structuredClone(base);
-  const kind = $('comparison-kind').value;
   const target = targets[Number($('comparison-target').value)];
-  if (kind === 'function') {
+  if (target.kind === 'function') {
     variant.function_rows[target.symbol][target.index][1] = $('comparison-new-value').value;
-  } else if (kind === 'assignment') {
+  } else if (target.kind === 'assignment') {
     variant.assignments[target.index][1] = $('comparison-new-value').value;
   } else {
     const args = relationArguments();
-    const rows = variant.relations[target.symbol];
-    const index = rows.findIndex((row) => JSON.stringify(row) === JSON.stringify(args));
-    if ($('comparison-member').checked && index < 0) rows.push(args);
-    if (!$('comparison-member').checked) {
-      variant.relations[target.symbol] = rows.filter((row) => JSON.stringify(row) !== JSON.stringify(args));
-    }
+    if (relationMember(target, args)) {
+      variant.relations[target.symbol] = variant.relations[target.symbol]
+        .filter((row) => JSON.stringify(row) !== JSON.stringify(args));
+    } else variant.relations[target.symbol].push(args);
   }
   return variant;
 }
@@ -139,10 +147,10 @@ async function runComparison() {
     const target = change.kind === 'assignment' ? change.symbol : `${change.symbol}(${change.arguments.join(', ')})`;
     const before = change.kind === 'relation' ? (change.before ? 'pertenece' : 'no pertenece') : change.before;
     const after = change.kind === 'relation' ? (change.after ? 'pertenece' : 'no pertenece') : change.after;
-    $('comparison-status').textContent = `${target}: ${before} → ${after}. ${result.truth_changed ? 'Cambia el valor de verdad.' : 'El valor de verdad se mantiene.'} ${result.evidence_changes.length} instancias de evidencia modificadas.`;
+    $('comparison-status').textContent = `${target}: ${before} → ${after}. ${result.truth_changed ? 'Cambia el valor de verdad.' : 'El valor de verdad se mantiene.'} ${result.evidence_changes.length} pasos con cambios de evidencia.`;
     const changedIds = new Set(result.evidence_changes.map((change) => change.trace_id));
-    $('comparison-results').replaceChildren(scenarioPanel('Escenario base', result.before, changedIds),
-      scenarioPanel('Variante', result.after, changedIds));
+    $('comparison-results').replaceChildren(scenarioPanel('Original', result.before, changedIds),
+      scenarioPanel('Con el cambio', result.after, changedIds));
     $('comparison-results').hidden = false;
   } catch (error) {
     if (current !== version) return;
@@ -163,6 +171,8 @@ export function clearComparison() {
   $('comparison-panel').hidden = true;
   $('comparison-target').replaceChildren();
   $('comparison-value').replaceChildren();
+  $('comparison-before').textContent = '';
+  $('comparison-after').textContent = '';
   $('comparison-results').replaceChildren();
   $('comparison-results').hidden = true;
   $('comparison-errors').replaceChildren();
@@ -174,18 +184,17 @@ export function clearComparison() {
 export function setComparisonBase(data) {
   clearComparison();
   base = structuredClone(data);
-  $('comparison-kind').value = base.functions.length ? 'function' : 'relation';
   renderTargets();
 }
 
 export function initializeComparison() {
   $('open-comparison').addEventListener('click', () => {
     $('comparison-panel').hidden = false;
-    $('comparison-kind').focus();
+    $('comparison-target').focus();
     $('comparison-panel').scrollIntoView({ block: 'nearest' });
   });
-  $('comparison-kind').addEventListener('change', renderTargets);
   $('comparison-target').addEventListener('change', renderValue);
-  $('comparison-panel').addEventListener('input', invalidateVariant);
+  $('comparison-value').addEventListener('input', invalidateVariant);
+  $('comparison-value').addEventListener('change', invalidateVariant);
   $('compare').addEventListener('click', runComparison);
 }

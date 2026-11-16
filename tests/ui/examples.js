@@ -66,11 +66,12 @@
     load('pertenencia');
     await evaluate();
     $('open-comparison').click();
-    $('comparison-kind').value = 'assignment';
-    $('comparison-kind').dispatchEvent(new Event('change', { bubbles: true }));
+    $('comparison-target').value = [...$('comparison-target').options].find((option) => option.dataset.kind === 'assignment').value;
+    $('comparison-target').dispatchEvent(new Event('change', { bubbles: true }));
     assert($('comparison-target').selectedOptions[0].textContent === 'x: 1',
       'El comparador también usa dos puntos para las asignaciones');
     $('comparison-new-value').value = '3';
+    $('comparison-new-value').dispatchEvent(new Event('change', { bubbles: true }));
     $('compare').click();
     await until(() => !$('compare').disabled);
     assert(!$('comparison-results').hidden, 'La prueba de limpieza parte de una comparación real');

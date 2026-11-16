@@ -107,17 +107,16 @@
     </form>
     <section id="comparison-panel" class="panel comparison-panel" aria-labelledby="comparison-title" hidden>
       <h2 id="comparison-title">Comparar un cambio</h2>
-      <p class="help">Conserva el escenario evaluado y cambia una salida, una tupla o una asignación en una copia. Ambos escenarios se evalúan de nuevo.</p>
+      <p class="help">Selecciona un dato y revisa la modificación propuesta. Se calcularán ambos resultados sin alterar la interpretación ni el entorno originales.</p>
       <div class="comparison-controls">
-        <label>Tipo de cambio<select id="comparison-kind">
-          <option value="function">Salida de función</option>
-          <option value="relation">Pertenencia a relación</option>
-          <option value="assignment">Asignación libre</option>
-        </select></label>
-        <label>Dato que modificar<select id="comparison-target"></select></label>
+        <label>Dato por modificar<select id="comparison-target"></select></label>
         <div id="comparison-value"></div>
       </div>
-      <button id="compare" class="primary" type="button">Evaluar variante</button>
+      <dl class="comparison-change">
+        <div><dt>Original</dt><dd id="comparison-before"></dd></div>
+        <div><dt>Cambio propuesto</dt><dd id="comparison-after"></dd></div>
+      </dl>
+      <button id="compare" class="primary" type="button">Comparar resultados</button>
       <p id="comparison-status" role="status" aria-live="polite">Elige un único cambio.</p>
       <ul id="comparison-errors" class="comparison-error-list" tabindex="-1" aria-label="Errores de la variante" hidden></ul>
       <div id="comparison-results" class="comparison-results" hidden></div>

@@ -377,10 +377,37 @@ td input[type=number] {
   grid-column: 1 / -1;
 }
 
-.comparison-controls input[type=checkbox] {
-  width: 1.25rem;
-  min-height: 1.25rem;
-  margin-right: var(--space-2);
+.comparison-controls {
+  grid-template-columns: 1fr;
+  max-width: 48rem;
+}
+
+.comparison-change {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-block: var(--space-4);
+}
+
+.comparison-change > div {
+  flex: 1 1 16rem;
+  min-width: 0;
+  background: var(--surface-canvas);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-control);
+  padding: var(--space-3);
+  overflow-wrap: anywhere;
+}
+
+.comparison-change dt {
+  font-size: .875rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.comparison-change dd {
+  margin: 0;
+  font-weight: 600;
 }
 
 mark {

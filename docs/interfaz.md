@@ -119,13 +119,17 @@ se convierten por puntos de código, conservando Unicode. Los cuantificadores
 muestran testigo, contraejemplo o todas las comprobaciones necesarias. Los
 no visitados se identifican explícitamente: nunca se presentan como falsos.
 
-Tras una evaluación válida, Comparar un cambio abre tres alternativas:
+Tras una evaluación válida, Comparar un cambio permite seleccionar directamente
+un dato, agrupado en imágenes de funciones, relaciones o asignaciones libres.
+Se muestran Original y Cambio propuesto antes de ejecutar:
 
-- Salida funcional: elegir una fila y una salida distinta.
-- Pertenencia relacional: elegir predicado, componentes y pertenencia en la variante.
-- Asignación libre: elegir variable y un valor distinto.
+- Función o asignación: seleccionar un valor diferente al original.
+- Relación: seleccionar los componentes de la tupla. Si pertenece, se propone
+  quitarla; si no pertenece, se propone añadirla. No hay casilla de pertenencia.
 
-Evaluar variante vuelve a validar y calcular ambos escenarios mediante M1/M2.
+Comparar resultados vuelve a validar y calcular ambos escenarios mediante M1/M2.
+El botón queda deshabilitado cuando el valor seleccionado coincide con el original;
+no se anuncia una modificación inexistente.
 Se muestran el cambio exacto, la verdad y la evidencia antes/después. Los pasos
 con cambios de evidencia tienen etiqueta textual y borde. Si se vacía una relación,
 no cambia nada o cambian varios datos, se rechaza sin modificar la base. El
