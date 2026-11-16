@@ -10,6 +10,25 @@ La pantalla empieza sin datos ni valor de verdad. Cargar ejemplo es explícito y
 solicita confirmación si reemplaza trabajo. El ejemplo reducido Estaciones activas
 deriva del mundo didáctico de M2; no incluye Enlaza ni carga el corpus completo.
 
+### Recorrido principal y configuración
+
+Por petición del usuario, se priorizó la evaluación frente a la edición de tablas:
+en escritorio, fórmula/asignaciones/resultado quedan a la izquierda y el mundo a
+la derecha; en móvil se apilan en ese mismo orden. Esta decisión sustituye el
+orden de configuración primero de la propuesta visual inicial. Se mantienen los
+colores, controles y significado lógico acordados.
+
+El mundo muestra un resumen de los datos ingresados, no una certificación de
+validez. Lenguaje y Dominio y tablas son secciones plegables nativas: cerrarlas
+no borra datos. Los resúmenes muestran hasta cuatro elementos/filas por símbolo;
+el resto se conserva y puede consultarse abriendo la configuración.
+
+Para probar: Cargar ejemplo → Evaluar fórmula (Verdadero) → seleccionar sur para x
+→ Evaluar fórmula (Falso). La guía aparece junto al ejemplo y se retira al cambiar
+la fórmula o configuración, para no describir un contexto anterior. Cambiar solo
+la asignación mantiene la guía. Tras evaluar, el resultado se desplaza a la vista
+sin animación; el detalle de evidencia queda expandible.
+
 Se añaden funciones/predicados con nombre y aridad, elementos de D por línea y
 filas gráficas de argumentos/salidas. Cada fila relacional representa pertenencia.
 No se genera D^n: el usuario introduce las filas y M2 comprueba totalidad. Las filas
@@ -44,6 +63,11 @@ estado de edición. Los editores notifican altas/bajas mediante el evento input
 del formulario, igual que una edición normal. `errorTarget()` pertenece a los
 editores porque conoce los controles; se pasa a `showErrors()` para que el módulo
 de errores no necesite acceder a su estado interno. No hay dependencias circulares.
+
+`updateWorldSummary()` en `editors.js` actualiza el resumen al editar; no evalúa
+verdad. `revealField()` en `errors.js` abre los detalles que contienen el campo
+incorrecto, tanto al mostrar errores como al seguir su enlace. Así ningún error
+obliga a buscar un control escondido en la configuración.
 
 Orden de lectura recomendado: `app.js` → `api.js` → `editors.js` → `errors.js` →
 `evidence.js`. El CSS usa una propiedad por línea y secciones comentadas por
@@ -90,15 +114,20 @@ agent-browser --session lm-p3-m3 open http://127.0.0.1:8765
 agent-browser --session lm-p3-m3 eval --stdin < tests/ui/smoke.js
 ```
 
-La prueba modifica los formularios de esa sesión. Pasan 21 comprobaciones:
+La prueba modifica los formularios de esa sesión. Pasan 31 comprobaciones:
 configuración desde cero, verdadero/falso, cuatro casos cuantificados, evidencia
 completa, errores de dominio/relación/función/entorno, posiciones Unicode, nombres
-personalizados y descarte de una respuesta real retrasada. No se reemplaza el motor.
+personalizados y descarte de una respuesta real retrasada. También cubre la guía,
+resumen, configuración plegada y apertura/foco de campos con errores. No se
+reemplaza el motor.
 
 Se inspeccionaron capturas temporales a 1440×1000 y 320×800; a 320 px el ancho del
 documento es 320 y las tablas tienen desplazamiento local. Axe-core 4.12.1 no
 reportó infracciones ni comprobaciones incompletas para wcag2a/wcag2aa en el estado
-de resultado probado (25 comprobaciones aprobadas). No acredita conformidad total.
+de resultado probado (27 comprobaciones aprobadas). Se verificó además Cargar
+ejemplo → Enter → Verdadero, y cambiar el selector a sur → evaluar → Falso.
+Al reevaluar a 320×800, el borde inferior del resultado queda dentro de la vista.
+No acredita conformidad total ni sustituye pruebas con lector de pantalla.
 
 ## Pendiente de los próximos bloques
 

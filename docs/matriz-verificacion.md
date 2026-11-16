@@ -5,7 +5,7 @@
 Esta matriz compartida distingue evidencia Python ejecutada de verificaciones de producto y actividades humanas pendientes. No declara listo el proyecto ni sustituye revisión por otro integrante. Resultados/comandos en las evidencias de [M1](evidencias/miembro-1.md) y [M2](evidencias/miembro-2.md).
 
 Primer incremento de M3 disponible: formularios y transporte de análisis/evaluación,
-143 pruebas Python y 21 comprobaciones de navegador pasan. Procedimiento y límites
+143 pruebas Python y 31 comprobaciones de navegador pasan. Procedimiento y límites
 en [interfaz.md](interfaz.md). Los pendientes de aceptación global de la tabla
 incluyen todavía cobertura gráfica completa y revisión humana.
 

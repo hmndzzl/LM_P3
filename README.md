@@ -27,6 +27,10 @@ da Verdadero. Selecciona sur y reevalúa para obtener Falso. También puedes añ
 tus propios símbolos y filas. El dominio se introduce con un elemento por línea.
 Los símbolos se escriben con teclado; los botones se añadirán en el bloque 2.
 
+La fórmula, las asignaciones y el resultado ocupan la zona principal. El resumen
+del mundo permanece visible; para modificar sus datos abre **Lenguaje** o
+**Dominio y tablas**. Un error abre automáticamente la sección correspondiente.
+
 Recorrido del código y límites de esta entrega: [interfaz y servidor](docs/interfaz.md).
 
 ## Documentos para comenzar
