@@ -89,6 +89,7 @@
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     assert(Math.abs(nextTitle.getBoundingClientRect().top - position) < 2,
       'Alternar fichas conserva la posición de la cabecera pulsada al cerrar el editor anterior');
+    assert(document.activeElement === nextTitle, 'Alternar el editor conserva el foco en la cabecera activada');
     assert(nextTitle.querySelector('.edit-action').textContent.includes('En edición')
       && getComputedStyle(nextTitle).listStyleType === 'none', 'La cabecera muestra la acción de edición en lugar de una flecha');
     nextEditor.querySelector('.accept-symbol').click();

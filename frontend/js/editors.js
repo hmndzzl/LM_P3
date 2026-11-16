@@ -177,6 +177,7 @@ function renderSymbols() {
     title.append(titleLabel, action);
     let openingTop = null;
     title.addEventListener('click', () => {
+      title.focus({ preventScroll: true });
       openingTop = editor.open ? null : title.getBoundingClientRect().top;
     });
     const declaration = node('div');
