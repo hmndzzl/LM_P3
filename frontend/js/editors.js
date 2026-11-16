@@ -166,6 +166,10 @@ function renderSymbols() {
     editor.className = 'symbol-editor';
     const title = node('summary');
     title.id = `edit-title-${symbol.id}`;
+    let openingTop = null;
+    title.addEventListener('click', () => {
+      openingTop = editor.open ? null : title.getBoundingClientRect().top;
+    });
     const declaration = node('div');
     declaration.className = 'symbol-declaration';
     for (const field of ['name', 'arity']) {
@@ -230,7 +234,18 @@ function renderSymbols() {
       preview.hidden = editor.open;
       if (editor.open) {
         for (const other of document.querySelectorAll('.symbol-editor')) if (other !== editor) other.open = false;
+        if (openingTop !== null) {
+          const top = openingTop;
+          requestAnimationFrame(() => {
+            if (!editor.isConnected || !editor.open) return;
+            const offset = title.getBoundingClientRect().top - top;
+            const configuration = card.closest('.configuration');
+            if (getComputedStyle(configuration).overflowY === 'auto') configuration.scrollTop += offset;
+            else window.scrollBy(0, offset);
+          });
+        }
       }
+      openingTop = null;
     });
     card.append(editor, preview);
     const target = isConstant(symbol) ? 'constants-overview' : symbol.kind === 'function' ? 'functions-overview' : 'predicates-overview';

@@ -77,6 +77,18 @@
     assert(title.textContent === 'Función f · aridad 2'
       && functionCard.querySelector('caption').classList.contains('visually-hidden'),
       'La identificación del símbolo permanece en una única cabecera visible');
+    $('add-constant').click();
+    const constantEditor = $('constants-overview').querySelector('details');
+    await until(() => constantEditor.open && $('constants-overview').querySelector('.symbol-summary').hidden);
+    const nextEditor = $('functions-overview').querySelector('details');
+    const nextTitle = nextEditor.querySelector('summary');
+    nextTitle.scrollIntoView({ block: 'center' });
+    const position = nextTitle.getBoundingClientRect().top;
+    nextTitle.click();
+    await until(() => nextEditor.open && !constantEditor.open);
+    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    assert(Math.abs(nextTitle.getBoundingClientRect().top - position) < 2,
+      'Alternar fichas conserva la posición de la cabecera pulsada al cerrar el editor anterior');
     return { passed: checks.length, checks };
   } finally {
     window.confirm = oldConfirm;
