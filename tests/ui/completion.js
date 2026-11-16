@@ -58,7 +58,7 @@
     assert(editor.value === 'P))', 'Rehacer recupera la inserción lógica');
 
     load('funcion');
-    const functionTable = [...document.querySelectorAll('.interpretation')].find((section) => section.querySelector('h3').textContent.startsWith('f'));
+    const functionTable = [...document.querySelectorAll('.interpretation')].find((section) => section.closest('.symbol-card').querySelector('input[type=text]').value === 'f');
     assert(functionTable.querySelector('select').options.length === 4, 'Las tuplas usan selectores del dominio');
     assert(functionTable.querySelector('.help').textContent.includes('Faltan 0'), 'Conteo de salidas funcionales completas');
     fill($('domain'), 'a\nb');

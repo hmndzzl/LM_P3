@@ -60,6 +60,23 @@
     await until(() => !$('compare').disabled);
     assert([...$('comparison-results').querySelectorAll('.truth')].map((item) => item.textContent).join('|') === 'Verdadero|Falso',
       'Cambiar la constante compara resultados sin alterar el original');
+    $('example-select').value = 'funcion';
+    $('load-example').click();
+    const functionCard = $('functions-overview').querySelector('.symbol-card');
+    const editor = functionCard.querySelector('details');
+    const title = editor.querySelector('summary');
+    title.scrollIntoView({ block: 'center' });
+    const top = title.getBoundingClientRect().top;
+    title.click();
+    await until(() => editor.open && functionCard.querySelector('.symbol-summary').hidden);
+    assert(Math.abs(title.getBoundingClientRect().top - top) < 2,
+      'Abrir la ficha mantiene la cabecera en su posición y despliega los campos debajo');
+    assert(editor.querySelector('.symbol-editor-body .symbol-declaration')
+      && editor.querySelector('.symbol-editor-body .interpretation') && !editor.querySelector('h3'),
+      'La declaración y las entradas forman un único bloque sin repetir el título del símbolo');
+    assert(title.textContent === 'Función f · aridad 2'
+      && functionCard.querySelector('caption').classList.contains('visually-hidden'),
+      'La identificación del símbolo permanece en una única cabecera visible');
     return { passed: checks.length, checks };
   } finally {
     window.confirm = oldConfirm;

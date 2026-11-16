@@ -25,8 +25,9 @@ resultado, evidencia y comparación. Pide confirmación si hay trabajo cargado;
 una respuesta pendiente no restaura datos después de limpiar.
 Para datos propios, se utiliza una única sección Lenguaje e interpretación:
 Editar dominio modifica D; cada ficha agrupa la declaración y la interpretación
-de una constante, función o predicado. Editar un símbolo oculta temporalmente
-su resumen y abre sus campos en el mismo lugar. Solo se mantiene un editor abierto.
+de una constante, función o predicado. La cabecera de cada símbolo permanece antes de su resumen. Al abrirla, los campos
+se despliegan debajo sin desplazar esa cabecera ni repetir nombre y aridad entre
+la declaración y la tabla. Ambos forman un solo bloque de edición. Solo se mantiene un editor abierto.
 El dominio y las tablas conservan sus datos al plegar. En escritorio la configuración
 tiene desplazamiento propio; comparación y evidencia están juntas en la columna de
 trabajo, por lo que la altura de la configuración no empuja la comparación hacia abajo.

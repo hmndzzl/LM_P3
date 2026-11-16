@@ -30,7 +30,7 @@
     assert(rows.length === 3 && rows.every((args, index) => args.length === 5
       && args[0] === original[index][0] && args[1] === original[index][1] && args.slice(2).every((value) => value === '')),
     'Aumentar de dos a cinco conserva las parejas y añade tres argumentos vacíos');
-    const table = [...document.querySelectorAll('.interpretation')].find((section) => section.querySelector('h3').textContent.startsWith('R ·'));
+    const table = [...document.querySelectorAll('.interpretation')].find((section) => section.closest('.symbol-card').querySelector('input[type=text]').value === 'R');
     assert([...table.querySelectorAll('.tuple-row')].every((tuple) => tuple.querySelectorAll('select').length === 5),
       'Todas las filas muestran cinco selectores, también las filas existentes');
     assert(row.querySelector('.symbol-declaration input[type=text]') && row.querySelector('.symbol-declaration button'),

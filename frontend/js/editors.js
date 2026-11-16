@@ -61,7 +61,9 @@ function updateCoverage(symbol) {
 function interpretationTable(symbol, entries) {
   const table = node('table');
   table.className = 'interpretation-table';
-  table.append(node('caption', `${symbol.name || 'Sin nombre'} · ${symbol.kind === 'function' && symbol.arity === 0 ? 'constante' : `aridad ${symbol.arity ?? 'sin definir'}`}`));
+  const caption = node('caption', `${symbol.name || 'Sin nombre'} · ${symbol.kind === 'function' && symbol.arity === 0 ? 'constante' : `aridad ${symbol.arity ?? 'sin definir'}`}`);
+  caption.className = 'visually-hidden';
+  table.append(caption);
   const head = node('thead');
   const headings = node('tr');
   for (const title of isConstant(symbol) ? ['Elemento de D'] : symbol.kind === 'function' ? ['Argumentos', 'Imagen'] : ['Tupla']) {
@@ -137,7 +139,7 @@ export function updateWorldSummary() {
     preview.replaceChildren();
     appendPreview(preview, symbol.rows, (rows) => interpretationTable(symbol, rows));
     if (!symbol.rows.length) preview.append(node('p', 'Interpretación pendiente.'));
-    $(`edit-title-${symbol.id}`).textContent = `Editar ${symbolType(symbol).toLowerCase()} ${symbol.name || 'sin nombre'}`;
+    $(`edit-title-${symbol.id}`).textContent = `${symbolType(symbol)} ${symbol.name || 'sin nombre'}${isConstant(symbol) ? '' : ` · aridad ${symbol.arity ?? 'pendiente'}`}`;
   }
   for (const id of ['constants-overview', 'functions-overview', 'predicates-overview']) {
     $(id).parentElement.hidden = !$(id).children.length;
@@ -219,7 +221,10 @@ function renderSymbols() {
     interpretation.id = `table-${symbol.id}`;
     interpretation.className = 'interpretation';
     interpretation.tabIndex = -1;
-    editor.append(title, declaration, interpretation);
+    const body = node('div');
+    body.className = 'symbol-editor-body';
+    body.append(declaration, interpretation);
+    editor.append(title, body);
     editor.addEventListener('toggle', () => {
       if (!editor.isConnected) return;
       preview.hidden = editor.open;
@@ -227,7 +232,7 @@ function renderSymbols() {
         for (const other of document.querySelectorAll('.symbol-editor')) if (other !== editor) other.open = false;
       }
     });
-    card.append(preview, editor);
+    card.append(editor, preview);
     const target = isConstant(symbol) ? 'constants-overview' : symbol.kind === 'function' ? 'functions-overview' : 'predicates-overview';
     $(target).append(card);
   }
@@ -238,7 +243,6 @@ function renderInterpretations() {
   for (const symbol of symbols) {
     const section = $(`table-${symbol.id}`);
     section.replaceChildren();
-    section.append(node('h3', isConstant(symbol) ? `Interpretación de ${symbol.name || 'la constante'}` : `${symbol.name || 'Sin nombre'} · ${symbol.kind === 'function' ? 'función' : 'predicado'} · aridad ${symbol.arity ?? 'pendiente'}`));
     const coverage = node('p');
     coverage.id = `coverage-${symbol.id}`;
     coverage.className = 'help';
