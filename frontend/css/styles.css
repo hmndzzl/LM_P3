@@ -7,7 +7,7 @@ body {
   margin: 0;
   color: var(--text-primary);
   background: var(--surface-canvas);
-  font: 1rem/1.5 system-ui, sans-serif;
+  font: 1rem/1.5 "Segoe UI", Arial, sans-serif;
 }
 
 .page-header, main, footer {
@@ -24,7 +24,8 @@ body {
 }
 
 h1 {
-  font-size: 1.75rem;
+  font-size: 1.875rem;
+  letter-spacing: -.025em;
   margin: 0;
 }
 
@@ -76,6 +77,10 @@ p {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-panel);
   min-width: 0;
+}
+
+.work-area > .panel:first-child {
+  border-top: 3px solid var(--action-primary);
 }
 
 .start-guide {
@@ -171,6 +176,7 @@ button {
 button:hover {
   border-color: var(--action-primary);
   color: var(--action-primary);
+  background: var(--surface-canvas);
 }
 
 button.primary {
@@ -204,6 +210,19 @@ button:disabled {
 /* Fórmulas y tablas */
 .formula {
   font: 1.25rem/1.6 "Cambria Math", "DejaVu Sans", serif;
+}
+
+.symbol-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block: var(--space-2) var(--space-3);
+}
+
+.symbol-toolbar button {
+  min-width: 2.75rem;
+  font-size: 1.25rem;
+  padding: var(--space-1) var(--space-2);
 }
 
 .evaluated-formula {
@@ -263,8 +282,13 @@ td input[type=number] {
   min-width: 0;
 }
 
-.tuple-row label input {
+.tuple-row label select {
   margin-top: var(--space-1);
+}
+
+.tuple-row {
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .environment {
@@ -316,7 +340,7 @@ td input[type=number] {
   margin-bottom: var(--space-6);
 }
 
-.error-summary a, .field-error {
+.error-summary a, .field-error, .comparison-error-list {
   color: var(--state-error);
 }
 
@@ -414,3 +438,4 @@ footer {
   }
 
 }
+

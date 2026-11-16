@@ -21,6 +21,39 @@ function domainValues() {
   return $('domain').value === '' ? [] : $('domain').value.split('\n');
 }
 
+function domainSelect(value, id, onChange) {
+  const select = node('select');
+  select.id = id;
+  select.append(new Option('Elegir elemento', ''));
+  for (const element of [...new Set(domainValues())]) {
+    if (element !== '') select.append(new Option(element, element));
+  }
+  if (value && !domainValues().includes(value)) select.append(new Option(`${value} (fuera de D)`, value));
+  select.value = value;
+  select.addEventListener('input', () => onChange(select.value));
+  return select;
+}
+
+function updateCoverage(symbol) {
+  const status = $(`coverage-${symbol.id}`);
+  if (symbol.kind === 'predicate') {
+    status.textContent = `${symbol.rows.length} tuplas ingresadas. La relación debe contener al menos una.`;
+    return;
+  }
+  const domain = new Set(domainValues().filter((value) => value !== ''));
+  const expected = domain.size ** symbol.arity;
+  if (!Number.isSafeInteger(expected)) {
+    status.textContent = 'La tabla requiere demasiadas combinaciones para contarlas aquí. Reduce el dominio o la aridad.';
+    return;
+  }
+  const defined = new Set(symbol.rows.filter((row) => row.arguments.length === symbol.arity
+    && row.arguments.every((value) => domain.has(value)) && domain.has(row.output))
+    .map((row) => JSON.stringify(row.arguments))).size;
+  status.textContent = domain.size && Number.isInteger(symbol.arity) && symbol.arity >= 0
+    ? `Salidas definidas: ${defined}. Faltan ${Math.max(0, expected - defined)} de ${expected} combinaciones. Se comprobarán conflictos al evaluar.`
+    : 'Introduce un dominio y una aridad válidos para comprobar las salidas pendientes.';
+}
+
 export function updateWorldSummary() {
   const domain = domainValues();
   const preview = (values) => values.slice(0, 4).join(', ') + (values.length > 4 ? '…' : '');
@@ -98,26 +131,29 @@ function renderInterpretations() {
     section.id = `table-${symbol.id}`;
     section.tabIndex = -1;
     section.append(node('h3', `${symbol.name || 'Sin nombre'} · ${symbol.kind === 'function' ? 'función' : 'predicado'} · aridad ${symbol.arity ?? 'pendiente'}`));
+    const coverage = node('p');
+    coverage.id = `coverage-${symbol.id}`;
+    coverage.className = 'help';
+    section.append(coverage);
+    section.addEventListener('input', () => updateCoverage(symbol));
     if (!symbol.rows.length) section.append(node('p', 'No hay filas. Añade al menos una.'));
     symbol.rows.forEach((entry, index) => {
       const row = node('div');
       row.className = 'tuple-row';
+      row.id = `row-${symbol.id}-${index}`;
+      row.tabIndex = -1;
       entry.arguments.forEach((value, argumentIndex) => {
         const label = node('label', `Argumento ${argumentIndex + 1}`);
-        const input = node('input');
-        input.id = `tuple-${symbol.id}-${index}-${argumentIndex}`;
-        input.value = value;
-        input.addEventListener('input', () => { entry.arguments[argumentIndex] = input.value; });
+        const input = domainSelect(value, `tuple-${symbol.id}-${index}-${argumentIndex}`,
+          (selected) => { entry.arguments[argumentIndex] = selected; });
         label.append(input);
         row.append(label);
       });
       if (!entry.arguments.length) row.append(node('span', 'Tupla vacía ()'));
       if (symbol.kind === 'function') {
         const label = node('label', 'Salida');
-        const input = node('input');
-        input.id = `output-${symbol.id}-${index}`;
-        input.value = entry.output;
-        input.addEventListener('input', () => { entry.output = input.value; });
+        const input = domainSelect(entry.output, `output-${symbol.id}-${index}`,
+          (selected) => { entry.output = selected; });
         label.append(input);
         row.append(label);
       }
@@ -138,8 +174,8 @@ function renderInterpretations() {
     add.type = 'button';
     add.addEventListener('click', () => {
       // No se genera D^n: el usuario introduce las filas y M2 comprueba totalidad.
-      if (!Number.isInteger(symbol.arity) || symbol.arity < 0 || symbol.arity > 32 || symbol.rows.length >= 200) {
-        showErrors([{ message: 'Para este editor usa aridad de 0 a 32 y hasta 200 filas por símbolo.', field: `language.${symbol.kind === 'function' ? 'functions' : 'predicates'}.${symbol.name}` }], errorTarget);
+      if (!Number.isInteger(symbol.arity) || symbol.arity < 0 || symbol.arity > 32 || symbol.rows.length >= 2000) {
+        showErrors([{ message: 'Para este editor usa aridad de 0 a 32 y hasta 2000 filas por símbolo.', field: `language.${symbol.kind === 'function' ? 'functions' : 'predicates'}.${symbol.name}` }], errorTarget);
         return;
       }
       symbol.rows.push({ arguments: Array(symbol.arity).fill(''), output: '' });
@@ -150,6 +186,7 @@ function renderInterpretations() {
     });
     section.append(add);
     $('interpretations').append(section);
+    updateCoverage(symbol);
   }
 }
 
@@ -192,10 +229,12 @@ export function renderEnvironment(names) {
   });
 }
 
-export function errorTarget(field = '') {
+export function errorTarget(field = '', issue = {}) {
   if (field === 'formula') return $('formula');
   if (field.startsWith('environment')) {
-    const index = field.startsWith('environment[') ? Number(field.match(/\[(\d+)\]/)?.[1]) : freeVariables.indexOf(field.slice(12));
+    const sentNames = freeVariables.filter((name) => assignments.get(name));
+    const name = field.startsWith('environment[') ? sentNames[Number(field.match(/\[(\d+)\]/)?.[1])] : field.slice(12);
+    const index = freeVariables.indexOf(name);
     return $(`assignment-${index}`) || $('analyze');
   }
   if (field.startsWith('domain')) return $('domain');
@@ -205,11 +244,22 @@ export function errorTarget(field = '') {
     if (field.startsWith(prefix)) {
       const index = Number(field.slice(prefix.length).match(/^\[(\d+)\]/)?.[1]);
       const symbol = Number.isInteger(index) ? group[index] : group.find((item) => field === `${prefix}.${item.name}`);
-      return symbol ? $(`symbol-${symbol.id}-name`) : $('add-predicate');
+      return symbol ? $(`symbol-${symbol.id}-${issue.code === 'invalid_arity' ? 'arity' : 'name'}`) : $('add-predicate');
     }
     for (const symbol of group) {
       const tableKey = kind === 'function' ? 'functions' : 'relations';
-      if (field === `${tableKey}.${symbol.name}` || field.startsWith(`${tableKey}.${symbol.name}[`)) return $(`table-${symbol.id}`);
+      const prefix = `${tableKey}.${symbol.name}`;
+      if (field === prefix || field.startsWith(`${prefix}[`)) {
+        const suffix = field.slice(prefix.length);
+        const row = suffix.match(/^\[(\d+)\]/)?.[1];
+        const argument = suffix.match(/(?:\.arguments)?\[(\d+)\]$/)?.[1];
+        if (row !== undefined) {
+          if (suffix.endsWith('.output')) return $(`output-${symbol.id}-${row}`);
+          if (argument !== undefined && suffix !== `[${row}]`) return $(`tuple-${symbol.id}-${row}-${argument}`);
+          return $(`row-${symbol.id}-${row}`) || $(`table-${symbol.id}`);
+        }
+        return $(`table-${symbol.id}`);
+      }
     }
   }
   return $('evaluate');
@@ -217,6 +267,10 @@ export function errorTarget(field = '') {
 
 export function initializeEditors() {
   updateWorldSummary();
+  $('domain').addEventListener('change', () => {
+    renderInterpretations();
+    renderEnvironment(freeVariables);
+  });
   for (const kind of ['function', 'predicate']) {
     $(`add-${kind}`).addEventListener('click', () => {
       addSymbol(kind);
@@ -237,6 +291,10 @@ export function loadExample() {
     { arguments: ['sur'], output: 'norte' },
   ]);
   addSymbol('predicate', 'Activa', 1, [{ arguments: ['norte'] }, { arguments: ['centro'] }]);
+  addSymbol('predicate', 'Enlaza', 2, [
+    { arguments: ['norte', 'centro'] }, { arguments: ['centro', 'sur'] },
+    { arguments: ['sur', 'norte'] },
+  ]);
   assignments.set('x', 'centro');
   renderEnvironment(['x']);
   $('environment-note').textContent = 'Variables libres: x. Ejemplo con x = centro.';

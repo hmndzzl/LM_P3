@@ -23,6 +23,7 @@ STATIC_FILES = {
     '/js/editors.js': ('js/editors.js', 'text/javascript; charset=utf-8'),
     '/js/errors.js': ('js/errors.js', 'text/javascript; charset=utf-8'),
     '/js/evidence.js': ('js/evidence.js', 'text/javascript; charset=utf-8'),
+    '/js/formula.js': ('js/formula.js', 'text/javascript; charset=utf-8'),
 }
 
 
@@ -124,7 +125,7 @@ def main() -> None:
     args = parser.parse_args()
     with make_server(args.port) as server:
         address = f'http://127.0.0.1:{server.server_port}'
-        print(f'Detective semántico: {address}', flush=True)
+        print(f'Evaluador semántico: {address}', flush=True)
         print('Para cerrar, presiona Ctrl+C.', flush=True)
         if not args.no_browser:
             webbrowser.open(address)

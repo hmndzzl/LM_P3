@@ -28,7 +28,7 @@ export function showErrors(issues, findTarget) {
   $('empty-result').hidden = false;
   $('result-state').textContent = 'No evaluado. Revisa los mensajes.';
   issues.forEach((issue, index) => {
-    const target = findTarget(issue.field);
+    const target = findTarget(issue.field, issue) || $('evaluate');
     revealField(target);
     const item = node('li');
     const link = node('a', issue.message);

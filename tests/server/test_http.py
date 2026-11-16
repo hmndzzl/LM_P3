@@ -58,7 +58,8 @@ class LocalHTTPTests(unittest.TestCase):
         for path, expected_type in [('/', 'text/html'), ('/css/tokens.css', 'text/css'),
                                     ('/css/styles.css', 'text/css'), ('/js/app.js', 'text/javascript'),
                                     ('/js/api.js', 'text/javascript'), ('/js/editors.js', 'text/javascript'),
-                                    ('/js/errors.js', 'text/javascript'), ('/js/evidence.js', 'text/javascript')]:
+                                    ('/js/errors.js', 'text/javascript'), ('/js/evidence.js', 'text/javascript'),
+                                    ('/js/formula.js', 'text/javascript')]:
             with self.subTest(path=path):
                 status, body, headers = self.request(path, method='GET')
                 self.assertEqual(status, 200)

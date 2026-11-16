@@ -123,7 +123,7 @@
     fill(customName, 'Listo');
     customName.dispatchEvent(new Event('change', { bubbles: true }));
     $('interpretations').querySelector('button').click();
-    fill($('interpretations').querySelector('input'), 'uno');
+    fill($('interpretations').querySelector('select'), 'uno');
     fill($('formula'), 'Listo(z)');
     $('analyze').click();
     await until(() => !$('analyze').disabled);

@@ -4,6 +4,7 @@ import {
 } from './editors.js';
 import { clearErrors, showErrors } from './errors.js';
 import { showResult } from './evidence.js';
+import { initializeFormulaEditor } from './formula.js';
 
 const $ = (id) => document.getElementById(id);
 let revision = 0;
@@ -48,7 +49,8 @@ async function run(evaluate) {
       $('result-state').textContent = 'Fórmula analizada. Aún no evaluada.';
       return;
     }
-    const response = await request('evaluate', inputData(revision));
+    const evaluatedData = inputData(revision);
+    const response = await request('evaluate', evaluatedData);
     if (version !== revision || response.revision !== version) return;
     showResult(data.formula, response.evaluation);
   } catch (error) {
@@ -68,6 +70,7 @@ $('workspace').addEventListener('change', (event) => {
 $('workspace').addEventListener('submit', (event) => { event.preventDefault(); run(true); });
 $('analyze').addEventListener('click', () => run(false));
 initializeEditors();
+initializeFormulaEditor();
 $('load-example').addEventListener('click', () => {
   if (dirty && !confirm('Se reemplazarán tus datos por el ejemplo. ¿Continuar?')) return;
   invalidate();
