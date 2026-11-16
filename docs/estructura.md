@@ -104,9 +104,10 @@ Todos los módulos Python anteriores ──> models
 - Comentarios de código en español; usar `#` para comentarios de una línea, sin docstrings de una línea. Funciones públicas tipadas y contrato documentado. Sin estado global mutable de interpretación/entorno: cada solicitud tiene su contexto.
 - HTML, CSS y JS en archivos separados. CSS consume tokens comunes; no copiar el estilo del laboratorio. En JS emplear módulos nativos cuando se creen los archivos y mantener compatibilidad con la política de contenido del servidor.
 - Ejemplos en `examples/` describen escenarios completos; fixtures de resultados esperados y casos de borde van en `tests/fixtures/`. Documentar su formato en contratos antes de llenarlos. No compartir un archivo mutable como almacenamiento de sesión.
-- El corpus M2-04 usa `examples/red_estaciones.json` y el ejecutable `examples/corpus.py`; sus expectativas estructuradas están separadas en `tests/fixtures/corpus_expectations.json`. Guías y revisión en `docs/casos-didacticos.md`, `docs/defensa-m2.md`, `docs/revision-m3.md` y `docs/matriz-verificacion.md`. No añade módulos al producto ni fija el codec de M3.
+- El corpus M2-04 usa `examples/red_estaciones.json` y `examples/corpus.py`; sus expectativas están separadas en `tests/fixtures/corpus_expectations.json`. Soluciones y preparación de defensa en `docs/casos-didacticos.md`; revisión gráfica pendiente en la matriz general `docs/matriz-verificacion.md`.
 - Pruebas Python `test_*.py`, basadas inicialmente en `unittest`. No usar esos nombres para scripts de demo. Las pruebas de interfaz deben estar claramente diferenciadas de pruebas de datos/serialización.
 - Evidencia en `docs/evidencias/` con ticket, procedimiento, resultado real y limitaciones; no incluir entornos virtuales, secretos ni archivos generados masivos. No afirmar que una captura es prueba de todo el flujo.
+- No se exige un Markdown por ticket. M2 conserva gramática en `docs/sintaxis.md`, validación en `docs/validacion.md`, casos/defensa en `docs/casos-didacticos.md` y una evidencia única en `docs/evidencias/miembro-2.md`, con secciones por entrega. La matriz de requisitos es compartida por el proyecto. Consolidar documentos no elimina criterios, evidencia ni revisión humana.
 
 ## Comandos y estado real
 

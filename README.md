@@ -13,8 +13,9 @@ El motor de M1 y los módulos de sintaxis/validación integral de M2 están impl
 - [Motor semántico](docs/semantica.md): API, demostración ejecutable, límites y guía de defensa.
 - [Sintaxis de M2](docs/sintaxis.md): gramática, alias, alcance, nombres, errores y API para M1/M3.
 - [Validación de M2](docs/validacion.md): builders por filas, totalidad, duplicados, entorno y errores agrupados.
-- [Corpus didáctico M2-04](docs/casos-didacticos.md): soluciones razonadas y 24 casos ejecutables de Red de estaciones.
-- [Defensa M2](docs/defensa-m2.md), [revisión de M3](docs/revision-m3.md) y [matriz de verificación](docs/matriz-verificacion.md): materiales preparados, con actividades humanas/UI pendientes.
+- [Casos y defensa M2](docs/casos-didacticos.md): soluciones razonadas, 24 casos ejecutables y preparación de exposición.
+- [Evidencia M2](docs/evidencias/miembro-2.md): resultados reproducibles de las cuatro entregas en un solo informe.
+- [Matriz general de verificación](docs/matriz-verificacion.md): requisitos y revisión pendiente de M3.
 
 - [Bases transferidas](bases/README.md) y [manifiesto de integridad](bases/MANIFEST.json).
 
@@ -48,7 +49,7 @@ python -X utf8 -B -m examples.sintaxis
 
 En Windows también se puede invocar `.\.venv\Scripts\python.exe` directamente. `-X utf8` permite imprimir símbolos lógicos en consolas cuyo valor predeterminado es CP1252. No hay dependencias externas que instalar ni se requiere `requirements.txt`.
 
-Esta segunda demo sí analiza texto con `syntax.parser.parse`, proporciona un entorno explícito en el caso abierto y evalúa con el motor real. El servicio utiliza `validate_input` de M2 por defecto, que comprueba el contexto completo y certifica con `prepare_input` de M1. Consultar [evidencia inicial de M2](docs/evidencias/miembro-2.md).
+Esta segunda demo analiza texto con `syntax.parser.parse`, proporciona un entorno explícito en el caso abierto y evalúa con el motor real. El servicio utiliza `validate_input` de M2 por defecto, que comprueba el contexto completo y certifica con `prepare_input` de M1.
 
 Para comprobar filas externas y errores múltiples:
 
@@ -56,7 +57,7 @@ Para comprobar filas externas y errores múltiples:
 python -X utf8 -B -m examples.validacion
 ```
 
-Esta demo pasa por los builders reutilizables de M2 antes de crear mapas/modelos, muestra una evaluación válida y rechaza tablas vacías/salidas contradictorias sin asignar verdad. Ver [evidencia M2-03](docs/evidencias/miembro-2-validacion.md). No acredita integración HTTP ni pruebas de interfaz.
+Esta demo pasa por los builders de M2 antes de crear mapas/modelos, muestra una evaluación válida y rechaza tablas vacías/salidas contradictorias sin asignar verdad. No acredita integración HTTP ni pruebas de interfaz.
 
 ## Corpus, comparación y preparación de defensa
 
@@ -69,4 +70,4 @@ python -X utf8 -B -m examples.corpus --case E03
 
 El corpus contiene 10 fórmulas, 3 comparaciones de un cambio y 11 entradas inválidas con reparaciones comprobadas. Q01–Q04 cubren los cuatro resultados cuantificados; C02 conserva la verdad y cambia el testigo. Toda salida se calcula con el código real, sin leer las expectativas de pruebas. Los ejemplos no modifican su mundo base.
 
-La guía de defensa y la ficha de revisión de M3 están listas para el equipo; no se han realizado enseñanza mutua, revisión humana, uso con compañeros ni pruebas de una pantalla todavía inexistente. Consultar [evidencia M2-04](docs/evidencias/miembro-2-corpus.md). Esta entrega no marca los tickets globalmente aceptados.
+La preparación de defensa y la revisión de M3 se encuentran en la guía de casos y la matriz general. Enseñanza mutua, revisión humana, uso con compañeros y pruebas gráficas siguen pendientes. Esta entrega no marca los tickets globalmente aceptados.

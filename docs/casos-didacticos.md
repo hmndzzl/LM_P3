@@ -109,4 +109,21 @@ Todos parten de `Activa(x)` con x=centro, salvo el reemplazo de fórmula indicad
 | E10 | Escribir `Activa(x` | `missing_parenthesis`, `formula` | Cerrar el paréntesis |
 | E11 | Quitar toda la tabla de relevo | `missing_interpretation`, `functions.relevo` | Restaurar la tabla total sin borrar la declaración |
 
-El catálogo más amplio de formas, declaraciones, duplicados y límites está en [validacion.md](validacion.md) y sus pruebas. Para la revisión gráfica, usar [revision-m3.md](revision-m3.md).
+El catálogo más amplio de formas, declaraciones, duplicados y límites está en [validacion.md](validacion.md) y sus pruebas. La revisión gráfica pendiente se registra en la [matriz general](matriz-verificacion.md#revisión-de-la-interfaz-pendiente).
+
+## Preparación de defensa
+
+Material para practicar; no acredita enseñanza ni ensayos humanos. Cada integrante debe explicar los tres módulos. Antes de ejecutar, predecir variables libres, verdad y evidencia y contrastarlas después con el informe calculado.
+
+| Tema | Pregunta | Referencia para responder |
+| --- | --- | --- |
+| Sintaxis y alcance | ¿Por qué S02 es verdadero y S03 falso? | AST distinto por alcance mínimo; x libre=sur solo en S02. Explicar precedencia, asociación y alias con sintaxis.md |
+| Variables y términos | ¿Qué conserva S04? ¿Un elemento de D es una constante? | Cada cuantificador conserva su alcance y se restaura la asignación exterior. Constante requiere función declarada de aridad cero |
+| Validación | ¿Por qué E03 bloquea una fórmula sin relevo? | Toda la interpretación debe ser válida. Explicar totalidad por claves únicas de D^n y conflictos perdidos por un dict prematuro |
+| Semántica | ¿Por qué Q03/Q04 recorren todo D y Q01 puede parar? | Universal verdadero/existencial falso requieren cobertura completa. Un testigo interior de Q03 no prueba todo el universal |
+| Evidencia | ¿No visitado significa Falso? ¿complete significa Verdadero? | Q01 no visita centro aunque está activa; Q02 es falso con complete=true. Distinguir node_id de trace_id en Q03 |
+| Aporte e interfaz | ¿Qué enseña C02? ¿Cómo evitar resultados obsoletos? | Cambia el testigo sin cambiar verdad; M3 debe mostrar ambas evidencias y usar revisión de contexto. Observar utilidad con uso real |
+
+Guion: configurar el mundo → Q01/Q02 → abrir asignaciones de Q03 o Q04 → C01/C02 → E03 y reparación. Repartir sintaxis, semántica e interacción entre los tres y ajustar duración a lo confirmado por el docente. Para profundizar, usar S02/S03 y S04, explicar límites sin verdad parcial y distinguir justificación R6 de navegación/comparación creativa.
+
+M1 debe contrastar soluciones, M2 revisar M3 y los tres realizar enseñanza, preguntas aleatorias e instalación limpia. Registrar participantes, fecha real, dudas, correcciones y evidencia después de la actividad. No atribuir sesiones, mejoras de aprendizaje ni aportes de coevaluación no realizados. La defensa vale 30 puntos; el ticket de competencia fija un techo y no garantiza nota.

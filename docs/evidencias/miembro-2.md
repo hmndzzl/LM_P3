@@ -1,49 +1,57 @@
-# Evidencia de implementación — Miembro 2
+# Evidencia consolidada — Miembro 2
 
-Este archivo conserva la evidencia de la primera entrega M2-01/02 (79 pruebas). El estado posterior de M2-03 está registrado en [miembro-2-validacion.md](miembro-2-validacion.md); los pendientes descritos abajo corresponden a aquel corte inicial.
+## Entorno y evolución de las entregas
 
-## Alcance y entorno
+Comprobaciones registradas el 15 de noviembre de 2026, con Python 3.11.9 del entorno `.venv`, sobre Windows y en la rama humana `feature/sintaxis-validacion`. Solo se ejecutó M2 en ese intérprete/sistema; la comprobación de sintaxis compatible con 3.10 no equivale a ejecutarlo en 3.10.
 
-Fecha: 15 de noviembre de 2026. Rama existente preparada por el usuario: `feature/sintaxis-validacion`. Intérprete usado: `C:\UVG\logica\LM_P3\.venv\Scripts\python.exe`, Python 3.11.9, Windows. No se instalaron dependencias ni se hicieron staging, commits, push o cambios de rama.
+| Entrega | Suite completa registrada | Alcance |
+| --- | ---: | --- |
+| M2-01/02 | 79 pruebas, sin omisiones | Lexer/parser, variables libres e integración de texto con M1 |
+| M2-03 | 118 pruebas, sin omisiones | 39 nuevas: normalización por filas, validación integral y bloqueo del motor |
+| M2-04, parte ejecutable | 130 pruebas, sin omisiones | 12 nuevas: corpus, evidencia anidada, comparaciones, reparaciones y CLI |
 
-Se implementaron lexer/parser de términos y fórmulas, análisis de variables libres, validación de declaraciones de lenguaje y errores sintácticos localizados. Se reutilizan los modelos y el servicio de M1. Los operadores del AST son canónicos aunque el texto contenga alias. Las pruebas nuevas de integración usan el parser real; no adaptadores que devuelvan AST prefijados.
+Se conservan las 44 pruebas iniciales de M1 y su oráculo de 900 evaluaciones independientes. Estos resultados no acreditan revisión humana ni una interfaz. Este archivo unifica los tres informes anteriores; la reorganización documental no constituye una nueva ejecución de pruebas.
 
-## Comprobaciones ejecutadas
+## Procedimiento reproducible
 
-Desde `C:\UVG\logica\LM_P3`:
+Desde la raíz de LM_P3:
 
 ```powershell
-.\.venv\Scripts\python.exe -X utf8 -B -m unittest discover -s tests -t .
+.\.venv\Scripts\python.exe -X utf8 -B -m unittest discover -s tests -t . -v
 .\.venv\Scripts\python.exe -X utf8 -B -m examples.sintaxis
+.\.venv\Scripts\python.exe -X utf8 -B -m examples.validacion
+.\.venv\Scripts\python.exe -X utf8 -B -m examples.corpus
+.\.venv\Scripts\python.exe -X utf8 -B -m examples.corpus --case C02 --json
 git diff --check
-git diff --name-only -- bases
 ```
 
-| Comprobación | Resultado observado |
+Las entregas registraron `git diff --check` sin errores de whitespace y ninguna modificación de `bases/`. La consola requiere UTF-8 para imprimir símbolos lógicos. No se instalaron dependencias ni se hicieron staging, commits, push o cambios de rama por IA.
+
+## Comprobaciones por ticket
+
+| Ticket | Evidencia reproducible y resultado observado |
 | --- | --- |
-| Suite propia completa | 79 pruebas pasan, sin omisiones; incluye las 44 pruebas previas de M1 y su oráculo de 900 evaluaciones |
-| Árboles manuales | Términos anidados, argumentos múltiples, conectivos y cuantificadores producen el AST esperado |
-| Notación | Los siete símbolos oficiales y cada alias producen operadores canónicos; `<->` se reconoce completo antes de `->` |
-| Precedencia/asociatividad | Todos los niveles, implicación a la derecha, otros binarios a la izquierda y paréntesis explícitos |
-| Alcance | Cuantificador mínimo frente a cuerpo parentizado, anidamiento, sombra y ocurrencias libres fuera del cuantificador |
-| Nombres y aridades | Nombres personalizados/Unicode, colisiones de alias, funciones/predicados cero-arios y rechazo de nombres/aridades inválidos |
-| Posiciones | Rangos originales incluso con alias, texto multilínea, fin de entrada y variable 𝑥 fuera del plano básico |
-| Error sintáctico | Símbolos desconocidos, funciones/predicados en posición incorrecta, argumentos, delimitadores, operandos y texto sobrante; errores sin atributo `value` |
-| Límites | Excesos de texto/tokens, paréntesis, prefijos, términos y profundidad de AST fallan sin verdad; una nueva ejecución sigue funcionando |
-| Texto → motor real | Átomo abierto, funciones anidadas, cuatro casos cuantificados, restauración del entorno y rechazo de interpretación parcial aunque no se use f |
-| Independencia de ejemplos | Lenguaje personalizado y dominio de tres elementos; testigo calculado `persona=dos` |
-| Aridad cero e igualdad declarada | `T() ↔ P(c)`, `∀x Igual(x,x)` y `∃x Igual(x,c())` se evalúan sobre interpretaciones explícitas |
-| Fixtures compartidas | Seis casos JSON con resultados manuales coinciden con análisis y motor reales; no fijan el esquema HTTP |
-| Demo | Resultados Verdadero, Falso, Verdadero, Falso, Falso; ejemplo de aridad inválida sin verdad |
-| Diff | `git diff --check` sin errores; `git diff --name-only -- bases` sin salida |
+| M2-01 | AST contrastado con árboles manuales: átomos, funciones anidadas, argumentos múltiples, nombres personalizados/Unicode y aridad cero. Se rechazan nombres/aridades inválidos o ambiguos. Las posiciones conservan el texto original |
+| M2-02 | Siete símbolos oficiales y alias canónicos, reconocimiento completo de `<->`, precedencia, asociación, alcance mínimo, sombra, variables libres y colisiones de alias. Se comprueban paréntesis, operandos/texto sobrante y posiciones multilínea, fin de entrada y 𝑥 fuera del plano básico |
+| Integración de sintaxis | Parser real y servicio evalúan átomos abiertos, términos y cuantificadores. Seis fixtures coinciden con resultados razonados. También se verifican lenguaje personalizado sobre tres elementos y funciones/predicados cero-arios interpretados explícitamente |
+| M2-03: interpretación | Dominio no vacío y único; tablas de todos los símbolos; aridad/pertenencia/salida correctas, funciones totales y relaciones no vacías. De los 16 subconjuntos de una tabla funcional binaria sobre dos elementos, solo el completo se acepta |
+| M2-03: frontera | Conflictos funcionales/de asignación antes de crear mapas; duplicados idénticos consolidados sin completar entradas faltantes. Formas y elementos no hashables inválidos se diagnostican sin fugas de TypeError de conversión. Los modelos no cambian al editar la fuente |
+| M2-03: AST y entorno | Todas las ramas y símbolos, incluso sin uso posterior; variables libres, extras válidos, nombres, alcance, rangos y clases de nodo. Errores independientes agrupados y compatibilidad de código/campo del primero |
+| M2-03: bloqueo | Matriz de 18 casos: dos válidos calculados y 16 inválidos sin invocar al evaluador. El servicio usa validate_input y conserva revisión/límites, inyección compatible y certificación de M1 |
+| Límites y recuperación | Excesos de texto/tokens, profundidad/nodos, colecciones o pasos fallan sin verdad. Aridad enorme rechazada sin construir D^n; la siguiente petición válida funciona |
+| M2-04: corpus | Diez fórmulas coinciden en verdad, variables libres, motivo, elemento decisivo y cobertura. Q01/Q02: testigo norte/contraejemplo sur; Q03/Q04: cobertura 3/3 |
+| M2-04: detalle | Q03 conserva testigos centro/sur/norte en distintas instancias del mismo nodo. Q04: V,V,F; V,F,V; F,V,V. S02/S03 distinguen alcance y S04 restaura entorno. Q01 distingue no visitado de falso y Q02 es falso con complete=true |
+| M2-04: comparación | C01 cambia solo relevo(centro), Falso→Verdadero; C02 elimina (norte) de Activa y conserva Verdadero con nuevo testigo centro; C03 cambia solo x, Verdadero→Falso. El mundo base queda intacto |
+| M2-04: errores y CLI | E01–E11 se rechazan sin motor y sus reparaciones se evalúan verdaderas. Informe JSON calculado y CLI C02 verificada como subproceso. Alterar referencias manuales no cambia la verdad |
 
-En esta consola los símbolos lógicos requieren `-X utf8`; el entorno no necesita paquetes externos. Solo se ejecutó esta entrega de M2 con Python 3.11.9; no se afirma haberla probado en 3.10, 3.14 ni otro sistema operativo.
+Las pruebas de bloqueo con `patch(..., wraps=evaluate)` ejecutan el motor real para entradas válidas/reparadas y comprueban cero invocaciones para inválidas. Las expectativas están en `tests/fixtures/`; el ejecutable no las importa como respuestas. Las demos distinguen Falso válido de No evaluado y no convierten límites/cancelaciones en falsedad.
 
-## Estado de aceptación y próximos pasos
+## Estado de aceptación
 
-- M2-01/02 tienen implementación y evidencia Python. Pendientes: revisión humana de M1 y recorrido real con interfaz de M3; no se marcan como globalmente aceptados.
-- M2-03 sigue pendiente. `validate_language` cubre declaraciones; `prepare_input` de M1 certifica modelos normalizados. Esto no reemplaza validar entradas externas ni detectar duplicados contradictorios antes de construir mapas. Se debe acordar ese camino con el codec de M3 y conectar el validador integral al servicio.
-- M2-04 sigue pendiente: corpus didáctico completo, revisión de M3, enseñanza entre integrantes y defensa. Las fixtures actuales no acreditan estas actividades humanas.
-- M3 debe exponer `analyze` para pedir el entorno, convertir rangos a UTF-16, presentar errores/trazas y descartar respuestas de revisiones anteriores. No se creó servidor ni interfaz.
-- Contrato de análisis actualizado en `docs/contratos.md`; gramática y convenciones en `docs/sintaxis.md`. M1/M3 deben revisar estos archivos; no se enviaron mensajes externos en su nombre.
-- Se actualizaron también `plan.md`, `todo.md` y la guía de M2 en `C:\UVG\logica`. En esta copia esos archivos están fuera del repositorio `LM_P3`, por lo que no aparecen en su `git diff`; no se movieron ni duplicaron automáticamente.
+La parte Python de M2-01/02/03 y el corpus M2-04 tienen evidencia. Se reutilizan modelos/servicio de M1, sin otro evaluador ni otro tipo de entrada certificada. Contratos en [contratos.md](../contratos.md), gramática en [sintaxis.md](../sintaxis.md), validación en [validacion.md](../validacion.md) y soluciones en [casos-didacticos.md](../casos-didacticos.md).
+
+La inspección registrada encontró solo carpetas preparadas en frontend y `__init__.py` en server. No hay comprobaciones gráficas, capturas, codec HTTP ni conformidad de accesibilidad demostrados. La [matriz general](../matriz-verificacion.md) conserva la revisión pendiente de M3 y su ficha de registro.
+
+Para aceptación global faltan revisión humana M1/M3; contraste independiente de soluciones; codec que preserve filas/rechace claves JSON repetidas; formularios y visor reales; conversión UTF-16 y control de revisiones; enseñanza mutua, defensa, uso con compañeros e instalación limpia completa. No se inventan estas actividades ni aportes humanos. La preparación de defensa queda en la guía de casos.
+
+Plan, backlog y guía individual permanecen fuera del repositorio LM_P3, en su directorio padre. No se movieron automáticamente ni se enviaron mensajes externos.
