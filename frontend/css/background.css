@@ -29,23 +29,6 @@
   position: absolute;
 }
 
-.math-background.paused span {
-  animation-play-state: paused;
-}
-
-#background-motion {
-  font-size: .875rem;
-}
-
-#background-motion[aria-pressed=true] {
-  border-color: var(--action-primary);
-}
-
-#background-motion:disabled {
-  cursor: default;
-  opacity: 1;
-}
-
 @keyframes float-symbol {
   from {
     transform: translate(-28px, 28px) rotate(-8deg);
@@ -62,7 +45,7 @@
 }
 
 @media print {
-  .math-background, #background-motion {
+  .math-background {
     display: none;
   }
 }

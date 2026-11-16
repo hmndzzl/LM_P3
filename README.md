@@ -34,8 +34,8 @@ del mundo permanece visible; para modificar sus datos abre **Lenguaje** o
 
 Después de evaluar, **Comparar un cambio** permite modificar una salida funcional,
 la pertenencia de una tupla o una asignación libre sobre una copia. La base se
-conserva y se recalculan ambos escenarios. El fondo matemático puede pausarse con
-**Fondo animado** y respeta movimiento reducido.
+conserva y se recalculan ambos escenarios. El fondo matemático está activo por
+defecto y respeta la preferencia de movimiento reducido del sistema.
 
 Lanzadores alternativos: `scripts/abrir_interfaz.sh` en Linux,
 `scripts/abrir_interfaz.command` en macOS y `scripts/abrir_interfaz.bat` en Windows.

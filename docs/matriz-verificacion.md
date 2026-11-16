@@ -35,5 +35,5 @@ Las pruebas automáticas no sustituyen esta revisión ni autorizan marcarla real
 6. Revisar lector de pantalla, zoom, foco, fuentes y plataformas del equipo.
 7. Ejecutar una copia limpia y los guiones de presentación de interfaz.md.
 
-La animación solicitada es decorativa, opcional y pausable: no cuenta como
+La animación solicitada es decorativa y respeta movimiento reducido: no cuenta como
 justificación semántica ni sustituye el aporte de navegación/comparación.

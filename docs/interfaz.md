@@ -94,9 +94,9 @@ izquierda y configuración a la derecha; una columna bajo 1024 px. Tipografía
 proporcional, tokens compartidos, controles nativos y fondo claro sin dependencias
 visuales. La fuente matemática tiene alternativas locales.
 
-El fondo solicitado usa 36 símbolos decorativos, opacidad .14 y ciclos de 5–8
+El fondo solicitado usa 60 letras y símbolos decorativos, opacidad .14 y ciclos de 5–8
 segundos. Está detrás de paneles opacos, no captura clics y queda fuera del árbol
-accesible. Fondo animado permite pausarlo; prefers-reduced-motion lo desactiva.
+accesible. Está activo por defecto, sin botón adicional; prefers-reduced-motion lo desactiva.
 No representa datos ni resultados y no interviene en la lógica.
 
 Transporte: 256 KB por petición, 5 segundos de lectura y 8 MB de respuesta.
