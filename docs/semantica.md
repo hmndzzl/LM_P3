@@ -4,7 +4,7 @@
 
 Evaluación sobre un AST normalizado de términos, predicados, negación, conjunción, disyunción, implicación, bicondicional y cuantificadores. Produce evidencias estructuradas, respeta el alcance de variables y compara dos escenarios válidos que cambian exactamente un dato. Incluye límites de trabajo y cancelación cooperativa sin devolver verdad parcial.
 
-El servicio acepta un parser inyectado. M2 ya implementó el parser real descrito en [sintaxis.md](sintaxis.md), con pruebas de integración de texto; las pruebas originales de la frontera del servicio conservan sus adaptadores explícitos para verificar el protocolo. La validación externa integral M2-03 y la interfaz de M3 siguen pendientes. No se implementó CYK ni se importan módulos de `bases/`. La semántica es nueva; los árboles heredados se consultaron como referencia conceptual de estructura jerárquica, sin trasladar sus algoritmos ni código al motor.
+El servicio acepta un parser inyectado. M2 implementó el parser real descrito en [sintaxis.md](sintaxis.md) y la [validación integral/externa](validacion.md), con pruebas de integración; las pruebas originales de la frontera del servicio conservan sus adaptadores explícitos para verificar el protocolo. El codec y la interfaz de M3 siguen pendientes. No se implementó CYK ni se importan módulos de `bases/`. La semántica es nueva; los árboles heredados se consultaron como referencia conceptual de estructura jerárquica, sin trasladar sus algoritmos ni código al motor.
 
 Se añadieron los modelos mínimos de AST/lenguaje/errores necesarios para ejecutar el motor porque esos módulos estaban vacíos. Son el contrato inicial compartido que M2 debe revisar y reutilizar; no son una implementación de sus tickets de parser o validación de entradas externas. Su procedencia y revisión pendiente constan en [contratos.md](contratos.md).
 
@@ -53,15 +53,15 @@ Los nombres de dominio son cadenas opacas y distintas. Un elemento de D no es au
 - `prepare_input(language, interpretation, formula, environment=None, *, limits=None)` comprueba todo el AST y las tablas antes de crear `ValidatedInput`. Calcula las variables libres necesarias para certificar el entorno. Se aceptan claves adicionales de entorno si sus valores pertenecen a D.
 - `evaluate(request, *, cancelled=None)` solo admite `ValidatedInput`; devuelve `EvaluationResult(value, trace, steps)`. El contador mide visitas a nodos de fórmula y términos; no segundos.
 
-La fábrica defensiva `semantics/inputs.py` permite trabajar mientras falta el validador de M2. Este puede reutilizarla después de sus comprobaciones de texto/entradas externas. No duplicar sus reglas en los handlers. No trasladarla ni crear otra representación sin revisar consumidores.
+La fábrica defensiva `semantics/inputs.py` conserva el sello y las copias inmutables. El validador integral de M2 la reutiliza después de sus comprobaciones; los builders externos detectan forma y duplicados antes de crear modelos. No duplicar estas reglas en handlers ni trasladar la fábrica o crear otra representación sin revisar consumidores.
 
 **Responsabilidad de la frontera externa de M2/M3:** comprobar JSON, forma de colecciones, nombres según la gramática, asignaciones y duplicados contradictorios antes de convertir listas a diccionarios o conjuntos. Un diccionario ya construido no conserva el historial de dos salidas para una misma tupla; el motor no puede recuperar datos descartados por el codec. El soporte normalizado no acredita por sí solo R7 desde la UI.
 
 ### Servicio de aplicación
 
-`lm_p3.application.service.evaluate_formula(text, language, interpretation, environment, *, parse, validate=prepare_input, revision=0, limits=None, cancelled=None)` encadena parser → certificación → evaluación. `parse(text, language)` debe devolver el AST, o lanzar un error; se inyecta explícitamente `syntax.parser.parse` de M2. `validate` debe tener la firma de `prepare_input` y devolver el mismo contexto y límites certificados, sin sustituirlos silenciosamente. La salida es `EvaluationOutcome(revision, evaluation)`.
+`lm_p3.application.service.evaluate_formula(text, language, interpretation, environment, *, parse, validate=validate_input, revision=0, limits=None, cancelled=None)` encadena parser → validación/certificación → evaluación. `parse(text, language)` debe devolver el AST, o lanzar un error; se inyecta explícitamente `syntax.parser.parse` de M2. Desde M2-03 el valor por defecto de `validate` es `validation.validator.validate_input`, con la firma de `prepare_input`; devuelve el mismo contexto y límites certificados, sin sustituirlos silenciosamente. La salida es `EvaluationOutcome(revision, evaluation)`.
 
-M2 conecta el parser real y puede aportar un validador compatible. M3 traduce la entrada HTTP a los modelos y la salida/errores a JSON. No usar `dataclasses.asdict()` sobre `ValidatedInput`: contiene mapas protegidos internos, no un contrato de transporte. El resultado/traza y la comparación sí pueden convertirse con `asdict` como demuestra el ejemplo; el codec final deberá acordarse y probarse por M3. El servicio no atrapa fallos inesperados para convertirlos en Falso.
+M2 aporta parser, validador y builders reutilizables. M3 traduce los campos de entrada HTTP a esas funciones y la salida/errores a JSON. No usar `dataclasses.asdict()` sobre `ValidatedInput`: contiene mapas protegidos internos, no un contrato de transporte. El resultado/traza y la comparación sí pueden convertirse con `asdict` como demuestra el ejemplo; el codec final deberá acordarse y probarse por M3. El servicio no atrapa fallos inesperados para convertirlos en Falso.
 
 `revision` debe ser un entero no negativo; se devuelve sin cambios. La interfaz es quien incrementa revisión al editar y descarta respuestas obsoletas. El motor no conserva sesiones ni resultados globales.
 
@@ -124,7 +124,7 @@ Practicar manualmente con D={a,b}, P={a}, f intercambiando a/b y R={(a,b)}: reso
 
 ## Pendientes que no se pueden declarar completados todavía
 
-- Obtener revisión humana del contrato con M1/M2/M3 y conectar validación externa y codec reales. El parser de M2 ya tiene integración Python comprobada.
+- Obtener revisión humana del contrato con M1/M2/M3 y conectar codec/formularios reales. Parser y validación de M2 ya tienen integración Python comprobada.
 - Ejecutar los recorridos H1/H2 y comparación desde la interfaz propia de M3.
 - Revisar el corpus nuevo de M2 cuando exista; los casos actuales son del motor, no revisión de un trabajo aún ausente.
 - Obtener revisión humana de otro miembro, enseñanza mutua, ensayo aleatorio y ejecución limpia de la aplicación completa por los tres.

@@ -1,5 +1,7 @@
 # Evidencia de implementación — Miembro 2
 
+Este archivo conserva la evidencia de la primera entrega M2-01/02 (79 pruebas). El estado posterior de M2-03 está registrado en [miembro-2-validacion.md](miembro-2-validacion.md); los pendientes descritos abajo corresponden a aquel corte inicial.
+
 ## Alcance y entorno
 
 Fecha: 15 de noviembre de 2026. Rama existente preparada por el usuario: `feature/sintaxis-validacion`. Intérprete usado: `C:\UVG\logica\LM_P3\.venv\Scripts\python.exe`, Python 3.11.9, Windows. No se instalaron dependencias ni se hicieron staging, commits, push o cambios de rama.
