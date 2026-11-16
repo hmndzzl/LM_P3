@@ -1,0 +1,98 @@
+# M3 — Primer recorrido gráfico
+
+## Qué está disponible
+
+Ejecutar `python3 -B -m lm_p3` desde la raíz. El servidor elige un puerto libre y
+abre el navegador; Ctrl+C lo cierra. `--no-browser --port 8765` permite abrirlo
+manualmente. No necesita Internet, frameworks ni paquetes adicionales.
+
+La pantalla empieza sin datos ni valor de verdad. Cargar ejemplo es explícito y
+solicita confirmación si reemplaza trabajo. El ejemplo reducido Estaciones activas
+deriva del mundo didáctico de M2; no incluye Enlaza ni carga el corpus completo.
+
+Se añaden funciones/predicados con nombre y aridad, elementos de D por línea y
+filas gráficas de argumentos/salidas. Cada fila relacional representa pertenencia.
+No se genera D^n: el usuario introduce las filas y M2 comprueba totalidad. Las filas
+se conservan al cambiar nombre/aridad; las incompatibles deben corregirse o quitarse.
+Las asignaciones libres se presentan como selectores de D después del análisis.
+
+## Recorrido para estudiar el código
+
+1. `frontend/index.html` contiene los controles. El formulario llama a `run(true)`
+   en `frontend/js/app.js` al enviar. `run(false)` solo analiza.
+2. `inputData()` recoge el estado de las filas sin convertir declaraciones en
+   mapas. `api.js` hace fetch de JSON relativo al mismo servidor.
+3. `LocalHandler.do_POST()` en `server/http.py` comprueba el origen y el tamaño,
+   decodifica la petición y llama a `process_request()` en `server/codec.py`.
+4. `process_request()` llama a los builders de M2. Para analizar usa `analyze`;
+   para evaluar llama a `evaluate_formula(..., parse=parse)` de M1/M2. No calcula
+   verdad ni duplica sus reglas lógicas.
+5. `error_response()` convierte diagnósticos y posiciones a JSON. Un error de
+   validación puede contener varios mensajes. La respuesta válida incluye la
+   traza real del motor; no se reciben resultados calculados por el navegador.
+6. Al volver, `run()` publica solo una respuesta cuya revisión coincida con la
+   edición actual. `invalidate()` incrementa revisión y retira el resultado al editar.
+7. `reasonText()` traduce códigos de reglas a español. `evidenceNode()` crea
+   detalles nativos expandibles al abrir cada instancia, conservando sus hijos,
+   entorno y elementos no visitados. `showErrors()` enlaza mensajes a campos y
+   convierte puntos de código Python a UTF-16 al seleccionar un error de fórmula.
+
+Preguntas de código para practicar:
+
+- ¿Por qué se llama a analyze antes de evaluate y por qué no necesita entorno?
+- ¿Dónde se conservarían o perderían dos filas contradictorias para la misma función?
+- ¿Qué impide que una respuesta de fetch vieja sustituya la entrada actual?
+- ¿Qué cambia en la respuesta entre Falso válido y una entrada rechazada?
+- ¿Dónde se modifica el texto que explica un testigo, sin cambiar el evaluador?
+
+## Errores y límites
+
+El contrato y los ejemplos JSON están en [contratos.md](contratos.md#transporte-local-de-m3--primer-incremento).
+Las condiciones de HTTP comprueban transporte (origen, ruta, formato y tamaño);
+las reglas de nombres, aridades, tablas y asignaciones se delegan a M2.
+El handler distingue entrada inválida, límite, timeout de lectura y fallo interno.
+Los detalles del último se registran en consola y la pantalla recibe un mensaje
+genérico. Ninguno recibe valor de verdad.
+
+Límites del transporte: 256 KB de petición, 5 segundos para lectura y 8 MB de
+respuesta. El editor permite añadir filas con aridad de 0 a 32 y hasta 200 filas
+por símbolo. No son restricciones matemáticas ni garantías de tiempo total.
+No se ofrece Cancelar porque todavía no se conectó una cancelación real.
+
+## Verificación ejecutada
+
+En Linux con Python 3.14.8:
+
+```sh
+python3 -B -m unittest discover -s tests -t .
+```
+
+143 pruebas pasan: las 130 anteriores y 13 de codec/HTTP. Cubren peticiones reales,
+análisis, resultados verdaderos/falsos, errores sin llamar al motor, claves JSON
+repetidas, origen, rutas, archivos estáticos, límites y errores internos.
+
+Con la herramienta opcional agent-browser instalada y la aplicación abierta:
+
+```sh
+agent-browser --session lm-p3-m3 open http://127.0.0.1:8765
+agent-browser --session lm-p3-m3 eval --stdin < tests/ui/smoke.js
+```
+
+La prueba modifica los formularios de esa sesión. Pasan 21 comprobaciones:
+configuración desde cero, verdadero/falso, cuatro casos cuantificados, evidencia
+completa, errores de dominio/relación/función/entorno, posiciones Unicode, nombres
+personalizados y descarte de una respuesta real retrasada. No se reemplaza el motor.
+
+Se inspeccionaron capturas temporales a 1440×1000 y 320×800; a 320 px el ancho del
+documento es 320 y las tablas tienen desplazamiento local. Axe-core 4.12.1 no
+reportó infracciones ni comprobaciones incompletas para wcag2a/wcag2aa en el estado
+de resultado probado (25 comprobaciones aprobadas). No acredita conformidad total.
+
+## Pendiente de los próximos bloques
+
+Botones lógicos con cursor/selección y undo/redo; ayudas y selectores de tuplas más
+cómodos; localización más precisa de filas en errores; resaltado de subfórmulas y
+detalle de términos anidados; comparación gráfica de un cambio; lanzadores;
+verificación con teclado/lector de pantalla y otros navegadores; ensayo humano.
+Las asignaciones recuperables se conservan mientras se edita, pero el análisis
+previo se solicita con botón o al evaluar: no es automático en cada pulsación.

@@ -4,13 +4,18 @@
 
 Esta matriz compartida distingue evidencia Python ejecutada de verificaciones de producto y actividades humanas pendientes. No declara listo el proyecto ni sustituye revisión por otro integrante. Resultados/comandos en las evidencias de [M1](evidencias/miembro-1.md) y [M2](evidencias/miembro-2.md).
 
+Primer incremento de M3 disponible: formularios y transporte de análisis/evaluación,
+143 pruebas Python y 21 comprobaciones de navegador pasan. Procedimiento y límites
+en [interfaz.md](interfaz.md). Los pendientes de aceptación global de la tabla
+incluyen todavía cobertura gráfica completa y revisión humana.
+
 | Requisito o criterio | Prueba reproducible actual | Caso de demostración | Falta para aceptación global |
 | --- | --- | --- | --- |
 | R1: nombres/aridades configurables | `tests.syntax.test_parser.LanguageValidationTests`, `tests.validation.test_normalization.NormalizationTests` y escenarios con nombres personalizados | Configurar relevo/Activa/Enlaza desde el mundo del corpus | Formularios reales y revisión humana |
 | R2: interpretación finita válida | Pruebas de normalización: vacíos, pertenencia, totalidad, conflictos, aridad cero y los 16 subconjuntos de una tabla binaria | E01–E04, E07 y E11; Q04 muestra ∃ falso con relaciones no vacías | Recorrido gráfico y rechazo desde HTTP |
 | R3: todos los conectivos confirmados | `tests.syntax.test_parser.ParserTests` cubre símbolos/alias, AST manual, precedencia y asociación; pruebas de tablas de verdad de M1 | Q01–Q04, S02–S06 contienen los siete símbolos y alias | Botones/notación de M3 y revisión cruzada |
 | R4: fórmulas abiertas/cerradas y entorno | Pruebas de análisis y validación de variables libres, alcance/sombra y asignaciones; `DidacticCorpusTests` contrasta soluciones | S01–S04, E08/E09; C03 cambia solo una asignación libre | Selectores de entorno y conservación durante edición |
-| R5: ingreso gráfico, botones y teclado | No hay pruebas ejecutadas de UI; carpetas de frontend aún preparadas | Recorrido de revisión de interfaz, más abajo | Implementación y revisión completa de M3 |
+| R5: ingreso gráfico, botones y teclado | `tests/ui/smoke.js`: configuración gráfica propia y evaluación real | Cargar ejemplo o crear lenguaje desde cero | Botones lógicos, teclado completo y revisión humana |
 | R6: verdad y razones decisivas | Suite de semántica y pruebas de corpus: testigo, contraejemplo, cobertura completa, valores atómicos e instancias anidadas | Q01/Q02/Q03/Q04 | Visor accesible que conserve toda la evidencia |
 | R7: errores sin verdad | `test_external_validation.py` y `test_didactic_corpus.py`: entradas inválidas no invocan al motor; reparaciones calculadas | E01–E11; matriz ampliada de M2-03 | Codec real, controles/servidor y foco/mensajes desde UI |
 | Aporte creativo: navegación/comparación | Comparaciones M1 y corpus C01–C03 con parser/validación reales, cambios únicos y base intacta | C01 cambia verdad; C02 cambia testigo sin cambiar verdad; Q03 separa instancias | Navegación gráfica, revisión y observación real de utilidad |
@@ -33,7 +38,10 @@ Para soluciones, datos y preparación de defensa usar [casos-didacticos.md](caso
 
 ## Revisión de la interfaz pendiente
 
-La inspección registrada del 15 de noviembre de 2026 encontró solo carpetas preparadas en frontend y `__init__.py` en server. Ninguna comprobación gráfica siguiente se ha ejecutado; no hay capturas ni aprobación de accesibilidad. Las pruebas Python están en la [evidencia consolidada de M2](evidencias/miembro-2.md).
+La inspección inicial de M2 encontró solo carpetas preparadas. M3 añadió después
+el recorrido mínimo y sus verificaciones descritas en interfaz.md. La ficha de
+abajo se conserva como revisión global pendiente: las pruebas parciales no la
+declaran aprobada ni sustituyen la revisión humana.
 
 Configurar Red de estaciones conservando el orden norte, centro, sur. La carga de ejemplo debe ser explícita, editable y conservar el trabajo existente. Ejecutar Q01–Q04 y C01–C03 desde el editor: comprobar testigos, contraejemplo, todas las asignaciones, instancias anidadas y base intacta.
 

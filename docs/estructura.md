@@ -2,7 +2,13 @@
 
 ## Estado y convención
 
-Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. La estructura fue creada inicialmente con paquetes vacíos. **M1 implementó modelos, motor, frontera defensiva, comparación y servicio; M2 aporta lexer/parser, variables libres y validación integral/externa por filas**; ver [semantica.md](semantica.md), [sintaxis.md](sintaxis.md) y [validacion.md](validacion.md). Codec, servidor e interfaz siguen pendientes de M3, junto con las revisiones humanas. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
+Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. La estructura fue creada inicialmente con paquetes vacíos. **M1 implementó modelos, motor, frontera defensiva, comparación y servicio; M2 aporta lexer/parser, variables libres y validación integral/externa por filas**; ver [semantica.md](semantica.md), [sintaxis.md](sintaxis.md) y [validacion.md](validacion.md). Las revisiones humanas siguen pendientes. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
+
+M3 ya implementó `server/codec.py`, `server/http.py`, `__main__.py` y la primera
+interfaz en `frontend/`. El recorrido de análisis/evaluación está conectado y
+probado; faltan los botones lógicos, comparación y cierre de revisión. Ver
+[interfaz.md](interfaz.md). Los archivos previstos adicionales se crean cuando
+su responsabilidad lo requiera; `app.js` mantiene por ahora el estado y la evidencia.
 
 Python 3.10 o posterior como mínimo inicial, coherente con los proyectos de referencia; registrar la versión concreta usada por el equipo en H0. Frontend con HTML/CSS/JavaScript nativos, servido localmente por Python. No hay dependencias externas nuevas ni paso de compilación del frontend. El paquete está en la raíz para poder importarlo y ejecutar pruebas desde allí sin modificar `sys.path` ni exigir instalación editable.
 
@@ -121,7 +127,9 @@ python -m unittest discover -s tests -t . -v
 
 El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. La suite propia cubre motor, parser, validación externa/integral y su integración; no equivale a cobertura HTTP ni de interfaz. En Windows puede invocarse el intérprete `.venv/Scripts/python.exe` directamente. No se requiere instalar dependencias externas ahora.
 
-Comando objetivo de aplicación, **todavía no disponible**: `python -m lm_p3`. M3 creará `lm_p3/__main__.py` en M3-01; hasta entonces no añadir un arranque que muestre resultados simulados. Los lanzadores propios se crean en `scripts/`, calculando la raíz como padre de esa carpeta. Los lanzadores guardados en `bases/` siguen abriendo el laboratorio original.
+Comando disponible de aplicación: `python -m lm_p3` (o `python3 -B -m lm_p3`).
+El arranque delega en el servidor local y abre el navegador. Los lanzadores propios
+de `scripts/` quedan pendientes; los de `bases/` siguen abriendo el laboratorio original.
 
 No agregar un `requirements.txt`, `package.json`, framework ni configuración de empaquetado vacío por apariencia: hacerlo solo si una necesidad real y acordada lo requiere. Si aparecen dependencias, fijar y documentar cómo instalarlas antes de pedir al grupo que las use.
 

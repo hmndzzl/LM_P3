@@ -4,13 +4,37 @@ Proyecto de MM3032 Lógica Matemática: aplicación gráfica para evaluar fórmu
 
 ## Estado actual
 
-El motor de M1 y los módulos de sintaxis/validación integral de M2 están implementados, con integración Python real desde texto y filas externas. El parser acepta la notación y los alias confirmados por el usuario; ver [sintaxis](docs/sintaxis.md) y [validación](docs/validacion.md). El codec JSON/HTTP, servidor e interfaz propios siguen pendientes de M3, junto con las revisiones humanas. Aún no existe una aplicación gráfica ejecutable: `python -m lm_p3` depende de M3. Las copias de `bases/` siguen intactas y no equivalen a requisitos cumplidos.
+El motor de M1 y los módulos de sintaxis/validación de M2 están conectados a la primera interfaz de M3. Ya se pueden configurar símbolos, dominio y tablas mediante filas, analizar variables libres y evaluar con evidencia real. Faltan los botones lógicos, la comparación gráfica y el cierre de accesibilidad/revisión humana; no se declara terminado M3. Las copias de `bases/` siguen intactas.
+
+## Ejecutar la aplicación
+
+Desde la raíz, con Python 3.10 o posterior y sin paquetes adicionales:
+
+```sh
+python3 -B -m lm_p3
+```
+
+Se abre el navegador en la dirección local impresa en consola. Para cerrar el servidor,
+presiona Ctrl+C. En Windows puede utilizarse `py -3 -B -m lm_p3`.
+Para elegir puerto o abrir el navegador manualmente:
+
+```sh
+python3 -B -m lm_p3 --no-browser --port 8765
+```
+
+Pulsa **Cargar ejemplo** y luego **Evaluar fórmula**: `Activa(x)` con x=centro
+da Verdadero. Selecciona sur y reevalúa para obtener Falso. También puedes añadir
+tus propios símbolos y filas. El dominio se introduce con un elemento por línea.
+Los símbolos se escriben con teclado; los botones se añadirán en el bloque 2.
+
+Recorrido del código y límites de esta entrega: [interfaz y servidor](docs/interfaz.md).
 
 ## Documentos para comenzar
 
 - [Estructura común](docs/estructura.md): rutas, responsabilidades, dependencias y comandos.
 - [Contratos entre módulos](docs/contratos.md): contrato Python de M1 y revisión pendiente con M2/M3.
 - [Motor semántico](docs/semantica.md): API, demostración ejecutable, límites y guía de defensa.
+- [Interfaz de M3](docs/interfaz.md): ejecución, funciones principales, pruebas y pendientes.
 - [Sintaxis de M2](docs/sintaxis.md): gramática, alias, alcance, nombres, errores y API para M1/M3.
 - [Validación de M2](docs/validacion.md): builders por filas, totalidad, duplicados, entorno y errores agrupados.
 - [Casos y defensa M2](docs/casos-didacticos.md): soluciones razonadas, 24 casos ejecutables y preparación de exposición.
@@ -70,4 +94,4 @@ python -X utf8 -B -m examples.corpus --case E03
 
 El corpus contiene 10 fórmulas, 3 comparaciones de un cambio y 11 entradas inválidas con reparaciones comprobadas. Q01–Q04 cubren los cuatro resultados cuantificados; C02 conserva la verdad y cambia el testigo. Toda salida se calcula con el código real, sin leer las expectativas de pruebas. Los ejemplos no modifican su mundo base.
 
-La preparación de defensa y la revisión de M3 se encuentran en la guía de casos y la matriz general. Enseñanza mutua, revisión humana, uso con compañeros y pruebas gráficas siguen pendientes. Esta entrega no marca los tickets globalmente aceptados.
+La preparación de defensa y la revisión de M3 se encuentran en la guía de casos y la matriz general. La primera verificación gráfica está descrita en interfaz.md; enseñanza mutua, revisión humana y aceptación global siguen pendientes.

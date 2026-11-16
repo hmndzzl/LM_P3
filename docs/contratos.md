@@ -166,7 +166,7 @@ Python; la UI los convierte a UTF-16. `field` es una ruta lógica, no CSS.
 HTTP 200 incluye tanto Verdadero como Falso válidos; 400 indica JSON/entrada
 inválidos; 403, Host/Origin incorrectos; 404, ruta no permitida; 408, tiempo de
 lectura agotado; 413, petición mayor de 256 KB; 415, tipo distinto de JSON; 422,
-límite/cancelación sin evaluación; 500, fallo interno con mensaje genérico.
+límite sin evaluación; 500, fallo interno con mensaje genérico.
 `status` es `invalid` en errores de entrada y `not_evaluated` en límites/fallos.
 
 Se rechazan claves JSON repetidas a cualquier profundidad y constantes no JSON.
