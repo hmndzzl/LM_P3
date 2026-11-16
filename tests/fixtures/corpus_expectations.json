@@ -1,0 +1,217 @@
+{
+  "version": 1,
+  "scenarios": {
+    "Q01": {
+      "value": true,
+      "free_variables": [],
+      "reason": "existential_witness",
+      "decisive_element": "norte",
+      "checked_elements": [
+        "norte"
+      ],
+      "complete": false
+    },
+    "Q02": {
+      "value": false,
+      "free_variables": [],
+      "reason": "universal_counterexample",
+      "decisive_element": "sur",
+      "checked_elements": [
+        "norte",
+        "centro",
+        "sur"
+      ],
+      "complete": true
+    },
+    "Q03": {
+      "value": true,
+      "free_variables": [],
+      "reason": "universal_complete",
+      "decisive_element": null,
+      "checked_elements": [
+        "norte",
+        "centro",
+        "sur"
+      ],
+      "complete": true
+    },
+    "Q04": {
+      "value": false,
+      "free_variables": [],
+      "reason": "existential_complete",
+      "decisive_element": null,
+      "checked_elements": [
+        "norte",
+        "centro",
+        "sur"
+      ],
+      "complete": true
+    },
+    "S01": {
+      "value": false,
+      "free_variables": [
+        "x"
+      ],
+      "reason": "predicate_not_member",
+      "decisive_element": null,
+      "checked_elements": [],
+      "complete": true
+    },
+    "S02": {
+      "value": true,
+      "free_variables": [
+        "x"
+      ],
+      "reason": "conjunction",
+      "decisive_element": null,
+      "checked_elements": [],
+      "complete": true
+    },
+    "S03": {
+      "value": false,
+      "free_variables": [],
+      "reason": "existential_complete",
+      "decisive_element": null,
+      "checked_elements": [
+        "norte",
+        "centro",
+        "sur"
+      ],
+      "complete": true
+    },
+    "S04": {
+      "value": true,
+      "free_variables": [
+        "x"
+      ],
+      "reason": "conjunction",
+      "decisive_element": null,
+      "checked_elements": [],
+      "complete": true
+    },
+    "S05": {
+      "value": false,
+      "free_variables": [],
+      "reason": "universal_counterexample",
+      "decisive_element": "centro",
+      "checked_elements": [
+        "norte",
+        "centro"
+      ],
+      "complete": false
+    },
+    "S06": {
+      "value": false,
+      "free_variables": [],
+      "reason": "universal_counterexample",
+      "decisive_element": "centro",
+      "checked_elements": [
+        "norte",
+        "centro"
+      ],
+      "complete": false
+    }
+  },
+  "comparisons": {
+    "C01": {
+      "before": false,
+      "after": true,
+      "truth_changed": true,
+      "witness_before": null,
+      "witness_after": null
+    },
+    "C02": {
+      "before": true,
+      "after": true,
+      "truth_changed": false,
+      "witness_before": "norte",
+      "witness_after": "centro"
+    },
+    "C03": {
+      "before": true,
+      "after": false,
+      "truth_changed": true,
+      "witness_before": null,
+      "witness_after": null
+    }
+  },
+  "invalid_cases": {
+    "E01": {
+      "expected_error": {
+        "code": "invalid_domain",
+        "field": "domain"
+      },
+      "fixed_value": true
+    },
+    "E02": {
+      "expected_error": {
+        "code": "empty_interpretation",
+        "field": "relations.Activa"
+      },
+      "fixed_value": true
+    },
+    "E03": {
+      "expected_error": {
+        "code": "partial_function",
+        "field": "functions.relevo"
+      },
+      "fixed_value": true
+    },
+    "E04": {
+      "expected_error": {
+        "code": "conflicting_function_row",
+        "field": "functions.relevo[3].output"
+      },
+      "fixed_value": true
+    },
+    "E05": {
+      "expected_error": {
+        "code": "unknown_symbol",
+        "field": "formula"
+      },
+      "fixed_value": true
+    },
+    "E06": {
+      "expected_error": {
+        "code": "arity_mismatch",
+        "field": "formula"
+      },
+      "fixed_value": true
+    },
+    "E07": {
+      "expected_error": {
+        "code": "outside_domain",
+        "field": "relations.Enlaza[0][1]"
+      },
+      "fixed_value": true
+    },
+    "E08": {
+      "expected_error": {
+        "code": "missing_assignment",
+        "field": "environment.x"
+      },
+      "fixed_value": true
+    },
+    "E09": {
+      "expected_error": {
+        "code": "invalid_assignment",
+        "field": "environment[0]"
+      },
+      "fixed_value": true
+    },
+    "E10": {
+      "expected_error": {
+        "code": "missing_parenthesis",
+        "field": "formula"
+      },
+      "fixed_value": true
+    },
+    "E11": {
+      "expected_error": {
+        "code": "missing_interpretation",
+        "field": "functions.relevo"
+      },
+      "fixed_value": true
+    }
+  }
+}
