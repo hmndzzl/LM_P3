@@ -13,7 +13,7 @@ export function reasonText(trace) {
   const reasons = {
     predicate_member: `La tupla ${tuple} pertenece a ${predicate}.`,
     predicate_not_member: `La tupla ${tuple} no pertenece a ${predicate}.`,
-    negation: 'La negación invierte el valor de su subfórmula.',
+    negation: `La subfórmula es ${trace.children[0]?.value ? 'verdadera' : 'falsa'}. Al negarla, el resultado es ${trace.value ? 'verdadero' : 'falso'}.`,
     conjunction: 'La conjunción es verdadera cuando ambos operandos son verdaderos.',
     disjunction: 'La disyunción es verdadera cuando al menos un operando es verdadero.',
     implication: 'La implicación solo es falsa con antecedente verdadero y consecuente falso.',
@@ -54,35 +54,74 @@ function termNode(term) {
   return item;
 }
 
+function stepSection(title, content, className = '') {
+  const section = node('div');
+  section.className = `step-section ${className}`;
+  const heading = node('strong', title);
+  heading.className = 'step-heading';
+  section.append(heading, content);
+  return section;
+}
+
 function evidenceNode(trace, context, path = '1') {
   const details = node('details');
+  details.className = 'trace-step';
+  details.dataset.value = String(trace.value);
   const changed = context.changedIds.has(trace.trace_id);
   details.classList.toggle('evidence-changed', changed);
-  const summary = node('summary', `Paso ${path} · ${trace.formula}${trace.environment.length ? ` · ${environmentText(trace)}` : ''} — ${trace.value ? 'Verdadero' : 'Falso'}${changed ? ' · evidencia modificada' : ''}`);
+  const summary = node('summary');
+  const number = node('span', `Paso ${path}`);
+  number.className = 'step-number';
+  const formula = node('span', trace.formula);
+  formula.className = 'step-formula';
+  const result = node('span', trace.value ? 'Verdadero' : 'Falso');
+  result.className = 'step-result';
+  result.dataset.value = String(trace.value);
+  result.setAttribute('aria-label', `Resultado calculado: ${result.textContent}`);
+  summary.append(number, document.createTextNode(' '), formula, document.createTextNode(' '));
+  if (trace.environment.length) {
+    const values = node('span', environmentText(trace));
+    values.className = 'step-context';
+    summary.append(values, document.createTextNode(' '));
+  }
+  summary.append(result);
+  if (changed) summary.append(node('span', 'Evidencia modificada'));
   summary.addEventListener('click', () => selectStep(trace, context, path));
   details.append(summary);
-  // El detalle se crea al abrirlo para no dibujar toda una traza grande de golpe.
+  // El contenido se crea al abrir el paso; los resultados ya proceden del motor.
   details.addEventListener('toggle', () => {
     if (!details.open || details.dataset.loaded) return;
     selectStep(trace, context, path);
     details.dataset.loaded = 'true';
-    details.append(node('p', reasonText(trace)));
-    details.append(node('p', trace.environment.length
-      ? `Valores al entrar a este paso: ${environmentText(trace)}.`
-      : 'Sin variables asignadas al entrar a este paso.'));
-    if (trace.terms.length) {
+    if (trace.environment.length) {
+      const values = node('div');
+      values.className = 'step-values';
+      for (const [name, value] of trace.environment) values.append(node('span', `${name}: ${value}`));
+      details.append(stepSection('Asignaciones', values));
+    }
+    const lookups = trace.terms.filter((term) => term.reason !== 'variable_assignment');
+    if (lookups.length) {
       const terms = node('ul');
-      for (const term of trace.terms) terms.append(termNode(term));
-      details.append(terms);
+      for (const term of lookups) terms.append(termNode(term));
+      details.append(stepSection('Evaluación de términos', terms));
     }
-    if (trace.variable) {
-      details.append(node('p', `Valores probados de ${trace.variable}: ${trace.checked_elements.join(', ')}. Cada paso interior comprueba la condición con uno de esos valores.`));
+    if (trace.children.length) {
+      const children = node('div');
+      children.className = 'step-children';
+      trace.children.forEach((child, index) => children.append(evidenceNode(child, context, `${path}.${index + 1}`)));
+      const heading = trace.variable
+        ? `Comprobaciones de ${trace.variable} · ${trace.checked_elements.length} de ${trace.domain_size} valores`
+        : 'Subfórmulas evaluadas';
+      details.append(stepSection(heading, children, 'step-checks'));
     }
+    const conclusion = stepSection('Conclusión', node('p', reasonText(trace)), 'step-conclusion');
     if (trace.unvisited_elements.length) {
       const decisive = trace.reason === 'existential_witness' ? 'un testigo' : 'un contraejemplo';
-      details.append(node('p', `No fue necesario probar ${trace.variable}: ${trace.unvisited_elements.join(', ')}; ya se encontró ${decisive}. Esto no significa que los casos omitidos sean falsos.`));
+      const skipped = node('p', `No fue necesario probar ${trace.variable}: ${trace.unvisited_elements.join(', ')}; ya se encontró ${decisive}. Esto no significa que los casos omitidos sean falsos.`);
+      skipped.className = 'help';
+      conclusion.append(skipped);
     }
-    trace.children.forEach((child, index) => details.append(evidenceNode(child, context, `${path}.${index + 1}`)));
+    details.append(conclusion);
   });
   return details;
 }

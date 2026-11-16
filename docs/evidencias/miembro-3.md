@@ -17,8 +17,9 @@ Verificación actual del catálogo:
 | tests/ui/assignments.js | 6 comprobaciones aprobadas |
 | tests/ui/examples.js | 33 comprobaciones aprobadas |
 | tests/ui/editor-arity.js | 9 comprobaciones aprobadas |
-| tests/ui/evidence.js | 11 comprobaciones aprobadas |
+| tests/ui/evidence.js | 15 comprobaciones aprobadas |
 | tests/ui/interpretation-summary.js | 14 comprobaciones aprobadas |
+| tests/ui/comparison-flow.js | 8 comprobaciones aprobadas |
 | tests/ui/background.js | 3 normales y 3 con movimiento reducido |
 | Anchos 1440/1024/768/320 con el selector nuevo | Sin scroll horizontal global |
 | Axe-core 4.12.1, ejemplo a 320 px | 0 infracciones, 42 reglas aprobadas; contraste incompleto en ocho nodos por símbolos/solapamiento del fondo |
@@ -39,8 +40,18 @@ El selector se titula Probar Ejemplos y su ayuda ya no muestra la referencia al 
 El panel Interpretación separa elementos del dominio, tuplas y argumentos/imagen
 de las funciones; permite desplegar las filas restantes en la misma tabla, sin
 repetir título ni encabezados. Se comprueba plegar y desplegar sin duplicar filas. Las constantes se
-identifican explícitamente. Los ocho scripts pasan en conjunto: 138 comprobaciones
+identifican explícitamente. Los nueve scripts pasan en conjunto: 150 comprobaciones
 normales. La terminología visible se ajustó a las notas del curso.
+
+El comparador ahora usa un selector directo, muestra Original y Cambio propuesto
+y propone añadir o quitar una tupla según su pertenencia actual. No usa casilla
+de pertenencia ni anuncia una modificación cuando se conserva una imagen o
+asignación. Las pruebas incluyen añadir una tupla y descartar respuestas tardías.
+La evidencia separa asignaciones/términos, comprobaciones y conclusión. Las
+etiquetas de resultado usan valores de M1 (se reproduce ¬∀x P(x) con estados
+verdadero/falso/verdadero/verdadero/falso). Se revisaron ambas vistas a 320 px, sin
+desbordamiento horizontal, y capturas de escritorio. Axe sobre la comparación:
+0 infracciones, 49 reglas aprobadas y una revisión de contraste incompleta.
 
 El fondo tiene 60 letras y símbolos; se retiró su botón de pausa por solicitud
 del usuario. Conserva velocidad, opacidad y movimiento reducido. Se inspeccionaron
@@ -88,6 +99,7 @@ agent-browser --session m3-revision eval --stdin < tests/ui/examples.js
 agent-browser --session m3-revision eval --stdin < tests/ui/editor-arity.js
 agent-browser --session m3-revision eval --stdin < tests/ui/evidence.js
 agent-browser --session m3-revision eval --stdin < tests/ui/interpretation-summary.js
+agent-browser --session m3-revision eval --stdin < tests/ui/comparison-flow.js
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js
 agent-browser --session m3-revision set media light reduced-motion
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js

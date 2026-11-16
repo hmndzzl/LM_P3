@@ -98,7 +98,12 @@ Cada paso expandible conserva subfórmula, entorno, resultado, motivo y término
 anidados. Los encabezados muestran las asignaciones y una numeración por niveles:
 1.1 es una comprobación dentro de 1, no el orden cronológico del cálculo.
 El identificador interno trace_id se conserva para comparar evidencias, pero no
-se muestra al usuario. El paso seleccionado indica fórmula y valores concretos.
+se muestra al usuario. El paso seleccionado indica fórmula y valores concretos. Cada resultado se
+presenta como etiqueta textual con fondo verde o terracota suave, a partir del
+valor recibido del motor, sin guiones en el encabezado. Al abrir el paso, el orden
+es: asignaciones y evaluación de términos, comprobaciones de subfórmulas y
+conclusión. Las asignaciones atómicas no se repiten como viñetas. Las secciones
+separan los datos del razonamiento y las líneas laterales conservan la jerarquía.
 Los cuantificadores explican qué valores probaron, por qué basta un testigo o
 contraejemplo y por qué no fue necesario recorrer los valores restantes.
 
@@ -186,7 +191,7 @@ Los límites son de recursos, no restricciones matemáticas ni garantía de tiem
 ## Verificación y aceptación
 
 [Evidencia reproducible y capturas](evidencias/miembro-3.md): 149 pruebas Python,
-138 comprobaciones de navegador y tres adicionales con movimiento reducido.
+150 comprobaciones de navegador y tres adicionales con movimiento reducido.
 El registro distingue las verificaciones históricas de las del catálogo actual.
 Se reprodujo el funcionamiento desde git archive, sin .git ni entorno virtual.
 La comparación se revisó a 1440, 1024, 768 y 320 px, sin scroll horizontal global.

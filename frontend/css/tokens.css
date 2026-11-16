@@ -9,6 +9,8 @@
   --on-action: #fff;
   --border-control: #64748b;
   --border-subtle: #cbd5e1;
+  --surface-true: #edf7ef;
+  --surface-false: #fff3ed;
   --state-true: #166534;
   --state-false: #9a3412;
   --state-error: #b91c1c;
