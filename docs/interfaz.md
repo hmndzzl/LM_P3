@@ -61,7 +61,12 @@ universal ni sustituye las demostraciones del curso.
 
 ## Editores
 
-Los nombres y aridades son configurables, incluida aridad cero. D se introduce
+Los nombres y aridades son configurables, incluida aridad cero. Al confirmar una
+aridad mayor se añaden argumentos vacíos a cada fila, conservando valores y salidas.
+Reducir la aridad pide confirmación si se perderían argumentos ingresados; cancelar
+restaura la aridad anterior. Las fórmulas se corrigen por separado y M2 comprueba
+su coherencia con el lenguaje. La tabla conserva palabras y botones completos,
+con desplazamiento local en pantallas pequeñas. D se introduce
 con un elemento por línea. Argumentos, salidas y asignaciones usan selectores
 con valores de D. Si cambia el dominio, las tablas conservan valores recuperables
 como «fuera de D». En asignaciones, el valor anterior se muestra en un aviso

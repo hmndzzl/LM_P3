@@ -95,12 +95,32 @@ function renderSymbols() {
       input.id = `symbol-${symbol.id}-${field}`;
       input.setAttribute('aria-label', `${field === 'name' ? 'Nombre' : 'Aridad'} del símbolo ${symbol.id + 1}`);
       input.type = field === 'arity' ? 'number' : 'text';
-      if (field === 'arity') input.min = '0';
+      if (field === 'arity') {
+        input.min = '0';
+        input.max = '32';
+      }
+      let previousArity = symbol.arity;
       input.value = symbol[field];
       input.addEventListener('input', () => {
         symbol[field] = field === 'arity' ? (input.value === '' ? null : Number(input.value)) : input.value;
       });
-      input.addEventListener('change', renderInterpretations);
+      input.addEventListener('change', () => {
+        if (field === 'arity' && Number.isInteger(symbol.arity) && symbol.arity >= 0 && symbol.arity <= 32) {
+          const losesValues = symbol.rows.some((entry) => entry.arguments.slice(symbol.arity).some((value) => value !== ''));
+          if (losesValues && !confirm('Al reducir la aridad se borrarán los argumentos sobrantes de las filas. ¿Continuar?')) {
+            symbol.arity = previousArity;
+            input.value = previousArity;
+            return;
+          }
+          for (const entry of symbol.rows) {
+            entry.arguments = entry.arguments.slice(0, symbol.arity);
+            while (entry.arguments.length < symbol.arity) entry.arguments.push('');
+          }
+          previousArity = symbol.arity;
+        }
+        renderInterpretations();
+        notifyEdit();
+      });
       cell.append(input);
       row.append(cell);
     }

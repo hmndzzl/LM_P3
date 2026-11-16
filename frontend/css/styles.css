@@ -266,6 +266,15 @@ td, th {
   vertical-align: top;
 }
 
+#language-config table {
+  min-width: 26rem;
+}
+
+#language-config td:first-child, #language-config td:last-child,
+#language-config th {
+  white-space: nowrap;
+}
+
 td input {
   min-width: 6rem;
 }
