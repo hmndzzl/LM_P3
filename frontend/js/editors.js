@@ -165,7 +165,16 @@ function renderSymbols() {
     const editor = node('details');
     editor.className = 'symbol-editor';
     const title = node('summary');
-    title.id = `edit-title-${symbol.id}`;
+    const titleLabel = node('span');
+    titleLabel.id = `edit-title-${symbol.id}`;
+    titleLabel.className = 'symbol-title';
+    const action = node('span');
+    action.className = 'edit-action';
+    const pencil = node('span', '✎');
+    pencil.setAttribute('aria-hidden', 'true');
+    const actionLabel = node('span', 'Editar');
+    action.append(pencil, document.createTextNode(' '), actionLabel);
+    title.append(titleLabel, action);
     let openingTop = null;
     title.addEventListener('click', () => {
       openingTop = editor.open ? null : title.getBoundingClientRect().top;
@@ -227,11 +236,19 @@ function renderSymbols() {
     interpretation.tabIndex = -1;
     const body = node('div');
     body.className = 'symbol-editor-body';
-    body.append(declaration, interpretation);
+    const accept = node('button', 'Aceptar edición');
+    accept.type = 'button';
+    accept.className = 'accept-symbol';
+    accept.addEventListener('click', () => {
+      editor.open = false;
+      title.focus();
+    });
+    body.append(declaration, interpretation, accept);
     editor.append(title, body);
     editor.addEventListener('toggle', () => {
       if (!editor.isConnected) return;
       preview.hidden = editor.open;
+      actionLabel.textContent = editor.open ? 'En edición' : 'Editar';
       if (editor.open) {
         for (const other of document.querySelectorAll('.symbol-editor')) if (other !== editor) other.open = false;
         if (openingTop !== null) {

@@ -74,7 +74,7 @@
     assert(editor.querySelector('.symbol-editor-body .symbol-declaration')
       && editor.querySelector('.symbol-editor-body .interpretation') && !editor.querySelector('h3'),
       'La declaración y las entradas forman un único bloque sin repetir el título del símbolo');
-    assert(title.textContent === 'Función f · aridad 2'
+    assert(title.querySelector('.symbol-title').textContent === 'Función f · aridad 2'
       && functionCard.querySelector('caption').classList.contains('visually-hidden'),
       'La identificación del símbolo permanece en una única cabecera visible');
     $('add-constant').click();
@@ -89,6 +89,12 @@
     await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
     assert(Math.abs(nextTitle.getBoundingClientRect().top - position) < 2,
       'Alternar fichas conserva la posición de la cabecera pulsada al cerrar el editor anterior');
+    assert(nextTitle.querySelector('.edit-action').textContent.includes('En edición')
+      && getComputedStyle(nextTitle).listStyleType === 'none', 'La cabecera muestra la acción de edición en lugar de una flecha');
+    nextEditor.querySelector('.accept-symbol').click();
+    await until(() => !nextEditor.open && !$('functions-overview').querySelector('.symbol-summary').hidden);
+    assert(nextTitle.querySelector('.edit-action').textContent.includes('Editar') && document.activeElement === nextTitle,
+      'Aceptar edición vuelve al resumen y devuelve el foco a la acción Editar');
     return { passed: checks.length, checks };
   } finally {
     window.confirm = oldConfirm;

@@ -752,3 +752,34 @@ footer {
   background: var(--surface-canvas);
   color: var(--action-primary);
 }
+
+/* Acción de edición explícita sobre la cabecera estable */
+.symbol-editor > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.symbol-editor > summary::-webkit-details-marker {
+  display: none;
+}
+
+.symbol-title {
+  min-width: 0;
+}
+
+.edit-action {
+  flex-shrink: 0;
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-control);
+  border-radius: var(--radius-control);
+  background: var(--surface-panel);
+  font-weight: 400;
+}
+
+.accept-symbol {
+  margin-top: var(--space-3);
+  color: var(--action-primary);
+}
