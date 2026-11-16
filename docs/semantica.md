@@ -4,7 +4,7 @@
 
 Evaluación sobre un AST normalizado de términos, predicados, negación, conjunción, disyunción, implicación, bicondicional y cuantificadores. Produce evidencias estructuradas, respeta el alcance de variables y compara dos escenarios válidos que cambian exactamente un dato. Incluye límites de trabajo y cancelación cooperativa sin devolver verdad parcial.
 
-El servicio acepta un parser inyectado. M2 implementó el parser real descrito en [sintaxis.md](sintaxis.md) y la [validación integral/externa](validacion.md), con pruebas de integración; las pruebas originales de la frontera del servicio conservan sus adaptadores explícitos para verificar el protocolo. El codec y la interfaz de M3 siguen pendientes. No se implementó CYK ni se importan módulos de `bases/`. La semántica es nueva; los árboles heredados se consultaron como referencia conceptual de estructura jerárquica, sin trasladar sus algoritmos ni código al motor.
+El servicio acepta un parser inyectado. M2 implementó el parser real descrito en [sintaxis.md](sintaxis.md) y la [validación integral/externa](validacion.md), con pruebas de integración; las pruebas originales de la frontera del servicio conservan sus adaptadores explícitos para verificar el protocolo. El codec y la interfaz de M3 ya están conectados; ver [interfaz.md](interfaz.md). No se implementó CYK ni se importan módulos de `bases/`. La semántica es nueva; los árboles heredados se consultaron como referencia conceptual de estructura jerárquica, sin trasladar sus algoritmos ni código al motor.
 
 Se añadieron los modelos mínimos de AST/lenguaje/errores necesarios para ejecutar el motor porque esos módulos estaban vacíos. Son el contrato inicial compartido que M2 debe revisar y reutilizar; no son una implementación de sus tickets de parser o validación de entradas externas. Su procedencia y revisión pendiente constan en [contratos.md](contratos.md).
 
@@ -19,7 +19,7 @@ python -B -m examples.semantica --json
 python -B -m examples.semantica --benchmark
 ```
 
-Usar el intérprete compatible del entorno; no confundir el Python 3.9 incluido en algunas instalaciones de macOS con el mínimo del proyecto. No se requieren paquetes externos, servidor ni Internet para estos comandos. La aplicación completa `python -m lm_p3` sigue pendiente de M3.
+Usar el intérprete compatible del entorno; no confundir el Python 3.9 incluido en algunas instalaciones de macOS con el mínimo del proyecto. No se requieren paquetes externos, servidor ni Internet para estos comandos. La aplicación gráfica se ejecuta con `python -m lm_p3`.
 
 El ejemplo construye un AST directamente y ejecuta el motor real. Los resultados esperados son, respectivamente, ∃ verdadero con testigo a; ∀ falso con contraejemplo b; ∀ de una tautología verdadero con comprobación completa; ∃ de una contradicción falso con comprobación completa. Después cambia f(a) de b a a y P(f(a)) pasa de Falso a Verdadero.
 
@@ -126,7 +126,7 @@ Practicar manualmente con D={a,b}, P={a}, f intercambiando a/b y R={(a,b)}: reso
 
 - Obtener revisión humana del contrato con M1/M2/M3 y conectar codec/formularios reales. Parser y validación de M2 ya tienen integración Python comprobada.
 - Ejecutar los recorridos H1/H2 y comparación desde la interfaz propia de M3.
-- Revisar el corpus nuevo de M2 cuando exista; los casos actuales son del motor, no revisión de un trabajo aún ausente.
+- Revisar humanamente el corpus de M2 y la fidelidad de las explicaciones de M3; sus pruebas técnicas no sustituyen esa revisión.
 - Obtener revisión humana de otro miembro, enseñanza mutua, ensayo aleatorio y ejecución limpia de la aplicación completa por los tres.
 
 La implementación verificable de M1 se entrega sin commits; la aceptación global de sus tickets conserva esos pendientes de coordinación. Consultar [evidencia ejecutada](evidencias/miembro-1.md).

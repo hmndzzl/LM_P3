@@ -4,7 +4,7 @@
 
 La implementación Python comprueba lenguaje, interpretación, AST completo y entorno antes de evaluar. Las funciones públicas sirven también fuera de HTTP. No calculan verdad ni modifican el contexto. Los errores de entrada se agrupan en una lista de diagnósticos; los límites interrumpen sin resultado lógico.
 
-La integración con el servicio de M1 y la ruta desde filas externas están probadas. La revisión humana de M1/M3, el codec JSON/HTTP y los formularios de M3 siguen pendientes. No se afirma haber probado R7 desde una interfaz aún inexistente. Consultar [evidencia de M2-03](evidencias/miembro-2.md).
+La integración con el servicio de M1 y la ruta desde filas externas están probadas. El codec JSON/HTTP y los formularios de M3 ya están implementados y verificados en interfaz.md. La revisión humana de M1/M2/M3 sigue pendiente. Consultar [evidencia de M2-03](evidencias/miembro-2.md).
 
 ## Recorrido que debe usar M3
 

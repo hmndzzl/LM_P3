@@ -1,0 +1,85 @@
+# Evidencia técnica — Miembro 3
+
+## Alcance
+
+Verificación del 15 de noviembre de 2026 en Linux, Python 3.14.8 y Chromium
+controlado con agent-browser. Se implementaron los recorridos gráficos de M3,
+conservando motor/parser/validador y bases heredadas. El nombre visible es
+Evaluador semántico. Los commits se hicieron por solicitud expresa del usuario.
+
+## Resultados reproducidos
+
+| Comprobación | Resultado real |
+| --- | --- |
+| `python3 -B -m unittest discover -s tests -t .` | 149 pruebas aprobadas, sin omisiones |
+| `tests/ui/smoke.js` en navegador | 31 comprobaciones aprobadas |
+| `tests/ui/completion.js` en navegador | 31 comprobaciones aprobadas |
+| `tests/ui/background.js`, movimiento normal | 5 comprobaciones aprobadas |
+| `tests/ui/background.js`, movimiento reducido | 3 comprobaciones aprobadas |
+| Copia limpia con git archive | 149 pruebas y las 67 comprobaciones de navegador pasan también contra esa copia |
+| Lanzador POSIX desde /tmp | Inicia la copia limpia y sirve los recursos desde su propia raíz |
+| Anchos de comparación 1440/1024/768/320 | Sin scroll horizontal global; a 1024/768/320 el ancho del documento coincide con el viewport |
+| Axe-core 4.12.1, resultado | 0 infracciones; 28 reglas aprobadas y 1 revisión incompleta de contraste sobre cinco glifos |
+| Axe-core 4.12.1, comparación | 0 infracciones; 26 reglas aprobadas y la misma revisión incompleta de glifos |
+| Contraste manual de botones señalados | Color efectivo rgb(23,43,58) sobre rgb(255,255,255): 14.55:1 |
+
+Las pruebas Python incluyen los 130 casos anteriores y 19 de transporte/arranque.
+No se alteraron ni eliminaron pruebas anteriores. El oráculo de 900 evaluaciones
+sigue pasando dentro de la suite. Los scripts de navegador evalúan con M1/M2 reales;
+los retrasos de respuesta se introducen solo para comprobar descarte de resultados
+obsoletos. No sustituyen la semántica por resultados prefijados.
+
+Para reproducir en una sesión de prueba con la aplicación abierta:
+
+```sh
+python3 -B -m lm_p3 --no-browser --port 8765
+# En otra terminal, con agent-browser instalado como herramienta opcional:
+agent-browser --session m3-revision open http://127.0.0.1:8765
+agent-browser --session m3-revision eval --stdin < tests/ui/smoke.js
+agent-browser --session m3-revision eval --stdin < tests/ui/completion.js
+agent-browser --session m3-revision eval --stdin < tests/ui/background.js
+agent-browser --session m3-revision set media light reduced-motion
+agent-browser --session m3-revision eval --stdin < tests/ui/background.js
+```
+
+Estos scripts reemplazan datos de los formularios de esa sesión. No son necesarios
+para usar la aplicación ni agregan dependencias al producto.
+
+## Cobertura importante
+
+- Botones de los nueve símbolos, inserción en selección, foco, deshacer/rehacer.
+- Nombres propios, aridad cero, dominio editable y valores recuperables fuera de D.
+- Conteo funcional y errores que enfocan la salida concreta; rechazo antes del motor.
+- Variables libres, cuatro resultados cuantificados, toda la comprobación exigida,
+  términos anidados y selección de subfórmula con caracteres fuera del plano básico.
+- Función, pertenencia relacional y asignación libre comparadas sobre copias.
+  Cambio de verdad y cambio de testigo sin nueva verdad; base conservada.
+- Rechazo de relación vacía, cero/múltiples cambios y contextos diferentes.
+- Respuestas viejas de evaluación y comparación descartadas tras editar.
+- 36 símbolos de fondo sin eventos de ratón ni lectura accesible; pausa/reanudación
+  y desactivación por prefers-reduced-motion.
+
+## Respaldo visual inspeccionado
+
+Las capturas proceden de ejecución real con datos del ejemplo y fueron abiertas
+para revisión. Son respaldo; no sustituyen pruebas ni una demostración en vivo.
+
+- [Escritorio](m3-escritorio.png): formulario, barra lógica, resultado y resumen.
+- [Comparación](m3-comparacion.png): ∃x Activa(x), quitar norte conserva Verdadero
+  y cambia el testigo de norte a centro.
+- [Móvil](m3-movil.png): la misma aplicación y comparación a 320 px.
+
+## Cierre de tickets y límites de esta evidencia
+
+| Ticket | Implementación técnica | Aceptación humana |
+| --- | --- | --- |
+| M3-01 | Recorrido atómico, servidor, codec, formularios y estados comprobados | Otro integrante debe repetirlo con datos propios |
+| M3-02 | Edición completa, símbolos, entorno, errores y contexto comprobados | M2 debe revisar mensajes y casos desde la UI |
+| M3-03 | Evidencia navegable, resaltado y comparación real comprobados | M1 debe revisar fidelidad; compañero debe explicar evidencia y observar utilidad |
+| M3-04 | Lanzadores, copia limpia Linux, guía, guiones y respaldo preparados | Falta ensayo de los tres, lector de pantalla y ejecución nativa en macOS/Windows |
+
+No se afirma conformidad WCAG completa ni ejecución en otros navegadores/sistemas.
+La fuente de las posiciones es Python; la conversión y el historial se comprobaron
+en Chromium. No se ejecutó un lector de pantalla ni se inventó una sesión con
+compañeros. Las actividades de enseñanza, exposición, coevaluación y revisión
+siguen siendo humanas y no pueden darse por realizadas mediante pruebas técnicas.

@@ -5,8 +5,8 @@
 Esta es la estructura acordada para que los tres miembros trabajen en las mismas rutas. La estructura fue creada inicialmente con paquetes vacíos. **M1 implementó modelos, motor, frontera defensiva, comparación y servicio; M2 aporta lexer/parser, variables libres y validación integral/externa por filas**; ver [semantica.md](semantica.md), [sintaxis.md](sintaxis.md) y [validacion.md](validacion.md). Las revisiones humanas siguen pendientes. Los nombres de archivos detallados a continuación son destinos previstos: solo se crean cuando el ticket correspondiente los necesite. No crear funciones vacías que aparenten cumplimiento.
 
 M3 ya implementó `server/codec.py`, `server/http.py`, `__main__.py` y la primera
-interfaz en `frontend/`. El recorrido de análisis/evaluación está conectado y
-probado; faltan los botones lógicos, comparación y cierre de revisión. Ver
+interfaz en `frontend/`. Los recorridos de análisis, evaluación y comparación están conectados y
+probados, incluidos botones y evidencia navegable; falta revisión humana. Ver
 [interfaz.md](interfaz.md). Los archivos previstos adicionales se crean cuando
 su responsabilidad lo requiera. `app.js` coordina; `editors.js` mantiene los
 formularios; `errors.js` presenta errores; `evidence.js` presenta resultados y
@@ -43,7 +43,7 @@ LM_P3/
 │   ├── ui/                    Casos y pruebas de navegador — M3
 │   └── fixtures/              Datos de prueba compartidos
 ├── examples/                  Escenarios válidos/erróneos para enseñar y demostrar
-├── scripts/                   Lanzadores propios macOS/Windows — M3
+├── scripts/                   Lanzadores propios Linux/macOS/Windows — M3
 ├── docs/
 │   ├── estructura.md          Este mapa y sus límites
 │   ├── contratos.md           Contratos entre miembros
@@ -81,8 +81,11 @@ Crear únicamente los necesarios para el ticket actual; dividir un módulo cuand
 | `frontend/js/api.js` | Peticiones JSON y manejo de transporte | M3 |
 | `frontend/js/editors.js` | Formularios de símbolos/tablas/entorno y datos de entrada | M3 |
 | `frontend/js/errors.js` | Resumen, mensajes por campo y selección de errores Unicode | M3 |
-| `frontend/js/evidence.js` | Presentación/navegación de trazas | M3 |
-| `scripts/abrir_interfaz.command`, `scripts/abrir_interfaz.bat` | Lanzadores adaptados a la raíz y punto de entrada | M3 |
+| `frontend/js/evidence.js` | Presentación/navegación y resaltado de trazas | M3 |
+| `frontend/js/formula.js` | Inserción de símbolos conservando el historial nativo | M3 |
+| `frontend/js/comparison.js` | Copia de escenario, cambio único y comparación | M3 |
+| `frontend/js/background.js`, `frontend/css/background.css` | Decoración animada opcional y movimiento reducido | M3 |
+| `scripts/abrir_interfaz.sh`, `scripts/abrir_interfaz.command`, `scripts/abrir_interfaz.bat` | Lanzadores adaptados a la raíz y punto de entrada | M3 |
 
 Los modelos compartidos no son una cuarta tarea sin dueño. Cada archivo tiene el autor indicado, los otros consumen el contrato y proponen cambios mediante revisión. Evitar ediciones simultáneas del mismo archivo. Si un modelo puede permanecer pequeño dentro de uno de estos módulos, acordarlo antes de introducir otro archivo.
 
@@ -128,11 +131,11 @@ python3 -m venv .venv
 python -m unittest discover -s tests -t . -v
 ```
 
-El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. La suite propia cubre motor, parser, validación externa/integral y su integración; no equivale a cobertura HTTP ni de interfaz. En Windows puede invocarse el intérprete `.venv/Scripts/python.exe` directamente. No se requiere instalar dependencias externas ahora.
+El comando de pruebas apunta solo a `tests/`, por lo que no incorpora pruebas heredadas. La suite propia cubre motor, parser, validación, integración, HTTP y arranque. Las comprobaciones de navegador se ejecutan por separado como describe interfaz.md. En Windows puede invocarse el intérprete `.venv/Scripts/python.exe` directamente. No se requiere instalar dependencias externas ahora.
 
 Comando disponible de aplicación: `python -m lm_p3` (o `python3 -B -m lm_p3`).
 El arranque delega en el servidor local y abre el navegador. Los lanzadores propios
-de `scripts/` quedan pendientes; los de `bases/` siguen abriendo el laboratorio original.
+de `scripts/` (.sh, .command y .bat) resuelven la raíz; los de `bases/` siguen abriendo el laboratorio original.
 
 No agregar un `requirements.txt`, `package.json`, framework ni configuración de empaquetado vacío por apariencia: hacerlo solo si una necesidad real y acordada lo requiere. Si aparecen dependencias, fijar y documentar cómo instalarlas antes de pedir al grupo que las use.
 
@@ -140,4 +143,4 @@ No agregar un `requirements.txt`, `package.json`, framework ni configuración de
 
 H0 fija este mapa, y [contratos.md](contratos.md) cierra modelos y fronteras antes de consumidores incompatibles. M2-01/02 construye `models`/`syntax`; M2-03 `validation`; M1-01/02 `semantics` y su frontera normalizada `semantics/inputs.py`; M1/M2 integran `application`; M3-01 crea `server`, frontend mínimo y entrada. M1-03 añade comparación; M3-02/03 completa interacción y evidencia. Cada uno agrega sus pruebas/documentación durante su ticket.
 
-La entrega de implementación de M1 está descrita en semantica.md; la integración con M2/M3 y las revisiones humanas continúan pendientes. Mantener las 15 unidades estimadas por persona y recalibrar en H1 si integración/modelos modifican la carga real. Un cambio de ruta compartida requiere actualizar este mapa, contratos, imports, comandos y las guías afectadas en la misma entrega revisable. Los humanos gestionan ramas y commits según AGENTS.md.
+La entrega de implementación de M1 está descrita en semantica.md; la integración técnica con M2/M3 está comprobada y las revisiones humanas continúan pendientes. Mantener las 15 unidades estimadas por persona y recalibrar en H1 si integración/modelos modifican la carga real. Un cambio de ruta compartida requiere actualizar este mapa, contratos, imports, comandos y las guías afectadas en la misma entrega revisable. Los humanos gestionan ramas y commits según AGENTS.md.

@@ -2,7 +2,7 @@
 
 ## Estado
 
-Documento de coordinación asociado a [estructura.md](estructura.md). **M1 implementó el motor y M2 implementó lexer/parser, variables libres y validación integral**, incluidos builders de filas externas que conservan evidencia de duplicados. El usuario confirmó la notación y la asociatividad el 15 de noviembre de 2026; ver [sintaxis.md](sintaxis.md). M3 añade el transporte de análisis/evaluación descrito al final de este documento. Las revisiones humanas y la integración gráfica completa siguen pendientes.
+Documento de coordinación asociado a [estructura.md](estructura.md). **M1 implementó el motor y M2 implementó lexer/parser, variables libres y validación integral**, incluidos builders de filas externas que conservan evidencia de duplicados. El usuario confirmó la notación y la asociatividad el 15 de noviembre de 2026; ver [sintaxis.md](sintaxis.md). M3 añade el transporte de análisis/evaluación/comparación descrito al final de este documento. La integración gráfica está implementada; las revisiones humanas siguen pendientes.
 
 ## Contrato Python inicial implementado por M1
 
@@ -177,4 +177,29 @@ por un error sin verdad. Son límites de transporte, no garantías de tiempo tot
 del parser/motor. Solo se sirven archivos estáticos enumerados de `frontend/`.
 
 El formato implementado reutiliza las firmas de M1/M2; falta revisión humana del
-equipo. La comparación HTTP y su visor quedan para M3-03.
+equipo. La comparación HTTP y su visor se describen a continuación.
+
+
+## Comparación HTTP de M3
+
+`POST /api/compare` recibe exactamente `revision`, `base` y `variant`. La revisión
+exterior es un entero no negativo del contexto de comparación. Cada escenario
+contiene los mismos ocho campos de una petición completa de evaluación, incluida
+su revisión. No se aceptan AST, traza, resultado ni cambios precalculados.
+
+El codec construye los dos contextos con los builders de M2, analiza las fórmulas,
+valida con `validate_input` y llama al comparador real de M1. Este exige mismo
+lenguaje, fórmula y dominio ordenado; exactamente una salida funcional, pertenencia
+relacional o asignación libre cambia. Ambas interpretaciones deben ser válidas.
+
+HTTP 200 devuelve `status: "compared"`, `revision` y `comparison`, con `change`,
+`before`, `after`, `evidence_changes` y la propiedad explícita `truth_changed`.
+Los dos resultados incluyen sus trazas recalculadas. Los errores conservan el
+sobre normal sin resultado lógico. Una variante inválida no modifica la base.
+
+No hay sesiones ni caché de escenarios en el servidor. El navegador conserva una
+copia de la última entrada evaluada, produce otra copia para la variante y descarta
+respuestas que correspondan a una versión anterior. Editar el formulario principal
+invalida la base y obliga a evaluar de nuevo antes de comparar. Las instancias
+modificadas se identifican mediante `trace_id`; un cambio de testigo no implica
+por sí solo cambio de verdad.

@@ -4,7 +4,7 @@ Proyecto de MM3032 Lógica Matemática: aplicación gráfica para evaluar fórmu
 
 ## Estado actual
 
-El motor de M1 y los módulos de sintaxis/validación de M2 están conectados a la primera interfaz de M3. Ya se pueden configurar símbolos, dominio y tablas mediante filas, analizar variables libres y evaluar con evidencia real. Faltan los botones lógicos, la comparación gráfica y el cierre de accesibilidad/revisión humana; no se declara terminado M3. Las copias de `bases/` siguen intactas.
+El motor de M1, la sintaxis/validación de M2 y la implementación técnica de M3 están conectados: editores gráficos, botones lógicos, resultados con evidencia navegable y comparación de un cambio. La aplicación se llama **Evaluador semántico**. Las revisiones humanas, el ensayo de defensa y la comprobación en otros sistemas siguen pendientes. Las copias de `bases/` siguen intactas.
 
 ## Ejecutar la aplicación
 
@@ -25,11 +25,22 @@ python3 -B -m lm_p3 --no-browser --port 8765
 Pulsa **Cargar ejemplo** y luego **Evaluar fórmula**: `Activa(x)` con x=centro
 da Verdadero. Selecciona sur y reevalúa para obtener Falso. También puedes añadir
 tus propios símbolos y filas. El dominio se introduce con un elemento por línea.
-Los símbolos se escriben con teclado; los botones se añadirán en el bloque 2.
+Puedes escribir con teclado o insertar símbolos desde la barra, conservando cursor,
+selección y deshacer/rehacer. Las tuplas y salidas usan selectores del dominio.
 
 La fórmula, las asignaciones y el resultado ocupan la zona principal. El resumen
 del mundo permanece visible; para modificar sus datos abre **Lenguaje** o
 **Dominio y tablas**. Un error abre automáticamente la sección correspondiente.
+
+Después de evaluar, **Comparar un cambio** permite modificar una salida funcional,
+la pertenencia de una tupla o una asignación libre sobre una copia. La base se
+conserva y se recalculan ambos escenarios. El fondo matemático puede pausarse con
+**Fondo animado** y respeta movimiento reducido.
+
+Lanzadores alternativos: `scripts/abrir_interfaz.sh` en Linux,
+`scripts/abrir_interfaz.command` en macOS y `scripts/abrir_interfaz.bat` en Windows.
+Todos resuelven la raíz del proyecto. El arranque POSIX está probado en Linux;
+la ejecución nativa en macOS/Windows necesita revisión del equipo.
 
 Recorrido del código y límites de esta entrega: [interfaz y servidor](docs/interfaz.md).
 
@@ -64,7 +75,8 @@ python -B -m examples.semantica --json
 python -B -m examples.semantica --benchmark
 ```
 
-El ejemplo construye AST directamente; no sustituye la integración pendiente con el parser y la interfaz. Los casos se calculan con el motor real, sin respuestas prefijadas.
+El ejemplo construye AST directamente para estudiar M1; la aplicación gráfica usa
+el parser real de M2. Los casos se calculan sin respuestas prefijadas.
 
 ## Comprobar texto real con la entrega de M2
 
@@ -98,4 +110,6 @@ python -X utf8 -B -m examples.corpus --case E03
 
 El corpus contiene 10 fórmulas, 3 comparaciones de un cambio y 11 entradas inválidas con reparaciones comprobadas. Q01–Q04 cubren los cuatro resultados cuantificados; C02 conserva la verdad y cambia el testigo. Toda salida se calcula con el código real, sin leer las expectativas de pruebas. Los ejemplos no modifican su mundo base.
 
-La preparación de defensa y la revisión de M3 se encuentran en la guía de casos y la matriz general. La primera verificación gráfica está descrita en interfaz.md; enseñanza mutua, revisión humana y aceptación global siguen pendientes.
+La preparación de defensa y el recorrido de código están en [la guía de M3](docs/interfaz.md).
+Resultados y capturas: [evidencia M3](docs/evidencias/miembro-3.md).
+Enseñanza mutua, revisión humana y aceptación global siguen pendientes.

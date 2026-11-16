@@ -4,7 +4,7 @@
 
 Se confirmó el 15 de noviembre de 2026 los símbolos oficiales `¬ ∧ ∨ → ↔ ∀ ∃`, sus alias de teclado, precedencia, alcance mínimo y ausencia de igualdad primitiva. En una aclaración posterior se confirmó implicación asociativa a la derecha, los demás binarios a la izquierda y admisión de funciones/predicados de aridad cero. Esta procedencia no se sustituye por una afirmación de consulta independiente al docente.
 
-M2-01/02 tienen implementación y pruebas Python; su aceptación global conserva revisión humana e integración con la interfaz pendientes. M2-03 también está implementado: ver [validacion.md](validacion.md). El servicio usa su validador integral y certifica con la fábrica defensiva de M1. Los modelos de lenguaje, interpretación y AST se conservan; no se implementó un segundo motor ni un codec HTTP.
+M2-01/02 tienen implementación y pruebas Python; su aceptación global conserva revisión humana pendiente; la integración gráfica está documentada en interfaz.md. M2-03 también está implementado: ver [validacion.md](validacion.md). El servicio usa su validador integral y certifica con la fábrica defensiva de M1. Los modelos de lenguaje, interpretación y AST se conservan; no se implementó un segundo motor ni un codec HTTP.
 
 ## Operadores y gramática
 
@@ -82,4 +82,4 @@ python -X utf8 -B -m unittest discover -s tests -t . -v
 python -X utf8 -B -m examples.sintaxis
 ```
 
-Las pruebas comparan AST con árboles manuales, cubren operadores/alias, precedencia/asociatividad, nombres propios, aridad cero, posiciones Unicode, alcance/sombra, errores y límites. La integración usa parser y motor reales, pasando por `validate_input` de M2 y la certificación de M1. Las pruebas de filas externas de M2-03 se describen en validacion.md; la UI sigue pendiente. Las fixtures se describen en [contratos.md](contratos.md).
+Las pruebas comparan AST con árboles manuales, cubren operadores/alias, precedencia/asociatividad, nombres propios, aridad cero, posiciones Unicode, alcance/sombra, errores y límites. La integración usa parser y motor reales, pasando por `validate_input` de M2 y la certificación de M1. Las pruebas de filas externas de M2-03 se describen en validacion.md; la UI está implementada y verificada por M3; su revisión humana sigue pendiente. Las fixtures se describen en [contratos.md](contratos.md).
