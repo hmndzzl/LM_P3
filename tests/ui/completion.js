@@ -28,6 +28,7 @@
     await until(() => !$('compare').disabled);
   };
   const oldConfirm = window.confirm;
+  const realFetch = window.fetch;
   window.confirm = () => true;
   try {
     assert(document.title.startsWith('Evaluador semántico'), 'Nombre actualizado de la aplicación');
@@ -118,8 +119,53 @@
     await compare();
     assert(!$('comparison-errors').hidden && $('comparison-results').hidden && !$('result').hidden,
       'Variante que vacía la relación se rechaza y preserva el original');
+
+    $('load-example').click();
+    await evaluate();
+    $('open-comparison').click();
+    await compare();
+    assert(!$('comparison-errors').hidden && $('comparison-errors').textContent.includes('exactamente un dato'),
+      'Una variante sin cambios no se presenta como comparación válida');
+    fill($('comparison-kind'), 'assignment');
+    fill($('comparison-new-value'), 'sur');
+    let release;
+    let waiting = false;
+    let delivered = false;
+    window.fetch = async (...args) => {
+      const response = await realFetch(...args);
+      if (!String(args[0]).endsWith('/api/compare')) return response;
+      const data = await response.json();
+      waiting = true;
+      await new Promise((resolve) => { release = resolve; });
+      return { ok: response.ok, json: async () => { delivered = true; return data; } };
+    };
+    $('compare').click();
+    await until(() => waiting);
+    fill($('comparison-new-value'), 'norte');
+    release();
+    await until(() => delivered);
+    assert($('comparison-results').hidden && $('comparison-status').textContent.includes('Variante modificada'),
+      'Una comparación tardía no sobrescribe una variante editada');
+    window.fetch = realFetch;
+
+    while ($('symbols').querySelector('button')) $('symbols').querySelector('button').click();
+    fill($('domain'), 'único');
+    $('add-function').click();
+    fill($('symbols').querySelector('input[type=text]'), 'c');
+    fill($('symbols').querySelector('input[type=number]'), '0');
+    $('interpretations').querySelector('button').click();
+    fill($('interpretations').querySelector('select'), 'único');
+    $('add-predicate').click();
+    const predicateRow = $('symbols').lastElementChild;
+    fill(predicateRow.querySelector('input[type=text]'), 'T');
+    fill(predicateRow.querySelector('input[type=number]'), '0');
+    $('interpretations').lastElementChild.querySelector('button').click();
+    await evaluate('T ↔ T()');
+    assert(!$('result').hidden && $('result-value').textContent === 'Verdadero',
+      'Símbolos de aridad cero se configuran y evalúan desde la interfaz');
     return { passed: checks.length, checks };
   } finally {
     window.confirm = oldConfirm;
+    window.fetch = realFetch;
   }
 })()
