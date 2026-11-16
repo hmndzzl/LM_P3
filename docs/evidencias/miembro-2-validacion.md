@@ -1,5 +1,7 @@
 # Evidencia M2-03 — Validación integral
 
+Este archivo conserva el corte M2-03 con 118 pruebas. La entrega posterior de corpus y preparación M2-04 está en [miembro-2-corpus.md](miembro-2-corpus.md); las actividades humanas y gráficas continúan pendientes.
+
 ## Entorno y alcance
 
 Fecha: 15 de noviembre de 2026. Rama humana existente `feature/sintaxis-validacion`; estado limpio al iniciar esta entrega. Python 3.11.9 desde `C:\UVG\logica\LM_P3\.venv\Scripts\python.exe`. Se conservaron las 79 pruebas anteriores. No se instalaron paquetes ni se hicieron staging, commits, push, cambios de rama o cambios en `bases/`.

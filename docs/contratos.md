@@ -34,6 +34,14 @@ La gramática, precedencia, asociatividad, ejemplos y política de colisiones es
 
 `tests/fixtures/syntax_cases.json` usa `version: 1`, `language` con mapas `functions`/`predicates`, `interpretation` con `domain`, `function_rows` (listas de pares `[argumentos, salida]`) y `relations` (listas de tuplas), y `cases` con `text`, `environment`, `free_variables`, `value` y `reason` esperados. Son soluciones manuales para probar parser y motor; el test construye los modelos Python. No validan JSON externo ni fijan el futuro codec de M3. `value` es exclusivamente una expectativa de prueba, nunca evidencia confiada al navegador.
 
+### Corpus didáctico M2-04 (formato de ejemplos, versión 1)
+
+`examples/red_estaciones.json` contiene un `world` con `functions`/`predicates` por filas de declaración, `domain`, `function_rows` y `relations`, usando las entradas de los builders de M2. `scenarios` contiene `id`, `title`, `formula`, `assignments` y `manual_reason`. `comparisons` conserva fórmula/entorno base y describe un único `change(kind,symbol,arguments,before,after)`, con su solución manual en prosa. Las expectativas estructuradas de verdad, evidencia y errores se guardan por ID en `tests/fixtures/corpus_expectations.json`, fuera de los ejemplos ejecutables, siguiendo estructura.md. Nunca alimentan el evaluador.
+
+`invalid_base` define fórmula/entorno iniciales; cada registro de `invalid_cases` incluye `overrides` para producir el error y `repair` para corregirlo y su explicación. Los reemplazos de `world` afectan campos completos, sin mezclar silenciosamente tablas parciales. La fixture guarda `expected_error(code,field)` y `fixed_value`; los tests contrastan tanto el rechazo como la reparación real.
+
+`python -X utf8 -B -m examples.corpus` ejecuta los datos por builders, parser, servicio/validador y comparación reales; `--case ID` selecciona un registro y `--json` expone las evidencias calculadas. El informe observado no copia las expectativas manuales. Los consumidores pueden leer los datos con `load_corpus` y reutilizar los casos sin editar código; esto no define un codec HTTP ni afirma que M3 ya importe ejemplos desde la interfaz. La revisión humana de soluciones y UI permanece pendiente.
+
 ## Fronteras y responsables
 
 ### Entrega M2-03: validación reutilizable (15 de noviembre de 2026)

@@ -13,6 +13,8 @@ El motor de M1 y los módulos de sintaxis/validación integral de M2 están impl
 - [Motor semántico](docs/semantica.md): API, demostración ejecutable, límites y guía de defensa.
 - [Sintaxis de M2](docs/sintaxis.md): gramática, alias, alcance, nombres, errores y API para M1/M3.
 - [Validación de M2](docs/validacion.md): builders por filas, totalidad, duplicados, entorno y errores agrupados.
+- [Corpus didáctico M2-04](docs/casos-didacticos.md): soluciones razonadas y 24 casos ejecutables de Red de estaciones.
+- [Defensa M2](docs/defensa-m2.md), [revisión de M3](docs/revision-m3.md) y [matriz de verificación](docs/matriz-verificacion.md): materiales preparados, con actividades humanas/UI pendientes.
 
 - [Bases transferidas](bases/README.md) y [manifiesto de integridad](bases/MANIFEST.json).
 
@@ -55,3 +57,16 @@ python -X utf8 -B -m examples.validacion
 ```
 
 Esta demo pasa por los builders reutilizables de M2 antes de crear mapas/modelos, muestra una evaluación válida y rechaza tablas vacías/salidas contradictorias sin asignar verdad. Ver [evidencia M2-03](docs/evidencias/miembro-2-validacion.md). No acredita integración HTTP ni pruebas de interfaz.
+
+## Corpus, comparación y preparación de defensa
+
+```powershell
+python -X utf8 -B -m examples.corpus
+python -X utf8 -B -m examples.corpus --case Q03 --json
+python -X utf8 -B -m examples.corpus --case C02
+python -X utf8 -B -m examples.corpus --case E03
+```
+
+El corpus contiene 10 fórmulas, 3 comparaciones de un cambio y 11 entradas inválidas con reparaciones comprobadas. Q01–Q04 cubren los cuatro resultados cuantificados; C02 conserva la verdad y cambia el testigo. Toda salida se calcula con el código real, sin leer las expectativas de pruebas. Los ejemplos no modifican su mundo base.
+
+La guía de defensa y la ficha de revisión de M3 están listas para el equipo; no se han realizado enseñanza mutua, revisión humana, uso con compañeros ni pruebas de una pantalla todavía inexistente. Consultar [evidencia M2-04](docs/evidencias/miembro-2-corpus.md). Esta entrega no marca los tickets globalmente aceptados.
