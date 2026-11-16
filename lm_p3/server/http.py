@@ -6,10 +6,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import logging
 from pathlib import Path
-import socket
 import webbrowser
 
-from lm_p3.models.errors import EvaluationCancelledError, EvaluationLimitError, SemanticInputError
+from lm_p3.models.errors import EvaluationLimitError, SemanticInputError
 from lm_p3.server.codec import decode_request, error_response, process_request
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -82,13 +81,11 @@ class LocalHandler(BaseHTTPRequestHandler):
             lengths = self.headers.get_all('Content-Length', [])
             if self.headers.get('Transfer-Encoding') or len(lengths) != 1 or not lengths[0].isascii() or not lengths[0].isdigit():
                 raise SemanticInputError('invalid_length', 'Indica un único tamaño de petición válido.', 'request')
-            if len(lengths[0]) > 10:
+            length_text = lengths[0].lstrip('0') or '0'
+            if len(length_text) > 6 or int(length_text) > MAX_BODY:
                 self._send(413, error_response(EvaluationLimitError('La petición supera 256 KB. Reduce los datos.')))
                 return
-            length = int(lengths[0])
-            if length > MAX_BODY:
-                self._send(413, error_response(EvaluationLimitError('La petición supera 256 KB. Reduce los datos.')))
-                return
+            length = int(length_text)
             if length == 0:
                 raise SemanticInputError('empty_request', 'La petición está vacía.', 'request')
             body = self.rfile.read(length)
@@ -100,12 +97,10 @@ class LocalHandler(BaseHTTPRequestHandler):
             self._send(200, process_request(routes[self.path], data))
         except SemanticInputError as error:
             self._send(400, error_response(error, revision))
-        except (EvaluationLimitError, EvaluationCancelledError) as error:
+        except EvaluationLimitError as error:
             self._send(422, error_response(error, revision))
-        except (socket.timeout, TimeoutError):
+        except TimeoutError:
             self._send(408, error_response(EvaluationLimitError('La petición tardó demasiado en llegar.'), revision))
-        except (BrokenPipeError, ConnectionResetError):
-            return
         except Exception:
             logging.exception('Fallo al procesar la petición local')
             error = RuntimeError('No se pudo completar la evaluación. Reintenta o consulta la consola.')

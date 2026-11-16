@@ -27,9 +27,9 @@ def decode_request(body: bytes) -> dict:
     try:
         data = json.loads(body.decode('utf-8'), object_pairs_hook=_unique_object,
                           parse_constant=_invalid_constant)
-    except (UnicodeError, json.JSONDecodeError, RecursionError, ValueError) as error:
-        if isinstance(error, SemanticInputError):
-            raise
+    except SemanticInputError:
+        raise
+    except (ValueError, RecursionError) as error:
         raise SemanticInputError('invalid_json', 'Envía un objeto JSON válido en UTF-8.', 'request') from error
     if not isinstance(data, dict):
         raise SemanticInputError('invalid_structure', 'La petición debe ser un objeto JSON.', 'request')
@@ -40,8 +40,8 @@ def error_response(error: Exception, revision: int | None = None) -> dict:
     errors = []
     for issue in getattr(error, 'errors', (error,)):
         span = getattr(issue, 'span', None)
-        errors.append({'code': getattr(issue, 'code', 'internal_error'), 'message': str(issue.message)
-                       if hasattr(issue, 'message') else str(issue),
+        errors.append({'code': getattr(issue, 'code', 'internal_error'),
+                       'message': getattr(issue, 'message', str(issue)),
                        'field': getattr(issue, 'field', ''),
                        'span': asdict(span) if span is not None else None,
                        'details': dict(getattr(issue, 'details', {}))})
@@ -53,8 +53,6 @@ def process_request(operation: str, data: dict) -> dict:
     required = {'revision', 'functions', 'predicates', 'formula'}
     if operation == 'evaluate':
         required |= {'domain', 'function_rows', 'relations', 'assignments'}
-    elif operation != 'analyze':
-        raise ValueError('Operación interna no reconocida.')
     if set(data) != required:
         raise SemanticInputError('invalid_fields', 'Faltan campos o hay campos no admitidos.', 'request')
     if type(data['revision']) is not int or data['revision'] < 0:
