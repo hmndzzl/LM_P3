@@ -42,11 +42,11 @@
   window.confirm = () => true;
   try {
     const cases = [
-      ['pertenencia', true], ['universal', false], ['relaciones', true],
+      ['pertenencia', true], ['universal', false], ['universal-completo', true], ['relaciones', true],
       ['testigo', true], ['contradiccion', false], ['constante', true],
-      ['constante-relacion', true], ['funcion', false], ['socrates', true],
+      ['constante-relacion', true], ['funcion', false], ['integrado', false], ['socrates', true],
     ];
-    assert($('example-select').options.length === cases.length, 'El selector ofrece los nueve ejemplos de las notas');
+    assert($('example-select').options.length === cases.length, 'El selector ofrece todos los ejemplos y variantes documentados');
     for (const [id, expected] of cases) {
       load(id);
       assert(!$('example-note').textContent.includes('Notas del curso') && $('example-note').querySelectorAll('p').length === 2 && !$('example-note').hidden,
