@@ -18,7 +18,7 @@ Verificación actual del catálogo:
 | tests/ui/examples.js | 33 comprobaciones aprobadas |
 | tests/ui/editor-arity.js | 9 comprobaciones aprobadas |
 | tests/ui/evidence.js | 11 comprobaciones aprobadas |
-| tests/ui/interpretation-summary.js | 11 comprobaciones aprobadas |
+| tests/ui/interpretation-summary.js | 14 comprobaciones aprobadas |
 | tests/ui/background.js | 3 normales y 3 con movimiento reducido |
 | Anchos 1440/1024/768/320 con el selector nuevo | Sin scroll horizontal global |
 | Axe-core 4.12.1, ejemplo a 320 px | 0 infracciones, 42 reglas aprobadas; contraste incompleto en ocho nodos por símbolos/solapamiento del fondo |
@@ -37,8 +37,9 @@ muestra números por niveles y valores, explica el corte de cuantificadores y oc
 identificadores internos. Se reproduce el caso ∀x ∀y R(x,y) de las capturas.
 El selector se titula Probar Ejemplos y su ayuda ya no muestra la referencia al PDF.
 El panel Interpretación separa elementos del dominio, tuplas y argumentos/imagen
-de las funciones; permite desplegar las filas restantes. Las constantes se
-identifican explícitamente. Los ocho scripts pasan en conjunto: 135 comprobaciones
+de las funciones; permite desplegar las filas restantes en la misma tabla, sin
+repetir título ni encabezados. Se comprueba plegar y desplegar sin duplicar filas. Las constantes se
+identifican explícitamente. Los ocho scripts pasan en conjunto: 138 comprobaciones
 normales. La terminología visible se ajustó a las notas del curso.
 
 El fondo tiene 60 letras y símbolos; se retiró su botón de pausa por solicitud

@@ -28,7 +28,9 @@ el trabajo. El panel Interpretación distingue dominio del discurso, relaciones
 y funciones/constantes. El dominio separa sus elementos; cada relación muestra una
 tupla por fila y cada función separa Argumentos e Imagen. Se muestran hasta cuatro
 elementos o filas inicialmente y un desplegable permite consultar los restantes.
-Cada símbolo tiene su propia tabla; los argumentos siempre conservan paréntesis. Los errores abren la sección afectada.
+Cada símbolo tiene una única tabla; desplegar añade las filas a esa misma tabla,
+sin repetir título ni encabezados. Plegar oculta únicamente las filas adicionales.
+Los argumentos siempre conservan paréntesis. Los errores abren la sección afectada.
 
 ## Ejemplos de las notas
 
@@ -180,7 +182,7 @@ Los límites son de recursos, no restricciones matemáticas ni garantía de tiem
 ## Verificación y aceptación
 
 [Evidencia reproducible y capturas](evidencias/miembro-3.md): 149 pruebas Python,
-135 comprobaciones de navegador y tres adicionales con movimiento reducido.
+138 comprobaciones de navegador y tres adicionales con movimiento reducido.
 El registro distingue las verificaciones históricas de las del catálogo actual.
 Se reprodujo el funcionamiento desde git archive, sin .git ni entorno virtual.
 La comparación se revisó a 1440, 1024, 768 y 320 px, sin scroll horizontal global.

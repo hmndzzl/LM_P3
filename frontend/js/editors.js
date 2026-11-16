@@ -85,15 +85,29 @@ function domainList(values) {
 }
 
 function appendPreview(target, entries, render, unit = 'filas') {
-  target.append(render(entries.slice(0, 4)));
+  const preview = render(entries.slice(0, 4));
+  preview.id = `${target.id}-items`;
+  target.append(preview);
   if (entries.length <= 4) return;
-  const more = node('details');
+  const more = node('button', `Ver ${unit} restantes (${entries.length - 4})`);
+  more.type = 'button';
   more.className = 'summary-more';
-  more.append(node('summary', `Ver ${unit} restantes (${entries.length - 4})`));
-  more.addEventListener('toggle', () => {
-    if (!more.open || more.dataset.loaded) return;
-    more.dataset.loaded = 'true';
-    more.append(render(entries.slice(4)));
+  more.setAttribute('aria-expanded', 'false');
+  more.setAttribute('aria-controls', preview.id);
+  let loaded = false;
+  more.addEventListener('click', () => {
+    // Las filas adicionales se incorporan al mismo cuerpo de tabla o lista.
+    const body = preview.tagName === 'TABLE' ? preview.tBodies[0] : preview;
+    if (!loaded) {
+      const remaining = render(entries.slice(4));
+      const rows = remaining.tagName === 'TABLE' ? remaining.tBodies[0] : remaining;
+      body.append(...rows.children);
+      loaded = true;
+    }
+    const expanded = more.getAttribute('aria-expanded') !== 'true';
+    for (const row of [...body.children].slice(4)) row.hidden = !expanded;
+    more.setAttribute('aria-expanded', String(expanded));
+    more.textContent = expanded ? `Mostrar menos ${unit}` : `Ver ${unit} restantes (${entries.length - 4})`;
   });
   target.append(more);
 }
@@ -117,6 +131,7 @@ export function updateWorldSummary() {
     for (const symbol of group) {
       const section = node('div');
       section.className = 'symbol-summary';
+      section.id = `summary-${symbol.id}`;
       appendPreview(section, symbol.rows, (rows) => interpretationTable(symbol, rows));
       if (!symbol.rows.length) section.append(node('p', 'Sin filas definidas.'));
       $(target).append(section);
