@@ -1,0 +1,68 @@
+/* Los símbolos quedan detrás de superficies opacas y nunca interceptan clics. */
+.math-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.math-background span {
+  position: absolute;
+  color: var(--action-primary);
+  opacity: .14;
+  filter: blur(1.2px);
+  font-family: "Cambria Math", "DejaVu Sans", serif;
+  animation: float-symbol 9s ease-in-out infinite alternate;
+}
+
+.math-background span::before {
+  content: attr(data-symbol);
+}
+
+.page-header, main, footer, .skip-link {
+  position: relative;
+  z-index: 1;
+}
+
+.skip-link {
+  position: absolute;
+}
+
+.math-background.paused span {
+  animation-play-state: paused;
+}
+
+#background-motion {
+  font-size: .875rem;
+}
+
+#background-motion[aria-pressed=true] {
+  border-color: var(--action-primary);
+}
+
+#background-motion:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+@keyframes float-symbol {
+  from {
+    transform: translate(-28px, 28px) rotate(-8deg);
+  }
+  to {
+    transform: translate(32px, -36px) rotate(8deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .math-background span {
+    animation: none;
+  }
+}
+
+@media print {
+  .math-background, #background-motion {
+    display: none;
+  }
+}

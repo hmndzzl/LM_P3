@@ -18,6 +18,7 @@ STATIC_FILES = {
     '/': ('index.html', 'text/html; charset=utf-8'),
     '/css/tokens.css': ('css/tokens.css', 'text/css; charset=utf-8'),
     '/css/styles.css': ('css/styles.css', 'text/css; charset=utf-8'),
+    '/css/background.css': ('css/background.css', 'text/css; charset=utf-8'),
     '/js/app.js': ('js/app.js', 'text/javascript; charset=utf-8'),
     '/js/api.js': ('js/api.js', 'text/javascript; charset=utf-8'),
     '/js/editors.js': ('js/editors.js', 'text/javascript; charset=utf-8'),
@@ -25,6 +26,7 @@ STATIC_FILES = {
     '/js/evidence.js': ('js/evidence.js', 'text/javascript; charset=utf-8'),
     '/js/formula.js': ('js/formula.js', 'text/javascript; charset=utf-8'),
     '/js/comparison.js': ('js/comparison.js', 'text/javascript; charset=utf-8'),
+    '/js/background.js': ('js/background.js', 'text/javascript; charset=utf-8'),
 }
 
 

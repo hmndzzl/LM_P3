@@ -6,6 +6,7 @@ import { clearErrors, showErrors } from './errors.js';
 import { showResult } from './evidence.js';
 import { initializeFormulaEditor } from './formula.js';
 import { clearComparison, setComparisonBase, initializeComparison } from './comparison.js';
+import { initializeBackground } from './background.js';
 
 const $ = (id) => document.getElementById(id);
 let revision = 0;
@@ -75,6 +76,7 @@ $('analyze').addEventListener('click', () => run(false));
 initializeEditors();
 initializeFormulaEditor();
 initializeComparison();
+initializeBackground();
 $('load-example').addEventListener('click', () => {
   if (dirty && !confirm('Se reemplazarán tus datos por el ejemplo. ¿Continuar?')) return;
   invalidate();
