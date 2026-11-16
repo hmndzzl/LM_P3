@@ -20,8 +20,9 @@ Las asignaciones libres se presentan como selectores de D después del análisis
 
 1. `frontend/index.html` contiene los controles. El formulario llama a `run(true)`
    en `frontend/js/app.js` al enviar. `run(false)` solo analiza.
-2. `inputData()` recoge el estado de las filas sin convertir declaraciones en
-   mapas. `api.js` hace fetch de JSON relativo al mismo servidor.
+2. `inputData(revision)` en `editors.js` recoge el estado de las filas sin convertir
+   declaraciones en mapas. Ese módulo también construye los controles y conserva
+   las asignaciones recuperables. `api.js` hace fetch de JSON relativo al mismo servidor.
 3. `LocalHandler.do_POST()` en `server/http.py` comprueba el origen y el tamaño,
    decodifica la petición y llama a `process_request()` en `server/codec.py`.
 4. `process_request()` llama a los builders de M2. Para analizar usa `analyze`;
@@ -32,10 +33,21 @@ Las asignaciones libres se presentan como selectores de D después del análisis
    traza real del motor; no se reciben resultados calculados por el navegador.
 6. Al volver, `run()` publica solo una respuesta cuya revisión coincida con la
    edición actual. `invalidate()` incrementa revisión y retira el resultado al editar.
-7. `reasonText()` traduce códigos de reglas a español. `evidenceNode()` crea
+7. En `evidence.js`, `showResult()` presenta el resultado, `reasonText()` traduce
+   códigos de reglas a español y `evidenceNode()` crea
    detalles nativos expandibles al abrir cada instancia, conservando sus hijos,
-   entorno y elementos no visitados. `showErrors()` enlaza mensajes a campos y
+   entorno y elementos no visitados. En `errors.js`, `showErrors()` enlaza mensajes a campos y
    convierte puntos de código Python a UTF-16 al seleccionar un error de fórmula.
+
+`app.js` coordina estas funciones y conserva solo revisión, ejecución pendiente y
+estado de edición. Los editores notifican altas/bajas mediante el evento input
+del formulario, igual que una edición normal. `errorTarget()` pertenece a los
+editores porque conoce los controles; se pasa a `showErrors()` para que el módulo
+de errores no necesite acceder a su estado interno. No hay dependencias circulares.
+
+Orden de lectura recomendado: `app.js` → `api.js` → `editors.js` → `errors.js` →
+`evidence.js`. El CSS usa una propiedad por línea y secciones comentadas por
+propósito: base, distribución, controles, tablas, resultados y accesibilidad.
 
 Preguntas de código para practicar:
 

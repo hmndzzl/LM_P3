@@ -57,7 +57,8 @@ class LocalHTTPTests(unittest.TestCase):
     def test_frontend_assets_are_served_without_exposing_project_files(self):
         for path, expected_type in [('/', 'text/html'), ('/css/tokens.css', 'text/css'),
                                     ('/css/styles.css', 'text/css'), ('/js/app.js', 'text/javascript'),
-                                    ('/js/api.js', 'text/javascript')]:
+                                    ('/js/api.js', 'text/javascript'), ('/js/editors.js', 'text/javascript'),
+                                    ('/js/errors.js', 'text/javascript'), ('/js/evidence.js', 'text/javascript')]:
             with self.subTest(path=path):
                 status, body, headers = self.request(path, method='GET')
                 self.assertEqual(status, 200)

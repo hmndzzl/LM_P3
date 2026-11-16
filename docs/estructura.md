@@ -8,7 +8,9 @@ M3 ya implementó `server/codec.py`, `server/http.py`, `__main__.py` y la primer
 interfaz en `frontend/`. El recorrido de análisis/evaluación está conectado y
 probado; faltan los botones lógicos, comparación y cierre de revisión. Ver
 [interfaz.md](interfaz.md). Los archivos previstos adicionales se crean cuando
-su responsabilidad lo requiera; `app.js` mantiene por ahora el estado y la evidencia.
+su responsabilidad lo requiera. `app.js` coordina; `editors.js` mantiene los
+formularios; `errors.js` presenta errores; `evidence.js` presenta resultados y
+trazas; `api.js` se comunica con el servidor.
 
 Python 3.10 o posterior como mínimo inicial, coherente con los proyectos de referencia; registrar la versión concreta usada por el equipo en H0. Frontend con HTML/CSS/JavaScript nativos, servido localmente por Python. No hay dependencias externas nuevas ni paso de compilación del frontend. El paquete está en la raíz para poder importarlo y ejecutar pruebas desde allí sin modificar `sys.path` ni exigir instalación editable.
 
@@ -77,7 +79,8 @@ Crear únicamente los necesarios para el ticket actual; dividir un módulo cuand
 | `frontend/css/styles.css` | Componentes y layout responsive | M3 |
 | `frontend/js/app.js` | Inicialización y eventos de pantalla | M3 |
 | `frontend/js/api.js` | Peticiones JSON y manejo de transporte | M3 |
-| `frontend/js/state.js` | Estado de edición y revisiones | M3 |
+| `frontend/js/editors.js` | Formularios de símbolos/tablas/entorno y datos de entrada | M3 |
+| `frontend/js/errors.js` | Resumen, mensajes por campo y selección de errores Unicode | M3 |
 | `frontend/js/evidence.js` | Presentación/navegación de trazas | M3 |
 | `scripts/abrir_interfaz.command`, `scripts/abrir_interfaz.bat` | Lanzadores adaptados a la raíz y punto de entrada | M3 |
 
