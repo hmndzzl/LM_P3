@@ -16,7 +16,9 @@ macOS y .bat para Windows. Su ejecución nativa en macOS/Windows debe revisarse.
 
 Seleccionar P(x): pertenencia y asignación → Cargar ejemplo → Evaluar fórmula
 da Verdadero con x: 1. Seleccionar 3 y reevaluar da Falso. Hay nueve ejemplos
-seleccionables de las notas del curso, cada uno con origen, explicación y práctica.
+seleccionables de las notas del curso, cada uno con explicación y práctica.
+Las referencias al PDF se conservan en el catálogo y en esta guía, sin mostrarlas
+en la ayuda de la interfaz.
 Solo se cargan entradas; el resultado siempre se solicita al motor.
 Limpiar todo borra fórmula, lenguaje, dominio, tablas, asignaciones, guía, errores,
 resultado, evidencia y comparación. Pide confirmación si hay trabajo cargado;
@@ -88,7 +90,26 @@ Las asignaciones recuperables sobreviven a una fórmula temporalmente incompleta
 ## Exploración y comparación
 
 Cada paso expandible conserva subfórmula, entorno, resultado, motivo y términos
-anidados. Seleccionarlo resalta su rango en la fórmula original; los rangos Python
+anidados. Los encabezados muestran las asignaciones y una numeración por niveles:
+1.1 es una comprobación dentro de 1, no el orden cronológico del cálculo.
+El identificador interno trace_id se conserva para comparar evidencias, pero no
+se muestra al usuario. El paso seleccionado indica fórmula y valores concretos.
+Los cuantificadores explican qué valores probaron, por qué basta un testigo o
+contraejemplo y por qué no fue necesario recorrer los valores restantes.
+
+Por ejemplo, en ∀x ∀y R(x,y), con la interpretación de la p. 179:
+
+| Paso | Comprobación | Valores |
+| --- | --- | --- |
+| 1 | ∀x ∀y R(x,y) | Ninguno al entrar |
+| 1.1 | ∀y R(x,y) | x: 1 |
+| 1.1.1 | R(x,y) | x: 1, y: 1 |
+
+(1,1) no pertenece a R, por lo que el paso 1.1.1 es falso. Ese caso refuta el
+universal de y en 1.1; a su vez, x: 1 refuta el universal exterior. No se afirma
+ningún valor de verdad de las combinaciones no recorridas.
+
+Seleccionar un paso resalta su rango en la fórmula original; los rangos Python
 se convierten por puntos de código, conservando Unicode. Los cuantificadores
 muestran testigo, contraejemplo o todas las comprobaciones necesarias. Los
 no visitados se identifican explícitamente: nunca se presentan como falsos.
@@ -156,7 +177,7 @@ Los límites son de recursos, no restricciones matemáticas ni garantía de tiem
 ## Verificación y aceptación
 
 [Evidencia reproducible y capturas](evidencias/miembro-3.md): 149 pruebas Python,
-104 comprobaciones de navegador y tres adicionales con movimiento reducido.
+124 comprobaciones de navegador y tres adicionales con movimiento reducido.
 El registro distingue las verificaciones históricas de las del catálogo actual.
 Se reprodujo el funcionamiento desde git archive, sin .git ni entorno virtual.
 La comparación se revisó a 1440, 1024, 768 y 320 px, sin scroll horizontal global.

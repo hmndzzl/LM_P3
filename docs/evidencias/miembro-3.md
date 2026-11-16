@@ -16,6 +16,8 @@ Verificación actual del catálogo:
 | tests/ui/completion.js, con los ejemplos nuevos | 31 comprobaciones aprobadas |
 | tests/ui/assignments.js | 6 comprobaciones aprobadas |
 | tests/ui/examples.js | 33 comprobaciones aprobadas |
+| tests/ui/editor-arity.js | 9 comprobaciones aprobadas |
+| tests/ui/evidence.js | 11 comprobaciones aprobadas |
 | tests/ui/background.js | 3 normales y 3 con movimiento reducido |
 | Anchos 1440/1024/768/320 con el selector nuevo | Sin scroll horizontal global |
 | Axe-core 4.12.1, ejemplo a 320 px | 0 infracciones, 42 reglas aprobadas; contraste incompleto en ocho nodos por símbolos/solapamiento del fondo |
@@ -25,6 +27,15 @@ recargar, cancelar carga/limpieza, comparar antes de limpiar y descartar una
 respuesta pendiente después de limpiar. Los selectores de asignación contienen
 solo elementos del dominio actual; los valores anteriores se explican aparte.
 Controles, evidencia, testigos y comparación usan : para asignaciones.
+
+Revisión posterior de la misma fecha: al aumentar aridad de 2 a 5, todas las filas
+muestran cinco campos; los tres nuevos quedan vacíos. Se conservan valores/salidas,
+y reducir aridad pide confirmación si se perderían componentes ingresados. El
+texto de tipo y acción de la tabla no se divide dentro de las palabras. La traza
+muestra números por niveles y valores, explica el corte de cuantificadores y oculta
+identificadores internos. Se reproduce el caso ∀x ∀y R(x,y) de las capturas.
+El selector se titula Probar Ejemplos y su ayuda ya no muestra la referencia al PDF.
+Los siete scripts pasan en conjunto: 124 comprobaciones normales.
 
 El fondo tiene 60 letras y símbolos; se retiró su botón de pausa por solicitud
 del usuario. Conserva velocidad, opacidad y movimiento reducido. Se inspeccionaron
@@ -69,6 +80,8 @@ agent-browser --session m3-revision eval --stdin < tests/ui/smoke.js
 agent-browser --session m3-revision eval --stdin < tests/ui/completion.js
 agent-browser --session m3-revision eval --stdin < tests/ui/assignments.js
 agent-browser --session m3-revision eval --stdin < tests/ui/examples.js
+agent-browser --session m3-revision eval --stdin < tests/ui/editor-arity.js
+agent-browser --session m3-revision eval --stdin < tests/ui/evidence.js
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js
 agent-browser --session m3-revision set media light reduced-motion
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js

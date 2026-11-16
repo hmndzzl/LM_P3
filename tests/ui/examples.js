@@ -49,8 +49,8 @@
     assert($('example-select').options.length === cases.length, 'El selector ofrece los nueve ejemplos de las notas');
     for (const [id, expected] of cases) {
       load(id);
-      assert($('example-note').textContent.includes('Notas del curso') && !$('example-note').hidden,
-        `El ejemplo ${id} muestra su origen y explicación`);
+      assert(!$('example-note').textContent.includes('Notas del curso') && $('example-note').querySelectorAll('p').length === 2 && !$('example-note').hidden,
+        `El ejemplo ${id} muestra explicación y práctica sin la línea de referencia`);
       await evaluate();
       assert($('errors').hidden && !$('result').hidden && $('result-value').dataset.value === String(expected),
         `El motor calcula el resultado esperado de ${id}`);

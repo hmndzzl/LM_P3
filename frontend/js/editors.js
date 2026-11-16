@@ -343,8 +343,7 @@ export function loadExample(example) {
   }
   for (const [name, value] of data.assignments) assignments.set(name, value);
   renderEnvironment(data.assignments.map(([name]) => name));
-  $('example-note').append(node('strong', `Notas del curso · ${example.source}`),
-    node('p', example.description), node('p', example.practice));
+  $('example-note').append(node('p', example.description), node('p', example.practice));
   $('example-note').hidden = false;
   $('start-description').hidden = true;
   updateWorldSummary();

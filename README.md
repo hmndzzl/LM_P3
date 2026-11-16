@@ -24,7 +24,7 @@ python3 -B -m lm_p3 --no-browser --port 8765
 
 Elige uno de los nueve ejemplos de tus notas y pulsa **Cargar ejemplo**.
 El primero, `P(x)` con x: 1, da Verdadero; con x: 3 da Falso. Cada ejemplo
-indica su página del PDF y propone un cambio para probar. **Limpiar todo** borra
+explica sus datos y propone un cambio para probar. **Limpiar todo** borra
 fórmula, lenguaje, dominio, tablas, asignaciones, resultados y comparación.
 También puedes añadir tus propios símbolos y filas. El dominio se introduce
 con un elemento por línea.
