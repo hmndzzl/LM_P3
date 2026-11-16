@@ -36,8 +36,9 @@ de la interpretación permanece visible. **Editar dominio** modifica D; las fich
 de constantes, funciones y predicados reúnen su declaración y su interpretación. Un error abre automáticamente la sección correspondiente.
 
 Después de evaluar, **Comparar un cambio** permite modificar una salida funcional,
-la pertenencia de una tupla o una asignación libre sobre una copia. La base se
-conserva y se recalculan ambos escenarios. El fondo matemático está activo por
+la pertenencia de una tupla o una asignación libre sobre una copia. Muestra la
+fórmula original y ofrece cambios tomados de su evidencia; puedes elegir otros
+manualmente. La base se conserva y se recalculan ambos escenarios. El fondo matemático está activo por
 defecto y respeta la preferencia de movimiento reducido del sistema.
 
 Lanzadores alternativos: `scripts/abrir_interfaz.sh` en Linux,

@@ -58,7 +58,7 @@ async function run(evaluate) {
     const response = await request('evaluate', evaluatedData);
     if (version !== revision || response.revision !== version) return;
     showResult(data.formula, response.evaluation);
-    setComparisonBase(evaluatedData);
+    setComparisonBase(evaluatedData, response.evaluation);
   } catch (error) {
     if (version === revision) showErrors(error.issues || [{ message: error.message, field: '' }], errorTarget);
   } finally {

@@ -705,3 +705,37 @@ footer {
     scrollbar-gutter: stable;
   }
 }
+
+.comparison-context {
+  padding: var(--space-3);
+  margin-bottom: var(--space-3);
+  background: var(--surface-canvas);
+  border-left: 3px solid var(--action-primary);
+  overflow-wrap: anywhere;
+}
+
+.comparison-context .formula {
+  margin-block: var(--space-2);
+}
+
+.comparison-context p:last-child {
+  margin-bottom: 0;
+}
+
+.comparison-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+}
+
+.comparison-suggestions button {
+  text-align: left;
+  font-size: .875rem;
+}
+
+.comparison-suggestions button[aria-pressed=true] {
+  border-color: var(--action-primary);
+  background: var(--surface-canvas);
+  color: var(--action-primary);
+}

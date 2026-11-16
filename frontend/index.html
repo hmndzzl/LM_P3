@@ -76,10 +76,21 @@
     <section id="comparison-panel" class="panel comparison-panel" aria-labelledby="comparison-title" hidden>
       <h2 id="comparison-title">Comparar un cambio</h2>
       <p class="help">Selecciona un dato y revisa la modificación propuesta. Se calcularán ambos resultados sin alterar la interpretación ni el entorno originales.</p>
+      <div class="comparison-context">
+        <strong>Fórmula evaluada</strong>
+        <p id="comparison-formula" class="formula"></p>
+        <p id="comparison-environment" class="help"></p>
+        <p id="comparison-original-result"></p>
+      </div>
+      <p class="help">Prueba un cambio sobre los datos consultados en esta evaluación. El resultado puede cambiar o conservarse; comprueba también su evidencia.</p>
+      <div id="comparison-suggestions" class="comparison-suggestions" role="group" aria-label="Cambios sobre datos evaluados"></div>
+      <details id="comparison-custom">
+        <summary>Elegir otro dato manualmente</summary>
       <div class="comparison-controls">
         <label>Dato por modificar<select id="comparison-target"></select></label>
         <div id="comparison-value"></div>
       </div>
+      </details>
       <dl class="comparison-change">
         <div><dt>Original</dt><dd id="comparison-before"></dd></div>
         <div><dt>Cambio propuesto</dt><dd id="comparison-after"></dd></div>

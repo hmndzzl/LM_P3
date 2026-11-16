@@ -31,6 +31,7 @@ function relationMember(target, args) {
 
 function invalidateVariant() {
   version += 1;
+  for (const button of $('comparison-suggestions').children) button.setAttribute('aria-pressed', 'false');
   $('comparison-results').hidden = true;
   $('comparison-errors').hidden = true;
   const target = targets[Number($('comparison-target').value)];
@@ -48,7 +49,7 @@ function invalidateVariant() {
   } else {
     const value = $('comparison-new-value').value;
     $('comparison-before').textContent = `${target.label}`;
-    $('comparison-after').textContent = `${target.symbol}${target.kind === 'function' ? `(${target.arguments.join(', ')}) →` : ':'} ${value}`;
+    $('comparison-after').textContent = `${target.symbol}${target.kind === 'function' ? `${target.arguments.length ? `(${target.arguments.join(', ')})` : ''} →` : ':'} ${value}`;
     $('compare').disabled = value === target.before;
   }
   $('comparison-status').textContent = $('compare').disabled
@@ -60,7 +61,7 @@ function renderValue() {
   const target = targets[Number($('comparison-target').value)];
   if (!target) return;
   if (target.kind !== 'relation') {
-    const label = node('label', target.kind === 'function' ? 'Nueva imagen' : 'Nueva asignación');
+    const label = node('label', target.kind === 'function' ? (target.arguments.length ? 'Nueva imagen' : 'Nuevo elemento de D') : 'Nueva asignación');
     label.append(valueSelect(target.before, 'comparison-new-value'));
     $('comparison-value').append(label);
   } else {
@@ -80,24 +81,87 @@ function renderValue() {
 function renderTargets() {
   targets = [
     ...base.functions.flatMap(([symbol]) => base.function_rows[symbol].map(([args, before], index) =>
-      ({ kind: 'function', symbol, arguments: args, before, index, label: `${symbol}(${args.join(', ')}) → ${before}` }))),
+      ({ kind: 'function', symbol, arguments: args, before, index, label: `${symbol}${args.length ? `(${args.join(', ')})` : ''} → ${before}` }))),
     ...base.predicates.map(([symbol, arity]) => ({ kind: 'relation', symbol, arity, label: symbol })),
     ...base.assignments.map(([symbol, before], index) => ({ kind: 'assignment', symbol, before, index, label: `${symbol}: ${before}` })),
   ];
   $('comparison-target').replaceChildren();
-  for (const [kind, title] of [['function', 'Imágenes de funciones'], ['relation', 'Relaciones'], ['assignment', 'Asignaciones libres']]) {
+  for (const [kind, title] of [['constant', 'Constantes'], ['function', 'Imágenes de funciones'], ['relation', 'Relaciones'], ['assignment', 'Asignaciones libres']]) {
     const group = node('optgroup');
     group.label = title;
     targets.forEach((target, index) => {
-      if (target.kind !== kind) return;
+      const category = target.kind === 'function' && !target.arguments.length ? 'constant' : target.kind;
+      if (category !== kind) return;
       const option = new Option(target.label, String(index));
-      option.dataset.kind = kind;
+      option.dataset.kind = target.kind;
       group.append(option);
     });
     if (group.children.length) $('comparison-target').append(group);
   }
   if (!targets.length) $('comparison-target').append(new Option('Sin datos disponibles', ''));
   renderValue();
+}
+
+function renderSuggestions(trace) {
+  const candidates = [];
+  const seen = new Set();
+  function add(index, args = []) {
+    if (index < 0 || candidates.length >= 6) return;
+    const target = targets[index];
+    if (target.kind === 'relation' && relationMember(target, args) && base.relations[target.symbol].length === 1) return;
+    if (target.kind !== 'relation' && base.domain.length === 1) return;
+    const key = JSON.stringify([index, args]);
+    if (!seen.has(key)) {
+      candidates.push({ index, args });
+      seen.add(key);
+    }
+  }
+  function termSuggestions(term) {
+    if (term.reason === 'function_lookup') {
+      const name = term.term.split('(')[0];
+      const args = term.children.map((child) => child.value);
+      add(targets.findIndex((target) => target.kind === 'function' && target.symbol === name
+        && JSON.stringify(target.arguments) === JSON.stringify(args)));
+    }
+    term.children.forEach(termSuggestions);
+  }
+  function visit(step) {
+    if (candidates.length >= 6) return;
+    if (step.reason === 'predicate_member' || step.reason === 'predicate_not_member') {
+      add(targets.findIndex((target) => target.kind === 'relation' && target.symbol === step.formula.split('(')[0]),
+        step.terms.map((term) => term.value));
+    }
+    step.terms.forEach(termSuggestions);
+    // El testigo o contraejemplo decisivo se ofrece antes que los otros casos.
+    const children = step.decisive_element !== null && step.children.length
+      ? [step.children.at(-1), ...step.children.slice(0, -1)] : step.children;
+    children.forEach(visit);
+  }
+  visit(trace);
+  targets.forEach((target, index) => { if (target.kind === 'assignment') add(index); });
+  $('comparison-suggestions').replaceChildren();
+  for (const candidate of candidates) {
+    const target = targets[candidate.index];
+    const member = target.kind === 'relation' && relationMember(target, candidate.args);
+    const text = target.kind === 'relation'
+      ? `${member ? 'Quitar' : 'Añadir'} (${candidate.args.join(', ')}) ${member ? 'de' : 'a'} ${target.symbol}`
+      : `Cambiar ${target.label}`;
+    const button = node('button', text);
+    button.type = 'button';
+    button.setAttribute('aria-pressed', 'false');
+    button.addEventListener('click', () => {
+      $('comparison-target').value = String(candidate.index);
+      renderValue();
+      if (target.kind === 'relation') {
+        candidate.args.forEach((value, index) => { $(`comparison-arg-${index}`).value = value; });
+      } else $('comparison-new-value').value = base.domain.find((value) => value !== target.before);
+      invalidateVariant();
+      button.setAttribute('aria-pressed', 'true');
+    });
+    $('comparison-suggestions').append(button);
+  }
+  if (candidates.length) $('comparison-suggestions').firstElementChild.click();
+  else $('comparison-custom').open = true;
 }
 
 function variantFromControls() {
@@ -169,6 +233,11 @@ export function clearComparison() {
   version += 1;
   targets = [];
   $('comparison-panel').hidden = true;
+  $('comparison-custom').open = false;
+  $('comparison-suggestions').replaceChildren();
+  $('comparison-formula').textContent = '';
+  $('comparison-environment').textContent = '';
+  $('comparison-original-result').textContent = '';
   $('comparison-target').replaceChildren();
   $('comparison-value').replaceChildren();
   $('comparison-before').textContent = '';
@@ -181,16 +250,22 @@ export function clearComparison() {
   $('compare').disabled = false;
 }
 
-export function setComparisonBase(data) {
+export function setComparisonBase(data, evaluation) {
   clearComparison();
   base = structuredClone(data);
   renderTargets();
+  $('comparison-formula').textContent = base.formula;
+  $('comparison-environment').textContent = base.assignments.length
+    ? `Asignaciones: ${base.assignments.map(([name, value]) => `${name}: ${value}`).join(', ')}`
+    : 'Fórmula cerrada: no requiere asignaciones libres.';
+  $('comparison-original-result').textContent = `Resultado original: ${evaluation.value ? 'Verdadero' : 'Falso'}.`;
+  renderSuggestions(evaluation.trace);
 }
 
 export function initializeComparison() {
   $('open-comparison').addEventListener('click', () => {
     $('comparison-panel').hidden = false;
-    $('comparison-target').focus();
+    ($('comparison-suggestions').firstElementChild || $('comparison-custom').querySelector('summary')).focus();
     $('comparison-panel').scrollIntoView({ block: 'nearest' });
   });
   $('comparison-target').addEventListener('change', renderValue);

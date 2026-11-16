@@ -19,7 +19,8 @@ Verificación actual del catálogo:
 | tests/ui/editor-arity.js | 9 comprobaciones aprobadas |
 | tests/ui/evidence.js | 15 comprobaciones aprobadas |
 | tests/ui/interpretation-summary.js | 14 comprobaciones aprobadas |
-| tests/ui/comparison-flow.js | 8 comprobaciones aprobadas |
+| tests/ui/comparison-flow.js | 14 comprobaciones aprobadas |
+| tests/ui/unified-configuration.js | 7 comprobaciones aprobadas |
 | tests/ui/background.js | 3 normales y 3 con movimiento reducido |
 | Anchos 1440/1024/768/320 con el selector nuevo | Sin scroll horizontal global |
 | Axe-core 4.12.1, ejemplo a 320 px | 0 infracciones, 42 reglas aprobadas; contraste incompleto en ocho nodos por símbolos/solapamiento del fondo |
@@ -40,7 +41,7 @@ El selector se titula Probar Ejemplos y su ayuda ya no muestra la referencia al 
 El panel Interpretación separa elementos del dominio, tuplas y argumentos/imagen
 de las funciones; permite desplegar las filas restantes en la misma tabla, sin
 repetir título ni encabezados. Se comprueba plegar y desplegar sin duplicar filas. Las constantes se
-identifican explícitamente. Los nueve scripts pasan en conjunto: 150 comprobaciones
+identifican explícitamente. Los diez scripts pasan en conjunto: 163 comprobaciones
 normales. La terminología visible se ajustó a las notas del curso.
 
 El comparador ahora usa un selector directo, muestra Original y Cambio propuesto
@@ -52,6 +53,20 @@ etiquetas de resultado usan valores de M1 (se reproduce ¬∀x P(x) con estados
 verdadero/falso/verdadero/verdadero/falso). Se revisaron ambas vistas a 320 px, sin
 desbordamiento horizontal, y capturas de escritorio. Axe sobre la comparación:
 0 infracciones, 49 reglas aprobadas y una revisión de contraste incompleta.
+
+Rediseño de configuración: cada ficha reúne declaración e interpretación de un
+símbolo; solo hay un editor abierto. Añadir constante pide nombre y elemento de D,
+sin filas vacías ni aridad visible. Se verificó crear c, configurar P y evaluar P(c)
+con el motor real. La comparación se sitúa inmediatamente después del resultado en
+la columna de trabajo; la configuración tiene desplazamiento propio en escritorio.
+Se inspeccionaron ambas distribuciones y los anchos 1440/1024/768/320 sin scroll
+horizontal global. La comparación muestra fórmula, asignaciones y resultado
+original y propone hasta seis cambios tomados de pasos realmente evaluados.
+Se comprobó la pertenencia de Q(a,c) de las notas y que editar la interpretación
+retira el resultado y la comparación anteriores. Axe: 0 infracciones, 49 reglas
+aprobadas y una revisión de contraste incompleta. Suite Python repetida: 149 OK.
+Auditoría contra f772c92: sin cambios en modelos, semántica, sintaxis, validación
+ni aplicación de M1/M2; solo cambios de M3.
 
 El fondo tiene 60 letras y símbolos; se retiró su botón de pausa por solicitud
 del usuario. Conserva velocidad, opacidad y movimiento reducido. Se inspeccionaron
@@ -100,6 +115,7 @@ agent-browser --session m3-revision eval --stdin < tests/ui/editor-arity.js
 agent-browser --session m3-revision eval --stdin < tests/ui/evidence.js
 agent-browser --session m3-revision eval --stdin < tests/ui/interpretation-summary.js
 agent-browser --session m3-revision eval --stdin < tests/ui/comparison-flow.js
+agent-browser --session m3-revision eval --stdin < tests/ui/unified-configuration.js
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js
 agent-browser --session m3-revision set media light reduced-motion
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js

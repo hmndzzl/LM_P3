@@ -76,8 +76,8 @@ incluida aridad cero para predicados. Al confirmar una
 aridad mayor se añaden argumentos vacíos a cada fila, conservando valores y salidas.
 Reducir la aridad pide confirmación si se perderían argumentos ingresados; cancelar
 restaura la aridad anterior. Las fórmulas se corrigen por separado y M2 comprueba
-su coherencia con el lenguaje. La tabla conserva palabras y botones completos,
-con desplazamiento local en pantallas pequeñas. D se introduce
+su coherencia con el lenguaje. Cada editor conserva las etiquetas y controles
+legibles. D se introduce
 con un elemento por línea. Argumentos, salidas y asignaciones usan selectores
 con valores de D. Si cambia el dominio, las tablas conservan valores recuperables
 como «fuera de D». En asignaciones, el valor anterior se muestra en un aviso
@@ -128,9 +128,17 @@ se convierten por puntos de código, conservando Unicode. Los cuantificadores
 muestran testigo, contraejemplo o todas las comprobaciones necesarias. Los
 no visitados se identifican explícitamente: nunca se presentan como falsos.
 
-Tras una evaluación válida, Comparar un cambio permite seleccionar directamente
-un dato, agrupado en imágenes de funciones, relaciones o asignaciones libres.
-Se muestran Original y Cambio propuesto antes de ejecutar:
+Tras una evaluación válida, Comparar un cambio aparece junto al resultado. Muestra
+la fórmula, sus asignaciones libres y el resultado original capturados en la misma
+evaluación. Ofrece hasta seis cambios sobre tuplas, imágenes o asignaciones que
+aparecen en la evidencia de M1; el testigo o contraejemplo decisivo se recorre primero.
+No evalúa variantes ni predice su verdad para construir estas sugerencias. No propone
+vaciar una relación de una sola tupla. Un cambio puede afectar a verdad, evidencia
+o ninguna; solo Comparar resultados vuelve a calcular ambos escenarios.
+
+Elegir otro dato manualmente permite acceder a todos los datos, agrupados en
+constantes, funciones, relaciones o asignaciones libres. Las constantes se presentan
+sin argumentos. Se muestran Original y Cambio propuesto antes de ejecutar:
 
 - Función o asignación: seleccionar un valor diferente al original.
 - Relación: seleccionar los componentes de la tupla. Si pertenece, se propone
@@ -195,7 +203,7 @@ Los límites son de recursos, no restricciones matemáticas ni garantía de tiem
 ## Verificación y aceptación
 
 [Evidencia reproducible y capturas](evidencias/miembro-3.md): 149 pruebas Python,
-150 comprobaciones de navegador y tres adicionales con movimiento reducido.
+163 comprobaciones de navegador y tres adicionales con movimiento reducido.
 El registro distingue las verificaciones históricas de las del catálogo actual.
 Se reprodujo el funcionamiento desde git archive, sin .git ni entorno virtual.
 La comparación se revisó a 1440, 1024, 768 y 320 px, sin scroll horizontal global.
@@ -221,3 +229,15 @@ que deje una relación vacía. Resolver una fórmula nueva sin modificar código
 Los tres deben practicar preguntas fuera de su módulo y registrar la sesión real.
 Las capturas son respaldo visual, no sustituyen el funcionamiento en vivo. No hay
 ensayo ni observaciones de compañeros inventados en esta documentación.
+
+## Alcance del rediseño de configuración
+
+Se revisaron las pp. 125 y 178–181 de Lógica TEO 2.pdf y el criterio de M3-03:
+comparar la misma fórmula con un dato distinto. Editar la fórmula exige evaluar
+un nuevo escenario base; no sustituye esa comparación controlada.
+
+La auditoría de alcance contra f772c92 no muestra diferencias en lm_p3/models,
+lm_p3/semantics, lm_p3/syntax, lm_p3/validation ni lm_p3/application. Este rediseño
+solo modifica interfaz, pruebas de interfaz y documentación de M3. Las constantes
+usan la representación ya admitida por los otros módulos; no requieren cambios
+en el parser, el validador, el motor ni el contrato JSON.
