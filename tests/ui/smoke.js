@@ -26,12 +26,20 @@
   window.confirm = () => true;
   try {
     $('load-example').click();
+    assert(!$('language-config').open && !$('interpretation-config').open,
+      'El ejemplo deja la configuración plegada y conserva el editor visible');
+    assert(!$('example-note').hidden && $('domain-overview').textContent.includes('centro')
+      && $('predicates-overview').textContent.includes('Activa'),
+    'La guía y el resumen del mundo muestran los datos cargados');
     await evaluate();
     assert(!$('result').hidden && $('result-value').textContent === 'Verdadero', 'Átomo verdadero calculado desde el formulario');
+    assert($('result-reason').textContent.includes('(centro)'), 'La explicación identifica la tupla realmente evaluada');
 
     $('assignment-0').value = 'sur';
     $('assignment-0').dispatchEvent(new Event('change', { bubbles: true }));
     assert($('result').hidden, 'Cambiar el entorno invalida el resultado anterior');
+    assert(!$('example-note').hidden && $('environment-note').textContent.includes('x'),
+      'Cambiar una asignación conserva la guía del ejemplo y el nombre de la variable');
     await evaluate();
     assert($('result-value').textContent === 'Falso' && $('errors').hidden, 'Falso válido se distingue de un error');
 
@@ -43,6 +51,7 @@
     ];
     for (const [formula, value, reason] of cases) {
       fill($('formula'), formula);
+      assert($('example-note').hidden, 'Editar la fórmula retira las instrucciones del ejemplo anterior');
       await evaluate();
       assert(!$('result').hidden && $('result-value').textContent === value
         && $('result-reason').textContent.includes(reason), `Evidencia real: ${formula}`);
@@ -66,6 +75,11 @@
     fill($('domain'), '');
     await evaluate();
     assert($('result').hidden && $('error-list').textContent.includes('D no puede estar vacío'), 'Dominio vacío rechazado desde el servidor real');
+    assert($('interpretation-config').open, 'Un error abre automáticamente la configuración que lo contiene');
+    $('interpretation-config').open = false;
+    $('error-list').querySelector('a').click();
+    assert($('interpretation-config').open && document.activeElement === $('domain'),
+      'El enlace de error vuelve a abrir la sección y enfoca el campo');
 
     $('load-example').click();
     const name = [...document.querySelectorAll('#symbols input[type=text]')].find((input) => input.value === 'Activa');

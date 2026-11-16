@@ -1,5 +1,7 @@
 import { request } from './api.js';
-import { inputData, renderEnvironment, errorTarget, initializeEditors, loadExample } from './editors.js';
+import {
+  inputData, renderEnvironment, errorTarget, initializeEditors, loadExample, updateWorldSummary,
+} from './editors.js';
 import { clearErrors, showErrors } from './errors.js';
 import { showResult } from './evidence.js';
 
@@ -8,7 +10,7 @@ let revision = 0;
 let busy = false;
 let dirty = false;
 
-function invalidate() {
+function invalidate(event) {
   revision += 1;
   dirty = true;
   clearErrors();
@@ -16,7 +18,12 @@ function invalidate() {
   $('evidence').replaceChildren();
   $('empty-result').hidden = false;
   $('result-state').textContent = 'Cambiaste los datos. Vuelve a evaluar.';
-  $('environment-note').textContent = 'Vuelve a analizar si cambiaste la fórmula o el lenguaje.';
+  updateWorldSummary();
+  if (!event?.target.closest('#environment')) {
+    $('environment-note').textContent = 'Si cambiaste la fórmula o el lenguaje, revisa las variables libres.';
+    $('example-note').hidden = true;
+    $('start-description').hidden = false;
+  }
 }
 
 async function run(evaluate) {
@@ -56,7 +63,7 @@ async function run(evaluate) {
 
 $('workspace').addEventListener('input', invalidate);
 $('workspace').addEventListener('change', (event) => {
-  if (event.target.tagName === 'SELECT') invalidate();
+  if (event.target.tagName === 'SELECT') invalidate(event);
 });
 $('workspace').addEventListener('submit', (event) => { event.preventDefault(); run(true); });
 $('analyze').addEventListener('click', () => run(false));

@@ -20,7 +20,7 @@ body {
   align-items: center;
   justify-content: space-between;
   gap: var(--space-6);
-  padding-block: var(--space-8);
+  padding-block: var(--space-6);
 }
 
 h1 {
@@ -59,7 +59,7 @@ p {
 /* Distribución de los paneles */
 #workspace {
   display: grid;
-  grid-template-columns: minmax(24rem, 1fr) minmax(0, 1.9fr);
+  grid-template-columns: minmax(0, 1.9fr) minmax(20rem, 1fr);
   gap: var(--space-6);
   align-items: start;
 }
@@ -76,6 +76,62 @@ p {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-panel);
   min-width: 0;
+}
+
+.start-guide {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-6);
+}
+
+.start-guide h2 {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-1);
+}
+
+.start-guide p {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.start-guide button {
+  flex-shrink: 0;
+}
+
+.start-guide .notice {
+  margin-top: var(--space-2);
+  margin-bottom: 0;
+}
+
+.world-data {
+  margin: 0 0 var(--space-4);
+  overflow-wrap: anywhere;
+}
+
+.world-data dt {
+  font-weight: 600;
+  margin-top: var(--space-3);
+}
+
+.world-data dd {
+  margin: var(--space-1) 0 0;
+  white-space: pre-line;
+}
+
+.assignment-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block: var(--space-4) var(--space-2);
+}
+
+.assignment-heading h3 {
+  margin: 0;
 }
 
 /* Campos y botones */
@@ -220,6 +276,10 @@ td input[type=number] {
 .environment label {
   min-width: 8rem;
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin: 0;
 }
 
 /* Resultados y mensajes */
@@ -240,6 +300,12 @@ td input[type=number] {
   color: var(--state-info);
   border-left: 3px solid var(--state-info);
   padding: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.notice ol {
+  margin-block: var(--space-2) 0;
+  padding-left: var(--space-6);
 }
 
 .error-summary {
@@ -280,6 +346,30 @@ summary {
   padding-block: var(--space-2);
 }
 
+details.configuration-section {
+  padding: var(--space-4);
+}
+
+.configuration-section > summary {
+  font-weight: 600;
+}
+
+.configuration-section > summary .help {
+  display: block;
+  font-weight: 400;
+  margin-left: var(--space-4);
+}
+
+.configuration-section[open] > summary {
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.notation-help {
+  border: 0;
+  padding: 0;
+}
+
 footer {
   padding-block: var(--space-8);
 }
@@ -310,9 +400,12 @@ footer {
 }
 
 @media (max-width: 480px) {
-  .page-header {
+  .page-header, .start-guide {
     align-items: start;
     flex-direction: column;
+  }
+
+  .page-header {
     padding-block: var(--space-6);
   }
 

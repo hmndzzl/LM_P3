@@ -21,6 +21,29 @@ function domainValues() {
   return $('domain').value === '' ? [] : $('domain').value.split('\n');
 }
 
+export function updateWorldSummary() {
+  const domain = domainValues();
+  const preview = (values) => values.slice(0, 4).join(', ') + (values.length > 4 ? '…' : '');
+  $('domain-overview').textContent = domain.length ? preview(domain) : 'Todavía no hay elementos.';
+  $('language-count').textContent = symbols.length
+    ? `${symbols.length} símbolos ingresados`
+    : 'Sin símbolos declarados';
+
+  for (const [kind, target, empty] of [
+    ['predicate', 'predicates-overview', 'Todavía no hay predicados.'],
+    ['function', 'functions-overview', 'Todavía no hay funciones.'],
+  ]) {
+    const descriptions = symbols.filter((symbol) => symbol.kind === kind).map((symbol) => {
+      const rows = symbol.rows.map((entry) => {
+        const argumentsText = entry.arguments.join(', ') || '()';
+        return kind === 'function' ? `${argumentsText} → ${entry.output || 'pendiente'}` : `(${entry.arguments.join(', ')})`;
+      });
+      return `${symbol.name || 'Sin nombre'}: ${rows.length ? preview(rows) : 'sin filas'}`;
+    });
+    $(target).textContent = descriptions.length ? descriptions.join('\n') : empty;
+  }
+}
+
 function addSymbol(kind, name = '', arity = 1, rows = []) {
   symbols.push({ id: nextId++, kind, name, arity, rows });
   renderSymbols();
@@ -193,6 +216,7 @@ export function errorTarget(field = '') {
 }
 
 export function initializeEditors() {
+  updateWorldSummary();
   for (const kind of ['function', 'predicate']) {
     $(`add-${kind}`).addEventListener('click', () => {
       addSymbol(kind);
@@ -217,4 +241,10 @@ export function loadExample() {
   renderEnvironment(['x']);
   $('environment-note').textContent = 'Variables libres: x. Ejemplo con x = centro.';
   $('example-note').hidden = false;
+  $('start-description').hidden = true;
+  $('language-config').open = false;
+  $('interpretation-config').open = false;
+  updateWorldSummary();
+  $('result-state').textContent = 'Ejemplo cargado. Listo para evaluar.';
+  $('evaluate').focus();
 }

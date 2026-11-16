@@ -16,6 +16,12 @@ export function clearErrors() {
   });
 }
 
+function revealField(target) {
+  for (let parent = target.parentElement; parent; parent = parent.parentElement) {
+    if (parent.tagName === 'DETAILS') parent.open = true;
+  }
+}
+
 export function showErrors(issues, findTarget) {
   clearErrors();
   $('result').hidden = true;
@@ -23,11 +29,13 @@ export function showErrors(issues, findTarget) {
   $('result-state').textContent = 'No evaluado. Revisa los mensajes.';
   issues.forEach((issue, index) => {
     const target = findTarget(issue.field);
+    revealField(target);
     const item = node('li');
     const link = node('a', issue.message);
     link.href = `#${target.id}`;
     link.addEventListener('click', (event) => {
       event.preventDefault();
+      revealField(target);
       target.focus();
       if (issue.span && target === $('formula')) {
         const offset = (position) => Array.from(target.value).slice(0, position).join('').length;

@@ -12,19 +12,75 @@
 <body>
   <a class="skip-link" href="#formula">Saltar al editor</a>
   <header class="page-header">
-    <div><p class="eyebrow">MM3032 · Lógica Matemática</p><h1>Detective semántico</h1>
-      <p>Configura un mundo, evalúa una fórmula y examina sus razones.</p></div>
-    <button id="load-example" type="button">Cargar ejemplo</button>
+    <div>
+      <p class="eyebrow">MM3032 · Lógica Matemática</p>
+      <h1>Detective semántico</h1>
+      <p>Evalúa una fórmula y encuentra la razón de su resultado.</p>
+    </div>
   </header>
   <main>
-    <p id="example-note" class="notice" hidden>Ejemplo editable · Estaciones activas. Puedes cambiar todos sus datos.</p>
+    <section class="start-guide" aria-labelledby="start-title">
+      <div>
+        <h2 id="start-title">Prueba el evaluador</h2>
+        <p id="start-description">Carga los datos de tres estaciones y prueba una fórmula. Para usar tus propios datos, abre la configuración del mundo.</p>
+        <div id="example-note" class="notice" hidden>
+          <p><strong>Ejemplo editable: estaciones activas.</strong> Norte y centro están activas; sur no.</p>
+          <ol>
+            <li>Pulsa <strong>Evaluar fórmula</strong> con x = centro: obtendrás Verdadero.</li>
+            <li>Elige <strong>sur</strong> en la asignación de x y vuelve a evaluar: obtendrás Falso.</li>
+          </ol>
+        </div>
+      </div>
+      <button id="load-example" type="button">Cargar ejemplo</button>
+    </section>
     <section id="errors" class="error-summary" tabindex="-1" aria-labelledby="errors-title" hidden>
       <h2 id="errors-title">Revisa la entrada</h2><ul id="error-list"></ul>
     </section>
     <form id="workspace" novalidate>
-      <div class="configuration">
-        <section class="panel" aria-labelledby="language-title">
-          <h2 id="language-title">1. Lenguaje</h2>
+      <div class="work-area">
+        <section class="panel" aria-labelledby="formula-title">
+          <h2 id="formula-title">Evaluar una fórmula</h2>
+          <label for="formula">Fórmula</label>
+          <textarea id="formula" class="formula" rows="2" spellcheck="false" aria-describedby="formula-help" placeholder="Por ejemplo: Activa(x)"></textarea>
+          <p id="formula-help" class="help">Escribe una fórmula con los símbolos de tu mundo. Si estás empezando, carga el ejemplo de arriba.</p>
+          <details class="notation-help">
+            <summary>Ayuda de escritura</summary>
+            <p class="help">Puedes escribir ¬, ∧, ∨, →, ↔, ∀ y ∃, o sus alias ~, &amp;, |, -&gt;, &lt;-&gt;, Ax y Ex. Usa paréntesis para ampliar el alcance de un cuantificador.</p>
+          </details>
+          <div class="assignment-heading">
+            <h3>Asignaciones</h3>
+            <button id="analyze" type="button">Revisar variables libres</button>
+          </div>
+          <p id="environment-note" class="help">Se identificarán las variables libres al evaluar. También puedes revisarlas antes para elegir sus valores.</p>
+          <div id="environment" class="environment"></div>
+          <div class="actions"><button id="evaluate" class="primary" type="submit">Evaluar fórmula</button></div>
+        </section>
+        <section class="panel result-panel" aria-labelledby="result-title" aria-busy="false">
+          <h2 id="result-title">Resultado</h2>
+          <p id="result-state" role="status" aria-live="polite">Sin evaluar</p>
+          <p id="empty-result" class="help">Aquí aparecerán la respuesta y su explicación cuando evalúes la fórmula.</p>
+          <div id="result" hidden>
+            <p id="result-formula" class="formula evaluated-formula"></p>
+            <p id="result-value" class="truth"></p>
+            <p id="result-reason"></p>
+            <p class="help">Abre la fórmula de abajo para examinar las asignaciones y los pasos de la evaluación.</p>
+            <div id="evidence"></div>
+          </div>
+        </section>
+      </div>
+      <aside class="configuration" aria-labelledby="world-title">
+        <section class="panel world-overview">
+          <h2 id="world-title">El mundo de la fórmula</h2>
+          <p class="help">Estos son los datos que usará el evaluador.</p>
+          <dl class="world-data">
+            <dt>Dominio</dt><dd id="domain-overview">Todavía no hay elementos.</dd>
+            <dt>Predicados</dt><dd id="predicates-overview">Todavía no hay predicados.</dd>
+            <dt>Funciones</dt><dd id="functions-overview">Todavía no hay funciones.</dd>
+          </dl>
+          <p class="help">Para configurar o corregir estos datos, abre las secciones de abajo. Su validez se comprueba al evaluar.</p>
+        </section>
+        <details id="language-config" class="panel configuration-section">
+          <summary>Lenguaje <span id="language-count" class="help">Sin símbolos declarados</span></summary>
           <p class="help">Declara los símbolos y cuántos argumentos recibe cada uno.</p>
           <div class="table-scroll" tabindex="0" role="region" aria-label="Símbolos del lenguaje">
             <table><thead><tr><th>Tipo</th><th>Nombre</th><th>Aridad</th><th>Acción</th></tr></thead>
@@ -32,39 +88,16 @@
           </div>
           <div class="actions"><button type="button" id="add-function">Añadir función</button>
             <button type="button" id="add-predicate">Añadir predicado</button></div>
-        </section>
-        <section class="panel" aria-labelledby="interpretation-title">
-          <h2 id="interpretation-title">2. Interpretación</h2>
+        </details>
+        <details id="interpretation-config" class="panel configuration-section">
+          <summary>Dominio y tablas <span class="help">Editar la interpretación</span></summary>
           <label for="domain">Dominio D</label>
           <textarea id="domain" rows="3" aria-describedby="domain-help" placeholder="norte&#10;centro&#10;sur" spellcheck="false"></textarea>
           <p id="domain-help" class="help">Un elemento por línea. D debe ser no vacío. El orden se conserva.</p>
           <p class="help">Añade las tuplas de cada relación y todas las salidas de cada función. Editar un símbolo conserva sus filas: revisa su aridad.</p>
           <div id="interpretations"><p class="help">Declara un símbolo para introducir sus tablas.</p></div>
-        </section>
-      </div>
-      <div class="work-area">
-        <section class="panel" aria-labelledby="formula-title">
-          <h2 id="formula-title">3. Fórmula y entorno</h2>
-          <label for="formula">Fórmula</label>
-          <textarea id="formula" class="formula" rows="3" spellcheck="false" aria-describedby="formula-help" placeholder="∃x Activa(x)"></textarea>
-          <p id="formula-help" class="help">Puedes escribir símbolos o alias como ~, &amp;, |, -&gt;, &lt;-&gt;, Ax y Ex. Usa paréntesis para ampliar el alcance de un cuantificador.</p>
-          <button id="analyze" type="button">Identificar variables libres</button>
-          <p id="environment-note" class="help">Analiza la fórmula para preparar sus asignaciones.</p>
-          <div id="environment" class="environment"></div>
-          <div class="actions"><button id="evaluate" class="primary" type="submit">Evaluar fórmula</button></div>
-        </section>
-        <section class="panel result-panel" aria-labelledby="result-title" aria-busy="false">
-          <h2 id="result-title">4. Resultado y evidencia</h2>
-          <p id="result-state" role="status" aria-live="polite">Sin evaluar</p>
-          <p id="empty-result" class="help">Evalúa una fórmula para ver su resultado y explicación.</p>
-          <div id="result" hidden>
-            <p id="result-formula" class="formula evaluated-formula"></p>
-            <p id="result-value" class="truth"></p>
-            <p id="result-reason"></p>
-            <div id="evidence"></div>
-          </div>
-        </section>
-      </div>
+        </details>
+      </aside>
     </form>
   </main>
   <footer>Evaluación finita local · Las respuestas se calculan con la interpretación ingresada.</footer>

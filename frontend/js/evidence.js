@@ -8,9 +8,11 @@ function node(tag, text = '') {
 
 function reasonText(trace) {
   const checked = trace.checked_elements.length;
+  const tuple = `(${trace.terms.map((term) => term.value).join(', ')})`;
+  const predicate = trace.formula.split('(')[0];
   const reasons = {
-    predicate_member: 'La tupla evaluada pertenece a la relación.',
-    predicate_not_member: 'La tupla evaluada no pertenece a la relación.',
+    predicate_member: `La tupla ${tuple} pertenece a ${predicate}.`,
+    predicate_not_member: `La tupla ${tuple} no pertenece a ${predicate}.`,
     negation: 'La negación invierte el valor de su subfórmula.',
     conjunction: 'La conjunción es verdadera cuando ambos operandos son verdaderos.',
     disjunction: 'La disyunción es verdadera cuando al menos un operando es verdadero.',
@@ -51,4 +53,5 @@ export function showResult(formula, result) {
   $('empty-result').hidden = true;
   $('result').hidden = false;
   $('result-state').textContent = `Evaluación completada: ${result.value ? 'Verdadero' : 'Falso'}.`;
+  document.querySelector('.result-panel').scrollIntoView({ block: 'nearest' });
 }
