@@ -76,9 +76,9 @@ function renderTargets() {
   const kind = $('comparison-kind').value;
   if (kind === 'function') {
     targets = base.functions.flatMap(([symbol]) => base.function_rows[symbol].map(([arguments_, before], index) =>
-      ({ symbol, arguments: arguments_, before, index, label: `${symbol}(${arguments_.join(', ')}) = ${before}` })));
+      ({ symbol, arguments: arguments_, before, index, label: `${symbol}(${arguments_.join(', ')}) → ${before}` })));
   } else if (kind === 'assignment') {
-    targets = base.assignments.map(([symbol, before], index) => ({ symbol, before, index, label: `${symbol} = ${before}` }));
+    targets = base.assignments.map(([symbol, before], index) => ({ symbol, before, index, label: `${symbol}: ${before}` }));
   } else {
     targets = base.predicates.map(([symbol, arity]) => ({ symbol, arity, label: symbol }));
   }

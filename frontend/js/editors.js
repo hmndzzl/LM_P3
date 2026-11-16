@@ -214,16 +214,26 @@ export function renderEnvironment(names) {
     ? `Variables libres: ${names.join(', ')}. Elige un valor de D para cada una.`
     : 'No hay variables libres; no se necesita entorno.';
   names.forEach((name, index) => {
-    const label = node('label', name);
+    const label = node('label', `${name}:`);
     const select = node('select');
     select.id = `assignment-${index}`;
-    select.append(new Option('Selecciona un elemento', ''));
-    for (const value of domainValues()) select.append(new Option(value, value));
-    if (assignments.has(name) && !domainValues().includes(assignments.get(name))) {
-      select.append(new Option(`${assignments.get(name)} (fuera de D)`, assignments.get(name)));
+    const domain = [...new Set(domainValues())].filter((value) => value !== '');
+    select.append(new Option(domain.length ? 'Selecciona un elemento de D' : 'Primero define el dominio D', ''));
+    for (const value of domain) select.append(new Option(value, value));
+    const saved = assignments.get(name);
+    select.value = domain.includes(saved) ? saved : '';
+    if (saved && !domain.includes(saved)) {
+      const warning = node('p', `Asignación anterior ${name}: ${saved}. Ese valor ya no pertenece a D; elige otro elemento.`);
+      warning.id = `assignment-warning-${index}`;
+      warning.className = 'help';
+      select.setAttribute('aria-describedby', warning.id);
+      $('environment').append(warning);
     }
-    select.value = assignments.get(name) || '';
-    select.addEventListener('change', () => assignments.set(name, select.value));
+    select.addEventListener('change', () => {
+      assignments.set(name, select.value);
+      $(`assignment-warning-${index}`)?.remove();
+      select.removeAttribute('aria-describedby');
+    });
     label.append(select);
     $('environment').append(label);
   });
@@ -297,7 +307,7 @@ export function loadExample() {
   ]);
   assignments.set('x', 'centro');
   renderEnvironment(['x']);
-  $('environment-note').textContent = 'Variables libres: x. Ejemplo con x = centro.';
+  $('environment-note').textContent = 'Variables libres: x. Ejemplo con x: centro.';
   $('example-note').hidden = false;
   $('start-description').hidden = true;
   $('language-config').open = false;

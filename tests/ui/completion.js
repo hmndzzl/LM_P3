@@ -96,8 +96,8 @@
     $('comparison-member').dispatchEvent(new Event('input', { bubbles: true }));
     await compare();
     assert($('comparison-status').textContent.includes('se mantiene'), 'Cambiar el testigo conserva la verdad');
-    assert($('comparison-results').textContent.includes('Testigo: x = norte')
-      && $('comparison-results').textContent.includes('Testigo: x = centro'), 'Los dos testigos proceden de evaluaciones reales');
+    assert($('comparison-results').textContent.includes('Testigo: x: norte')
+      && $('comparison-results').textContent.includes('Testigo: x: centro'), 'Los dos testigos proceden de evaluaciones reales');
 
     $('load-example').click();
     await evaluate();

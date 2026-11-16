@@ -44,8 +44,8 @@
     assert($('result-value').textContent === 'Falso' && $('errors').hidden, 'Falso válido se distingue de un error');
 
     const cases = [
-      ['∃x Activa(x)', 'Verdadero', 'Testigo: x = norte'],
-      ['∀x Activa(x)', 'Falso', 'Contraejemplo: x = sur'],
+      ['∃x Activa(x)', 'Verdadero', 'Testigo: x: norte'],
+      ['∀x Activa(x)', 'Falso', 'Contraejemplo: x: sur'],
       ['∀x (Activa(x) ∨ ¬Activa(x))', 'Verdadero', 'Comprobados 3 de 3'],
       ['∃x (Activa(x) ∧ ¬Activa(x))', 'Falso', 'comprobados 3 de 3'],
     ];

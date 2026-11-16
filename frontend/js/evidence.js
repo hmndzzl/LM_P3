@@ -18,8 +18,8 @@ export function reasonText(trace) {
     disjunction: 'La disyunción es verdadera cuando al menos un operando es verdadero.',
     implication: 'La implicación solo es falsa con antecedente verdadero y consecuente falso.',
     biconditional: 'El bicondicional es verdadero cuando ambos operandos tienen el mismo valor.',
-    existential_witness: `Testigo: ${trace.variable} = ${trace.decisive_element}.`,
-    universal_counterexample: `Contraejemplo: ${trace.variable} = ${trace.decisive_element}.`,
+    existential_witness: `Testigo: ${trace.variable}: ${trace.decisive_element}.`,
+    universal_counterexample: `Contraejemplo: ${trace.variable}: ${trace.decisive_element}.`,
     universal_complete: `Comprobados ${checked} de ${trace.domain_size} elementos.`,
     existential_complete: `Ningún elemento cumple la condición: comprobados ${checked} de ${trace.domain_size}.`,
   };
@@ -40,7 +40,8 @@ function selectStep(trace, context) {
 }
 
 function termNode(term) {
-  const item = node('li', `${term.term} = ${term.value} · ${term.reason === 'variable_assignment' ? 'asignación de variable' : 'consulta de función'}`);
+  const separator = term.reason === 'variable_assignment' ? ':' : ' →';
+  const item = node('li', `${term.term}${separator} ${term.value} · ${term.reason === 'variable_assignment' ? 'asignación de variable' : 'consulta de función'}`);
   if (term.children.length) {
     const children = node('ul');
     for (const child of term.children) children.append(termNode(child));
@@ -63,7 +64,7 @@ function evidenceNode(trace, context) {
     details.dataset.loaded = 'true';
     details.append(node('p', reasonText(trace)));
     details.append(node('p', trace.environment.length
-      ? `Entorno: ${trace.environment.map(([name, value]) => `${name} = ${value}`).join(', ')}`
+      ? `Entorno: ${trace.environment.map(([name, value]) => `${name}: ${value}`).join(', ')}`
       : 'Sin asignaciones en este alcance.'));
     if (trace.terms.length) {
       const terms = node('ul');
