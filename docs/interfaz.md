@@ -15,7 +15,7 @@ la raíz aunque se ejecuten desde otro directorio: .sh para Linux, .command para
 macOS y .bat para Windows. Su ejecución nativa en macOS/Windows debe revisarse.
 
 Seleccionar P(x): pertenencia y asignación → Cargar ejemplo → Evaluar fórmula
-da Verdadero con x: 1. Seleccionar 3 y reevaluar da Falso. Hay nueve ejemplos
+da Verdadero con x: 1. Seleccionar 3 y reevaluar da Falso. Hay once ejemplos
 seleccionables de las notas del curso, cada uno con explicación y práctica.
 Las referencias al PDF se conservan en el catálogo y en esta guía, sin mostrarlas
 en la ayuda de la interfaz.
@@ -27,7 +27,9 @@ Para datos propios, se utiliza una única sección Lenguaje e interpretación:
 Editar dominio modifica D; cada ficha agrupa la declaración y la interpretación
 de una constante, función o predicado. La cabecera de cada símbolo permanece antes de su resumen. Al abrirla, los campos
 se despliegan debajo sin desplazar esa cabecera ni repetir nombre y aridad entre
-la declaración y la tabla. Ambos forman un solo bloque de edición. Solo se mantiene un editor abierto.
+la declaración y la tabla. Ambos forman un solo bloque de edición. La acción con lápiz y Editar identifica
+la modificación; Aceptar edición vuelve al resumen y devuelve el foco a esa acción.
+Los campos actualizan el estado al editarlos y la validación se realiza al evaluar. Solo se mantiene un editor abierto.
 El dominio y las tablas conservan sus datos al plegar. En escritorio la configuración
 tiene desplazamiento propio; comparación y evidencia están juntas en la columna de
 trabajo, por lo que la altura de la configuración no empuja la comparación hacia abajo.
@@ -45,12 +47,14 @@ encajan directamente con el evaluador están en interpretaciones y entornos.
 | --- | --- | --- |
 | P(x), x: 1 | 179, fórmula abierta añadida a su interpretación | Verdadero |
 | ∀x P(x) | 179, fórmula e interpretación originales | Falso; contraejemplo x: 3 |
+| ∀x (P(x) ∨ ¬P(x)) | 179, variante de práctica | Verdadero; comprobación de los tres elementos |
 | ∀x ∃y R(x,y) | 179, fórmula e interpretación originales | Verdadero |
 | ∃x P(x) | 179, variante de práctica sobre la misma interpretación | Verdadero; testigo x: 1 |
 | ∃x (P(x) ∧ ¬P(x)) | 179, variante de práctica sobre la misma interpretación | Falso; comprueba los tres elementos |
 | ¬R(i) | 181, fórmula e interpretación originales | Verdadero; i produce a |
 | ∃y Q(i,y) | 181, fórmula e interpretación originales | Verdadero; testigo y: a |
 | P(x, f(x,y)), x: b, y: b | 187, ejemplo manuscrito y tabla completa | Falso; f(b,b) produce b y (b,b) no pertenece a P |
+| (∀x ∃y (Q(x,y) ∧ R(f(x,y)))) ∧ ¬R(i) | 181 y 187, combinación didáctica | Falso; x: c es contraejemplo. Cambiar f(c,c) de a a b produce Verdadero |
 | (∀x (H(x) → M(x))) ∧ H(s) | 108–115, adaptación finita del ejemplo de Sócrates | Verdadero |
 
 En el último se añade explícitamente D = {Sócrates, Platón}, con ambos en H y M;
@@ -204,7 +208,7 @@ Los límites son de recursos, no restricciones matemáticas ni garantía de tiem
 ## Verificación y aceptación
 
 [Evidencia reproducible y capturas](evidencias/miembro-3.md): 149 pruebas Python,
-168 comprobaciones de navegador y tres adicionales con movimiento reducido.
+208 comprobaciones de navegador y tres adicionales con movimiento reducido.
 El registro distingue las verificaciones históricas de las del catálogo actual.
 Se reprodujo el funcionamiento desde git archive, sin .git ni entorno virtual.
 La comparación se revisó a 1440, 1024, 768 y 320 px, sin scroll horizontal global.
@@ -216,7 +220,11 @@ su estado pendiente y se coordinan entre los tres. Ver la matriz general.
 
 ## Guiones de demostración y práctica
 
-**Primera ronda (ajustar duración al tiempo oficial):** M2 configura/explica el
+La [guía de presentación](presentacion.md) contrasta los siete requisitos con la
+rúbrica, detalla el nuevo caso integrado y propone preguntas de defensa. Incluye
+los máximos de nota por ticket y los ensayos que debe realizar el equipo.
+
+**Primera ronda (ajustar duración al tiempo oficial):** M2 configura/explica la
 interpretación de la p. 179; M1 evalúa ∃x P(x), ∀x P(x) y ∀x ∃y R(x,y); M3 abre un paso,
 localiza la subfórmula y compara ∃x P(x) quitando 1 de P. La verdad
 se mantiene y el testigo cambia a 2. Mostrar un error y su reparación.

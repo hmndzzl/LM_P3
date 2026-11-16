@@ -19,6 +19,7 @@
     element.dispatchEvent(new Event('input', { bubbles: true }));
     element.dispatchEvent(new Event('change', { bubbles: true }));
   };
+  const paint = () => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
   const oldConfirm = window.confirm;
   window.confirm = () => true;
   try {
@@ -66,6 +67,7 @@
     const editor = functionCard.querySelector('details');
     const title = editor.querySelector('summary');
     title.scrollIntoView({ block: 'center' });
+    await paint();
     const top = title.getBoundingClientRect().top;
     title.click();
     await until(() => editor.open && functionCard.querySelector('.symbol-summary').hidden);
@@ -83,10 +85,11 @@
     const nextEditor = $('functions-overview').querySelector('details');
     const nextTitle = nextEditor.querySelector('summary');
     nextTitle.scrollIntoView({ block: 'center' });
+    await paint();
     const position = nextTitle.getBoundingClientRect().top;
     nextTitle.click();
     await until(() => nextEditor.open && !constantEditor.open);
-    await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+    await paint();
     assert(Math.abs(nextTitle.getBoundingClientRect().top - position) < 2,
       'Alternar fichas conserva la posición de la cabecera pulsada al cerrar el editor anterior');
     assert(document.activeElement === nextTitle, 'Alternar el editor conserva el foco en la cabecera activada');

@@ -3,7 +3,7 @@
 ## Alcance
 
 Actualización del 16 de noviembre de 2026: el catálogo sustituye el ejemplo de
-estaciones por nueve ejemplos seleccionables de Lógica TEO 2.pdf, con páginas,
+estaciones por once ejemplos y variantes del curso, con procedencia documentada,
 explicación y práctica. Se distinguen transcripciones, variantes y la adaptación
 finita de Sócrates. No se cambiaron motor, parser, validadores ni corpus de M2.
 
@@ -15,17 +15,18 @@ Verificación actual del catálogo:
 | tests/ui/smoke.js, con los ejemplos nuevos | 31 comprobaciones aprobadas |
 | tests/ui/completion.js, con los ejemplos nuevos | 31 comprobaciones aprobadas |
 | tests/ui/assignments.js | 6 comprobaciones aprobadas |
-| tests/ui/examples.js | 33 comprobaciones aprobadas |
+| tests/ui/examples.js | 37 comprobaciones aprobadas |
 | tests/ui/editor-arity.js | 9 comprobaciones aprobadas |
 | tests/ui/evidence.js | 16 comprobaciones aprobadas |
 | tests/ui/interpretation-summary.js | 14 comprobaciones aprobadas |
 | tests/ui/comparison-flow.js | 14 comprobaciones aprobadas |
-| tests/ui/unified-configuration.js | 11 comprobaciones aprobadas |
+| tests/ui/unified-configuration.js | 14 comprobaciones aprobadas |
+| tests/ui/presentation.js | 33 comprobaciones aprobadas |
 | tests/ui/background.js | 3 normales y 3 con movimiento reducido |
 | Anchos 1440/1024/768/320 con el selector nuevo | Sin scroll horizontal global |
-| Axe-core 4.12.1, ejemplo a 320 px | 0 infracciones, 42 reglas aprobadas; contraste incompleto en ocho nodos por símbolos/solapamiento del fondo |
+| Axe-core 4.12.1, comparación del caso integrado | 0 infracciones, 50 reglas aprobadas y una revisión de contraste incompleta |
 
-Se probaron los nueve resultados contra M1/M2, la independencia de las tablas al
+Se probaron los once resultados iniciales contra M1/M2, la independencia de las tablas al
 recargar, cancelar carga/limpieza, comparar antes de limpiar y descartar una
 respuesta pendiente después de limpiar. Los selectores de asignación contienen
 solo elementos del dominio actual; los valores anteriores se explican aparte.
@@ -41,7 +42,7 @@ El selector se titula Probar Ejemplos y su ayuda ya no muestra la referencia al 
 El panel Interpretación separa elementos del dominio, tuplas y argumentos/imagen
 de las funciones; permite desplegar las filas restantes en la misma tabla, sin
 repetir título ni encabezados. Se comprueba plegar y desplegar sin duplicar filas. Las constantes se
-identifican explícitamente. Los diez scripts pasan en conjunto: 168 comprobaciones
+identifican explícitamente. Los once scripts pasan en conjunto: 208 comprobaciones
 normales. La terminología visible se ajustó a las notas del curso.
 
 El comparador ahora usa un selector directo, muestra Original y Cambio propuesto
@@ -73,6 +74,19 @@ en su posición al desplegar el editor. Declaración e interpretación forman un
 único bloque sin repetir el título. Las consultas de función y las etiquetas de
 comparación usan «Valor de ...: ...»; la flecha → se conserva como símbolo lógico
 en las fórmulas y no se utiliza para representar sus resultados.
+
+Revisión final de la guía oficial: se leyeron y renderizaron sus dos páginas.
+Se añadió un universal verdadero directo y un caso que combina las interpretaciones
+de las pp. 181 y 187 de las notas. El caso integrado obtiene Falso, con contraejemplo
+x: c; cambiar solo f(c,c) de a a b obtiene Verdadero. Cambiar f(a,a) de b a c
+conserva Falso y cambia evidencia. El ensayo técnico verifica esos resultados, los
+conectivos, el alcance, nueve errores y sus reparaciones. Las once suites pasan
+con 208 comprobaciones normales y tres adicionales de movimiento reducido.
+Se ejecutaron 149 pruebas Python y la reproducción de la aplicación desde una
+copia exportada con git archive, sin .git ni entorno virtual. El guion para la
+rúbrica, preguntas de código y condiciones de tickets está en
+[presentacion.md](../presentacion.md). Se inspeccionaron capturas nuevas del caso
+integrado y de la comparación; son respaldo de ejecución, no un ensayo humano.
 
 El fondo tiene 60 letras y símbolos; se retiró su botón de pausa por solicitud
 del usuario. Conserva velocidad, opacidad y movimiento reducido. Se inspeccionaron
@@ -122,6 +136,7 @@ agent-browser --session m3-revision eval --stdin < tests/ui/evidence.js
 agent-browser --session m3-revision eval --stdin < tests/ui/interpretation-summary.js
 agent-browser --session m3-revision eval --stdin < tests/ui/comparison-flow.js
 agent-browser --session m3-revision eval --stdin < tests/ui/unified-configuration.js
+agent-browser --session m3-revision eval --stdin < tests/ui/presentation.js
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js
 agent-browser --session m3-revision set media light reduced-motion
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js

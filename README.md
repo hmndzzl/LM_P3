@@ -22,7 +22,9 @@ Para elegir puerto o abrir el navegador manualmente:
 python3 -B -m lm_p3 --no-browser --port 8765
 ```
 
-Elige uno de los nueve ejemplos de tus notas y pulsa **Cargar ejemplo**.
+Elige uno de los once ejemplos y variantes del curso y pulsa **Cargar ejemplo**.
+La [guía de presentación y defensa](docs/presentacion.md) relaciona la demo con
+la rúbrica y explica el caso integrado.
 El primero, `P(x)` con x: 1, da Verdadero; con x: 3 da Falso. Cada ejemplo
 explica sus datos y propone un cambio para probar. **Limpiar todo** borra
 fórmula, lenguaje, dominio, tablas, asignaciones, resultados y comparación.
