@@ -6,8 +6,13 @@ import json
 
 from lm_p3.application.service import evaluate_formula
 from lm_p3.models.errors import SemanticInputError
+from lm_p3.semantics.comparison import compare
 from lm_p3.syntax.parser import analyze, parse
 from lm_p3.validation.normalization import build_environment, build_interpretation, build_language
+from lm_p3.validation.validator import validate_input
+
+SCENARIO_FIELDS = {'revision', 'functions', 'predicates', 'formula', 'domain',
+                   'function_rows', 'relations', 'assignments'}
 
 
 def _unique_object(pairs: list[tuple]) -> dict:
@@ -50,9 +55,17 @@ def error_response(error: Exception, revision: int | None = None) -> dict:
 
 
 def process_request(operation: str, data: dict) -> dict:
+    if operation == 'compare':
+        if set(data) != {'revision', 'base', 'variant'} or type(data['revision']) is not int or data['revision'] < 0:
+            raise SemanticInputError('invalid_comparison', 'Envía revisión, base y variante válidas.', 'comparison')
+        base = _comparison_input(data['base'])
+        variant = _comparison_input(data['variant'])
+        result = compare(base, variant)
+        return {'status': 'compared', 'revision': data['revision'],
+                'comparison': {**asdict(result), 'truth_changed': result.truth_changed}}
     required = {'revision', 'functions', 'predicates', 'formula'}
     if operation == 'evaluate':
-        required |= {'domain', 'function_rows', 'relations', 'assignments'}
+        required = SCENARIO_FIELDS
     if set(data) != required:
         raise SemanticInputError('invalid_fields', 'Faltan campos o hay campos no admitidos.', 'request')
     if type(data['revision']) is not int or data['revision'] < 0:
@@ -69,3 +82,14 @@ def process_request(operation: str, data: dict) -> dict:
     outcome = evaluate_formula(data['formula'], language, interpretation, environment,
                                parse=parse, revision=data['revision'])
     return {'status': 'evaluated', **asdict(outcome)}
+
+
+def _comparison_input(data: object):
+    if not isinstance(data, dict) or set(data) != SCENARIO_FIELDS:
+        raise SemanticInputError('invalid_fields', 'Cada escenario necesita todos sus campos de entrada.', 'comparison')
+    if not isinstance(data['formula'], str) or type(data['revision']) is not int or data['revision'] < 0:
+        raise SemanticInputError('invalid_comparison', 'La fórmula y revisión de cada escenario deben ser válidas.', 'comparison')
+    language = build_language(data['functions'], data['predicates'])
+    interpretation = build_interpretation(language, data['domain'], data['function_rows'], data['relations'])
+    environment = build_environment(language, data['domain'], data['assignments'])
+    return validate_input(language, interpretation, parse(data['formula'], language), environment)

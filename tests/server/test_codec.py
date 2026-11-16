@@ -13,6 +13,42 @@ def sample_request():
 
 
 class CodecTests(unittest.TestCase):
+    def test_comparison_uses_two_validated_scenarios_without_mutating_them(self):
+        base = sample_request()
+        variant = deepcopy(base)
+        variant['function_rows']['f'][0][1] = 'a'
+        original = deepcopy(base)
+        result = process_request('compare', {'revision': 9, 'base': base, 'variant': variant})
+        self.assertEqual(result['revision'], 9)
+        self.assertIs(result['comparison']['before']['value'], False)
+        self.assertIs(result['comparison']['after']['value'], True)
+        self.assertTrue(result['comparison']['truth_changed'])
+        self.assertEqual(base, original)
+        json.dumps(result)
+
+    def test_relation_comparison_can_change_witness_without_changing_truth(self):
+        base = sample_request()
+        base['formula'] = '∃x P(x)'
+        base['relations']['P'].append(['b'])
+        variant = deepcopy(base)
+        variant['relations']['P'].remove(['a'])
+        result = process_request('compare', {'revision': 0, 'base': base, 'variant': variant})['comparison']
+        self.assertFalse(result['truth_changed'])
+        self.assertEqual(result['before']['trace']['decisive_element'], 'a')
+        self.assertEqual(result['after']['trace']['decisive_element'], 'b')
+        self.assertTrue(result['evidence_changes'])
+
+    def test_comparison_rejects_invalid_variants_multiple_changes_and_new_context(self):
+        base = sample_request()
+        for patch in ({'relations': {'P': []}}, {'domain': ['a']}, {'formula': '¬P(f(x))'},
+                      {'assignments': [['x', 'b']], 'function_rows': {'f': [[['a'], 'a'], [['b'], 'a']]}}):
+            variant = deepcopy(base)
+            variant.update(patch)
+            with self.subTest(patch=patch), self.assertRaises(SemanticInputError):
+                process_request('compare', {'revision': 0, 'base': base, 'variant': variant})
+        with self.assertRaises(SemanticInputError):
+            process_request('compare', {'revision': True, 'base': base, 'variant': base})
+
     def test_real_evaluation_and_serializable_evidence_preserve_input(self):
         data = sample_request()
         original = deepcopy(data)
