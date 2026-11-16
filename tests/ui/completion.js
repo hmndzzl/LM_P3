@@ -62,7 +62,7 @@
     assert(functionTable.querySelector('select').options.length === 4, 'Las tuplas usan selectores del dominio');
     assert(functionTable.querySelector('.help').textContent.includes('Faltan 0'), 'Conteo de salidas funcionales completas');
     fill($('domain'), 'a\nb');
-    assert([...document.querySelectorAll('#interpretations option')].some((option) => option.textContent === 'c (fuera de D)'),
+    assert([...document.querySelectorAll('#symbols .interpretation option')].some((option) => option.textContent === 'c (fuera de D)'),
       'Editar el dominio conserva valores recuperables fuera de D');
     await evaluate();
     const outputIssue = [...$('error-list').querySelectorAll('a')].find((link) => link.textContent.includes('salida'));
@@ -152,18 +152,16 @@
       'Una comparación tardía no sobrescribe una variante editada');
     window.fetch = realFetch;
 
-    while ($('symbols').querySelector('button')) $('symbols').querySelector('button').click();
+    while ($('symbols').querySelector('.symbol-declaration button')) $('symbols').querySelector('.symbol-declaration button').click();
     fill($('domain'), 'único');
-    $('add-function').click();
+    $('add-constant').click();
     fill($('symbols').querySelector('input[type=text]'), 'c');
-    fill($('symbols').querySelector('input[type=number]'), '0');
-    $('interpretations').querySelector('button').click();
-    fill($('interpretations').querySelector('select'), 'único');
+    fill(document.querySelector('#symbols .interpretation select'), 'único');
     $('add-predicate').click();
-    const predicateRow = $('symbols').lastElementChild;
+    const predicateRow = [...$('symbols').querySelectorAll('.symbol-card')].at(-1);
     fill(predicateRow.querySelector('input[type=text]'), 'T');
     fill(predicateRow.querySelector('input[type=number]'), '0');
-    $('interpretations').lastElementChild.querySelector('button').click();
+    predicateRow.querySelector('.interpretation').lastElementChild.click();
     await evaluate('T ↔ T()');
     assert(!$('result').hidden && $('result-value').textContent === 'Verdadero',
       'Símbolos de aridad cero se configuran y evalúan desde la interfaz');

@@ -32,8 +32,8 @@ Puedes escribir con teclado o insertar símbolos desde la barra, conservando cur
 selección y deshacer/rehacer. Las tuplas y salidas usan selectores del dominio.
 
 La fórmula, las asignaciones y el resultado ocupan la zona principal. El resumen
-de la interpretación permanece visible; para modificar sus datos abre **Lenguaje** o
-**Dominio y tablas**. Un error abre automáticamente la sección correspondiente.
+de la interpretación permanece visible. **Editar dominio** modifica D; las fichas
+de constantes, funciones y predicados reúnen su declaración y su interpretación. Un error abre automáticamente la sección correspondiente.
 
 Después de evaluar, **Comparar un cambio** permite modificar una salida funcional,
 la pertenencia de una tupla o una asignación libre sobre una copia. La base se

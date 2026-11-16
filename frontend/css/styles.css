@@ -125,20 +125,6 @@ p {
   margin-bottom: 0;
 }
 
-.world-data {
-  margin: 0 0 var(--space-4);
-  overflow-wrap: anywhere;
-}
-
-.world-data dt {
-  font-weight: 600;
-  margin-top: var(--space-3);
-}
-
-.world-data dd {
-  margin: var(--space-1) 0 0;
-}
-
 .domain-elements {
   display: flex;
   flex-wrap: wrap;
@@ -152,10 +138,6 @@ p {
   padding: var(--space-1) var(--space-2);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-control);
-}
-
-.symbol-summary + .symbol-summary {
-  margin-top: var(--space-4);
 }
 
 .interpretation-table caption {
@@ -281,12 +263,6 @@ button:disabled {
   overflow-wrap: anywhere;
 }
 
-.table-scroll {
-  max-width: 100%;
-  overflow-x: auto;
-  margin-bottom: var(--space-3);
-}
-
 table {
   border-collapse: collapse;
   width: 100%;
@@ -301,24 +277,6 @@ th {
 td, th {
   padding: var(--space-1);
   vertical-align: top;
-}
-
-#language-config table {
-  min-width: 26rem;
-}
-
-#language-config td:first-child, #language-config td:last-child,
-#language-config th {
-  white-space: nowrap;
-}
-
-td input {
-  min-width: 6rem;
-}
-
-td input[type=number] {
-  min-width: 4rem;
-  width: 4.5rem;
 }
 
 /* Interpretación y entorno */
@@ -592,25 +550,6 @@ summary {
   padding-block: var(--space-2);
 }
 
-details.configuration-section {
-  padding: var(--space-4);
-}
-
-.configuration-section > summary {
-  font-weight: 600;
-}
-
-.configuration-section > summary .help {
-  display: block;
-  font-weight: 400;
-  margin-left: var(--space-4);
-}
-
-.configuration-section[open] > summary {
-  margin-bottom: var(--space-4);
-  border-bottom: 1px solid var(--border-subtle);
-}
-
 .notation-help {
   border: 0;
   padding: 0;
@@ -673,5 +612,96 @@ footer {
 @media (max-width: 700px) {
   .comparison-controls, .comparison-results {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Configuración reunida por símbolo */
+.configuration-panel > h3 {
+  margin-top: var(--space-4);
+}
+
+.domain-editor {
+  margin-block: var(--space-2) var(--space-4);
+}
+
+.symbol-actions {
+  margin-bottom: var(--space-4);
+}
+
+.symbol-actions button {
+  font-size: .875rem;
+  padding-inline: var(--space-2);
+}
+
+.symbol-group {
+  margin-top: var(--space-6);
+}
+
+.symbol-group > h3 {
+  font-size: .875rem;
+  color: var(--text-secondary);
+}
+
+.symbol-card {
+  padding-block: var(--space-3);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.symbol-editor {
+  border: 0;
+  padding: 0;
+  margin-top: var(--space-2);
+}
+
+.symbol-editor > summary {
+  color: var(--action-primary);
+  font-size: .875rem;
+}
+
+.symbol-editor[open] > summary {
+  font-weight: 600;
+  margin-bottom: var(--space-3);
+}
+
+.symbol-declaration {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5rem;
+  gap: var(--space-2);
+}
+
+.symbol-declaration label {
+  min-width: 0;
+  font-size: .875rem;
+}
+
+.symbol-declaration button {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.symbol-card .interpretation h3 {
+  font-size: 1rem;
+}
+
+.work-area > .comparison-panel {
+  margin-top: 0;
+}
+
+.symbol-card, #domain-overview {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.interpretation-table {
+  table-layout: fixed;
+}
+
+@media (min-width: 1024px) {
+  .configuration {
+    position: sticky;
+    top: var(--space-4);
+    max-height: calc(100vh - 2rem);
+    overflow-y: auto;
+    scrollbar-gutter: stable;
   }
 }

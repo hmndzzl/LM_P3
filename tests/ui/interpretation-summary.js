@@ -15,7 +15,7 @@
   window.confirm = () => true;
   try {
     load('funcion');
-    assert($('world-title').textContent === 'Interpretación' && !document.body.innerText.includes('mundo'),
+    assert($('world-title').textContent === 'Lenguaje e interpretación' && !document.body.innerText.includes('mundo'),
       'La interfaz utiliza interpretación y lenguaje en lugar de mundo');
     assert([...$('domain-overview').querySelectorAll('li')].map((item) => item.textContent).join('|') === 'a|b|c',
       'Cada elemento del dominio se muestra por separado');
@@ -47,8 +47,8 @@
     assert($('functions-overview').querySelector('tbody tr').cells[1].textContent === 'c',
       'El resumen refleja las ediciones de la interpretación');
     load('constante');
-    assert($('functions-overview').querySelector('caption').textContent === 'i · constante'
-      && $('functions-overview').querySelector('tbody tr').cells[0].textContent === '()',
+    assert($('constants-overview').querySelector('caption').textContent === 'i · constante'
+      && $('constants-overview').querySelector('tbody tr').cells[0].textContent === 'a',
       'Una constante conserva su identificación y su tupla de aridad cero');
     $('domain').value = 'a\nb\nc\nd\ne\nf';
     $('domain').dispatchEvent(new Event('input', { bubbles: true }));

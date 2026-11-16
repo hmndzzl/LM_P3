@@ -27,7 +27,7 @@
     assert(!data.formula && !data.domain.length && !data.functions.length && !data.predicates.length
       && !data.assignments.length && !Object.keys(data.function_rows).length && !Object.keys(data.relations).length,
     'Limpiar borra todos los datos enviados al motor');
-    assert(!$('symbols').children.length && !$('environment').children.length
+    assert(!$('symbols').querySelector('.symbol-card') && !$('environment').children.length
       && $('result').hidden && !$('evidence').children.length && !$('result-value').textContent,
     'Limpiar borra los editores, resultado y evidencia');
     assert($('comparison-panel').hidden && !$('comparison-target').children.length

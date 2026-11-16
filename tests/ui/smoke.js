@@ -30,7 +30,7 @@
   window.confirm = () => true;
   try {
     load();
-    assert(!$('language-config').open && !$('interpretation-config').open,
+    assert(![...document.querySelectorAll('.symbol-editor')].some((editor) => editor.open) && !$('interpretation-config').open,
       'El ejemplo deja la configuración plegada y conserva el editor visible');
     assert(!$('example-note').hidden && $('domain-overview').textContent.includes('2')
       && $('predicates-overview').textContent.includes('P'),
@@ -120,14 +120,14 @@
       'Una respuesta tardía nunca reemplaza el contexto editado');
 
     window.fetch = realFetch;
-    while ($('symbols').querySelector('button')) $('symbols').querySelector('button').click();
+    while ($('symbols').querySelector('.symbol-declaration button')) $('symbols').querySelector('.symbol-declaration button').click();
     fill($('domain'), 'uno\ndos');
     $('add-predicate').click();
     const customName = $('symbols').querySelector('input[type=text]');
     fill(customName, 'Listo');
     customName.dispatchEvent(new Event('change', { bubbles: true }));
-    $('interpretations').querySelector('button').click();
-    fill($('interpretations').querySelector('select'), 'uno');
+    document.querySelector('#symbols .interpretation').querySelector('button').click();
+    fill(document.querySelector('#symbols .interpretation').querySelector('select'), 'uno');
     fill($('formula'), 'Listo(z)');
     $('analyze').click();
     await until(() => !$('analyze').disabled);
@@ -136,7 +136,7 @@
     await evaluate();
     assert(!$('result').hidden && $('result-value').textContent === 'Verdadero',
       'Lenguaje, dominio, tupla y entorno propios se configuran desde cero');
-    $('interpretations').querySelector('button').click();
+    document.querySelector('#symbols .interpretation').querySelector('button').click();
     await evaluate();
     assert($('result').hidden && $('error-list').textContent.includes('La relación Listo está vacía'),
       'Relación vacía se rechaza sin perder la fórmula del usuario');

@@ -15,6 +15,7 @@ let busy = false;
 let dirty = false;
 
 function invalidate(event) {
+  if (event?.target.closest('#comparison-panel')) return;
   revision += 1;
   dirty = true;
   clearErrors();

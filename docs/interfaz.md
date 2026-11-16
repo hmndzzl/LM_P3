@@ -23,14 +23,13 @@ Solo se cargan entradas; el resultado siempre se solicita al motor.
 Limpiar todo borra fórmula, lenguaje, dominio, tablas, asignaciones, guía, errores,
 resultado, evidencia y comparación. Pide confirmación si hay trabajo cargado;
 una respuesta pendiente no restaura datos después de limpiar.
-Para datos propios, abrir Lenguaje y Dominio y tablas. Plegar secciones conserva
-el trabajo. El panel Interpretación distingue dominio del discurso, relaciones
-y funciones/constantes. El dominio separa sus elementos; cada relación muestra una
-tupla por fila y cada función separa Argumentos e Imagen. Se muestran hasta cuatro
-elementos o filas inicialmente y un desplegable permite consultar los restantes.
-Cada símbolo tiene una única tabla; desplegar añade las filas a esa misma tabla,
-sin repetir título ni encabezados. Plegar oculta únicamente las filas adicionales.
-Los argumentos siempre conservan paréntesis. Los errores abren la sección afectada.
+Para datos propios, se utiliza una única sección Lenguaje e interpretación:
+Editar dominio modifica D; cada ficha agrupa la declaración y la interpretación
+de una constante, función o predicado. Editar un símbolo oculta temporalmente
+su resumen y abre sus campos en el mismo lugar. Solo se mantiene un editor abierto.
+El dominio y las tablas conservan sus datos al plegar. En escritorio la configuración
+tiene desplazamiento propio; comparación y evidencia están juntas en la columna de
+trabajo, por lo que la altura de la configuración no empuja la comparación hacia abajo.
 
 ## Ejemplos de las notas
 
@@ -68,7 +67,12 @@ universal ni sustituye las demostraciones del curso.
 
 ## Editores
 
-Los nombres y aridades son configurables, incluida aridad cero. Al confirmar una
+Añadir constante crea una ficha con nombre y un único elemento de D, siguiendo
+la separación entre constantes, funciones y predicados de las pp. 125 y 178.
+Internamente conserva el contrato de M1/M2: función de aridad cero con una fila
+[[], elemento]. La interfaz no exige introducir una tupla vacía ni filas para una
+constante. Los nombres y aridades de funciones/predicados son configurables,
+incluida aridad cero para predicados. Al confirmar una
 aridad mayor se añaden argumentos vacíos a cada fila, conservando valores y salidas.
 Reducir la aridad pide confirmación si se perderían argumentos ingresados; cancelar
 restaura la aridad anterior. Las fórmulas se corrigen por separado y M2 comprueba

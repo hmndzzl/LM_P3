@@ -36,6 +36,10 @@ function domainSelect(value, id, onChange) {
 
 function updateCoverage(symbol) {
   const status = $(`coverage-${symbol.id}`);
+  if (isConstant(symbol)) {
+    status.textContent = 'La constante designa un elemento del dominio.';
+    return;
+  }
   if (symbol.kind === 'predicate') {
     status.textContent = `${symbol.rows.length} tuplas ingresadas. La relación debe contener al menos una.`;
     return;
@@ -60,7 +64,7 @@ function interpretationTable(symbol, entries) {
   table.append(node('caption', `${symbol.name || 'Sin nombre'} · ${symbol.kind === 'function' && symbol.arity === 0 ? 'constante' : `aridad ${symbol.arity ?? 'sin definir'}`}`));
   const head = node('thead');
   const headings = node('tr');
-  for (const title of symbol.kind === 'function' ? ['Argumentos', 'Imagen'] : ['Tupla']) {
+  for (const title of isConstant(symbol) ? ['Elemento de D'] : symbol.kind === 'function' ? ['Argumentos', 'Imagen'] : ['Tupla']) {
     const cell = node('th', title);
     cell.scope = 'col';
     headings.append(cell);
@@ -69,7 +73,7 @@ function interpretationTable(symbol, entries) {
   const body = node('tbody');
   for (const entry of entries) {
     const row = node('tr');
-    row.append(node('td', `(${entry.arguments.map((value) => value || 'pendiente').join(', ')})`));
+    if (!isConstant(symbol)) row.append(node('td', `(${entry.arguments.map((value) => value || 'pendiente').join(', ')})`));
     if (symbol.kind === 'function') row.append(node('td', entry.output || 'pendiente'));
     body.append(row);
   }
@@ -112,31 +116,33 @@ function appendPreview(target, entries, render, unit = 'filas') {
   target.append(more);
 }
 
+function isConstant(symbol) {
+  return symbol.kind === 'function' && symbol.arity === 0;
+}
+
+function symbolType(symbol) {
+  return isConstant(symbol) ? 'Constante' : symbol.kind === 'function' ? 'Función' : 'Predicado';
+}
+
 export function updateWorldSummary() {
   const domain = domainValues();
   $('domain-overview').replaceChildren();
   if (domain.length) appendPreview($('domain-overview'), domain, domainList, 'elementos');
   else $('domain-overview').textContent = 'Dominio sin definir.';
-  $('language-count').textContent = symbols.length
-    ? `${symbols.length} símbolos ingresados`
-    : 'Sin símbolos declarados';
-
-  for (const [kind, target, empty] of [
-    ['predicate', 'predicates-overview', 'Sin predicados declarados.'],
-    ['function', 'functions-overview', 'Sin funciones ni constantes declaradas.'],
-  ]) {
-    $(target).replaceChildren();
-    const group = symbols.filter((symbol) => symbol.kind === kind);
-    if (!group.length) $(target).textContent = empty;
-    for (const symbol of group) {
-      const section = node('div');
-      section.className = 'symbol-summary';
-      section.id = `summary-${symbol.id}`;
-      appendPreview(section, symbol.rows, (rows) => interpretationTable(symbol, rows));
-      if (!symbol.rows.length) section.append(node('p', 'Sin filas definidas.'));
-      $(target).append(section);
-    }
+  $('language-count').textContent = symbols.length ? `${symbols.length} símbolos declarados` : 'Sin símbolos declarados';
+  for (const symbol of symbols) {
+    const preview = $(`summary-${symbol.id}`);
+    const group = isConstant(symbol) ? 'constants-overview' : symbol.kind === 'function' ? 'functions-overview' : 'predicates-overview';
+    if (preview.parentElement.parentElement !== $(group)) $(group).append(preview.parentElement);
+    preview.replaceChildren();
+    appendPreview(preview, symbol.rows, (rows) => interpretationTable(symbol, rows));
+    if (!symbol.rows.length) preview.append(node('p', 'Interpretación pendiente.'));
+    $(`edit-title-${symbol.id}`).textContent = `Editar ${symbolType(symbol).toLowerCase()} ${symbol.name || 'sin nombre'}`;
   }
+  for (const id of ['constants-overview', 'functions-overview', 'predicates-overview']) {
+    $(id).parentElement.hidden = !$(id).children.length;
+  }
+  $('symbol-empty').hidden = symbols.length > 0;
 }
 
 function addSymbol(kind, name = '', arity = 1, rows = []) {
@@ -146,17 +152,27 @@ function addSymbol(kind, name = '', arity = 1, rows = []) {
 }
 
 function renderSymbols() {
-  $('symbols').replaceChildren();
+  for (const id of ['constants-overview', 'functions-overview', 'predicates-overview']) $(id).replaceChildren();
   for (const symbol of symbols) {
-    const row = node('tr');
-    const kindCell = node('td', symbol.kind === 'function' ? 'Función' : 'Predicado');
-    row.append(kindCell);
+    const card = node('section');
+    card.className = 'symbol-card';
+    card.dataset.symbol = symbol.id;
+    const preview = node('div');
+    preview.className = 'symbol-summary';
+    preview.id = `summary-${symbol.id}`;
+    const editor = node('details');
+    editor.className = 'symbol-editor';
+    const title = node('summary');
+    title.id = `edit-title-${symbol.id}`;
+    const declaration = node('div');
+    declaration.className = 'symbol-declaration';
     for (const field of ['name', 'arity']) {
-      const cell = node('td');
+      const cell = node('label', field === 'name' ? 'Nombre del símbolo' : 'Aridad');
       const input = node('input');
       input.id = `symbol-${symbol.id}-${field}`;
       input.setAttribute('aria-label', `${field === 'name' ? 'Nombre' : 'Aridad'} del símbolo ${symbol.id + 1}`);
       input.type = field === 'arity' ? 'number' : 'text';
+      if (field === 'arity') cell.hidden = isConstant(symbol);
       if (field === 'arity') {
         input.min = '0';
         input.max = '32';
@@ -181,12 +197,12 @@ function renderSymbols() {
           previousArity = symbol.arity;
         }
         renderInterpretations();
+        $(`symbol-${symbol.id}-arity`).parentElement.hidden = isConstant(symbol);
         notifyEdit();
       });
       cell.append(input);
-      row.append(cell);
+      declaration.append(cell);
     }
-    const cell = node('td');
     const remove = node('button', 'Quitar');
     remove.type = 'button';
     remove.setAttribute('aria-label', `Quitar símbolo ${symbol.id + 1}`);
@@ -198,26 +214,37 @@ function renderSymbols() {
       notifyEdit();
       $('add-predicate').focus();
     });
-    cell.append(remove);
-    row.append(cell);
-    $('symbols').append(row);
+    declaration.append(remove);
+    const interpretation = node('div');
+    interpretation.id = `table-${symbol.id}`;
+    interpretation.className = 'interpretation';
+    interpretation.tabIndex = -1;
+    editor.append(title, declaration, interpretation);
+    editor.addEventListener('toggle', () => {
+      if (!editor.isConnected) return;
+      preview.hidden = editor.open;
+      if (editor.open) {
+        for (const other of document.querySelectorAll('.symbol-editor')) if (other !== editor) other.open = false;
+      }
+    });
+    card.append(preview, editor);
+    const target = isConstant(symbol) ? 'constants-overview' : symbol.kind === 'function' ? 'functions-overview' : 'predicates-overview';
+    $(target).append(card);
   }
+  updateWorldSummary();
 }
 
 function renderInterpretations() {
-  $('interpretations').replaceChildren();
-  if (!symbols.length) $('interpretations').append(node('p', 'Declara un símbolo para introducir sus tablas.'));
   for (const symbol of symbols) {
-    const section = node('section');
-    section.className = 'interpretation';
-    section.id = `table-${symbol.id}`;
-    section.tabIndex = -1;
-    section.append(node('h3', `${symbol.name || 'Sin nombre'} · ${symbol.kind === 'function' ? 'función' : 'predicado'} · aridad ${symbol.arity ?? 'pendiente'}`));
+    const section = $(`table-${symbol.id}`);
+    section.replaceChildren();
+    section.append(node('h3', isConstant(symbol) ? `Interpretación de ${symbol.name || 'la constante'}` : `${symbol.name || 'Sin nombre'} · ${symbol.kind === 'function' ? 'función' : 'predicado'} · aridad ${symbol.arity ?? 'pendiente'}`));
     const coverage = node('p');
     coverage.id = `coverage-${symbol.id}`;
     coverage.className = 'help';
     section.append(coverage);
-    section.addEventListener('input', () => updateCoverage(symbol));
+    section.oninput = () => updateCoverage(symbol);
+    if (isConstant(symbol) && !symbol.rows.length) symbol.rows.push({ arguments: [], output: '' });
     if (!symbol.rows.length) section.append(node('p', 'No hay filas. Añade al menos una.'));
     symbol.rows.forEach((entry, index) => {
       const row = node('div');
@@ -231,9 +258,9 @@ function renderInterpretations() {
         label.append(input);
         row.append(label);
       });
-      if (!entry.arguments.length) row.append(node('span', 'Tupla vacía ()'));
+      if (!entry.arguments.length && !isConstant(symbol)) row.append(node('span', 'Tupla vacía ()'));
       if (symbol.kind === 'function') {
-        const label = node('label', 'Salida');
+        const label = node('label', isConstant(symbol) ? 'Elemento de D' : 'Imagen');
         const input = domainSelect(entry.output, `output-${symbol.id}-${index}`,
           (selected) => { entry.output = selected; });
         label.append(input);
@@ -246,9 +273,9 @@ function renderInterpretations() {
         symbol.rows.splice(index, 1);
         renderInterpretations();
         notifyEdit();
-        $(`add-row-${symbol.id}`).focus();
+        ($(`add-row-${symbol.id}`) || $(`symbol-${symbol.id}-name`)).focus();
       });
-      row.append(remove);
+      if (!isConstant(symbol) || symbol.rows.length > 1) row.append(remove);
       section.append(row);
     });
     const add = node('button', symbol.kind === 'function' ? 'Añadir salida' : 'Añadir tupla');
@@ -266,8 +293,7 @@ function renderInterpretations() {
       const index = symbol.rows.length - 1;
       ($(`tuple-${symbol.id}-${index}-0`) || $(`output-${symbol.id}-${index}`) || $(`add-row-${symbol.id}`)).focus();
     });
-    section.append(add);
-    $('interpretations').append(section);
+    if (!isConstant(symbol)) section.append(add);
     updateCoverage(symbol);
   }
 }
@@ -363,11 +389,20 @@ export function initializeEditors() {
     renderInterpretations();
     renderEnvironment(freeVariables);
   });
+  $('add-constant').addEventListener('click', () => {
+    addSymbol('function', '', 0, [{ arguments: [], output: '' }]);
+    notifyEdit();
+    const input = $(`symbol-${symbols.at(-1).id}-name`);
+    input.closest('details').open = true;
+    input.focus();
+  });
   for (const kind of ['function', 'predicate']) {
     $(`add-${kind}`).addEventListener('click', () => {
       addSymbol(kind);
       notifyEdit();
-      $(`symbol-${symbols.at(-1).id}-name`).focus();
+      const input = $(`symbol-${symbols.at(-1).id}-name`);
+      input.closest('details').open = true;
+      input.focus();
     });
   }
 }
@@ -386,7 +421,6 @@ export function clearEditors() {
   $('example-note').replaceChildren();
   $('example-note').hidden = true;
   $('start-description').hidden = false;
-  $('language-config').open = false;
   $('interpretation-config').open = false;
   updateWorldSummary();
 }

@@ -73,38 +73,6 @@
             <button id="open-comparison" type="button">Comparar un cambio</button>
           </div>
         </section>
-      </div>
-      <aside class="configuration" aria-labelledby="world-title">
-        <section class="panel world-overview">
-          <h2 id="world-title">Interpretación</h2>
-          <p class="help">Dominio del discurso e interpretación de los símbolos no lógicos.</p>
-          <dl class="world-data">
-            <dt>Dominio del discurso D</dt><dd id="domain-overview">Dominio sin definir.</dd>
-            <dt>Relaciones</dt><dd id="predicates-overview">Sin predicados declarados.</dd>
-            <dt>Funciones y constantes</dt><dd id="functions-overview">Sin funciones ni constantes declaradas.</dd>
-          </dl>
-          <p class="help">Modifica el lenguaje, el dominio y las tablas en las secciones siguientes. Los datos se validan al evaluar.</p>
-        </section>
-        <details id="language-config" class="panel configuration-section">
-          <summary>Lenguaje <span id="language-count" class="help">Sin símbolos declarados</span></summary>
-          <p class="help">Declara los símbolos y cuántos argumentos recibe cada uno. Al confirmar una aridad mayor, las filas conservan sus valores y añaden campos vacíos.</p>
-          <div class="table-scroll" tabindex="0" role="region" aria-label="Símbolos del lenguaje">
-            <table><thead><tr><th>Tipo</th><th>Nombre</th><th>Aridad</th><th>Acción</th></tr></thead>
-              <tbody id="symbols"></tbody></table>
-          </div>
-          <div class="actions"><button type="button" id="add-function">Añadir función</button>
-            <button type="button" id="add-predicate">Añadir predicado</button></div>
-        </details>
-        <details id="interpretation-config" class="panel configuration-section">
-          <summary>Dominio y tablas <span class="help">Editar la interpretación</span></summary>
-          <label for="domain">Dominio D</label>
-          <textarea id="domain" rows="3" aria-describedby="domain-help" placeholder="1&#10;2&#10;3" spellcheck="false"></textarea>
-          <p id="domain-help" class="help">Un elemento por línea. D debe ser no vacío. El orden se conserva.</p>
-          <p class="help">Cada fila de un predicado es una tupla que pertenece a su relación. Para funciones, define una salida por cada combinación. Cambiar símbolos conserva las filas para que puedas corregirlas.</p>
-          <div id="interpretations"><p class="help">Declara un símbolo para introducir sus tablas.</p></div>
-        </details>
-      </aside>
-    </form>
     <section id="comparison-panel" class="panel comparison-panel" aria-labelledby="comparison-title" hidden>
       <h2 id="comparison-title">Comparar un cambio</h2>
       <p class="help">Selecciona un dato y revisa la modificación propuesta. Se calcularán ambos resultados sin alterar la interpretación ni el entorno originales.</p>
@@ -121,6 +89,37 @@
       <ul id="comparison-errors" class="comparison-error-list" tabindex="-1" aria-label="Errores de la variante" hidden></ul>
       <div id="comparison-results" class="comparison-results" hidden></div>
     </section>
+      </div>
+      <aside class="configuration" aria-labelledby="world-title">
+        <section class="panel configuration-panel">
+          <h2 id="world-title">Lenguaje e interpretación</h2>
+          <p class="help">Define D y los símbolos no lógicos. Cada ficha reúne su declaración y su interpretación.</p>
+          <h3>Dominio del discurso D</h3>
+          <div id="domain-overview">Dominio sin definir.</div>
+          <details id="interpretation-config" class="domain-editor">
+            <summary>Editar dominio</summary>
+            <label for="domain">Elementos de D</label>
+            <textarea id="domain" rows="3" aria-describedby="domain-help" placeholder="a&#10;b&#10;c" spellcheck="false"></textarea>
+            <p id="domain-help" class="help">Un elemento por línea. El dominio debe ser no vacío.</p>
+          </details>
+          <div id="language-config">
+            <h3>Símbolos <span id="language-count" class="help">Sin símbolos declarados</span></h3>
+            <div class="actions symbol-actions">
+              <button type="button" id="add-constant">Añadir constante</button>
+              <button type="button" id="add-function">Añadir función</button>
+              <button type="button" id="add-predicate">Añadir predicado</button>
+            </div>
+            <div id="symbols">
+              <p id="symbol-empty" class="help">Añade una constante, función o predicado para definir su interpretación.</p>
+              <section class="symbol-group"><h3>Constantes</h3><div id="constants-overview"></div></section>
+              <section class="symbol-group"><h3>Funciones</h3><div id="functions-overview"></div></section>
+              <section class="symbol-group"><h3>Predicados</h3><div id="predicates-overview"></div></section>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </form>
+
   </main>
   <footer>Evaluación finita local · Las respuestas se calculan con la interpretación ingresada.</footer>
 </body>

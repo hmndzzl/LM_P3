@@ -16,7 +16,7 @@
     element.dispatchEvent(new Event('input', { bubbles: true }));
     element.dispatchEvent(new Event('change', { bubbles: true }));
   };
-  const symbolRow = (name) => [...$('symbols').rows].find((row) => row.querySelector('input[type=text]').value === name);
+  const symbolRow = (name) => [...$('symbols').querySelectorAll('.symbol-card')].find((row) => row.querySelector('input[type=text]').value === name);
   const oldConfirm = window.confirm;
   window.confirm = () => true;
   try {
@@ -33,8 +33,8 @@
     const table = [...document.querySelectorAll('.interpretation')].find((section) => section.querySelector('h3').textContent.startsWith('R ·'));
     assert([...table.querySelectorAll('.tuple-row')].every((tuple) => tuple.querySelectorAll('select').length === 5),
       'Todas las filas muestran cinco selectores, también las filas existentes');
-    assert(getComputedStyle(row.cells[0]).whiteSpace === 'nowrap' && getComputedStyle(row.lastElementChild).whiteSpace === 'nowrap',
-      'El tipo de símbolo y la acción se mantienen en una sola línea');
+    assert(row.querySelector('.symbol-declaration input[type=text]') && row.querySelector('.symbol-declaration button'),
+      'La declaración y la acción se encuentran dentro de la ficha del símbolo');
     for (const select of table.querySelectorAll('select')) if (!select.value) fill(select, '1');
     fill($('formula'), 'R(x,x,x,x,x)');
     $('workspace').requestSubmit();
