@@ -20,6 +20,11 @@ function valueSelect(value, id) {
   return select;
 }
 
+function functionValue(symbol, args, value) {
+  const term = args.length ? `${symbol}(${args.join(', ')})` : symbol;
+  return `Valor de ${term}: ${value}`;
+}
+
 function relationArguments() {
   const target = targets[Number($('comparison-target').value)];
   return Array.from({ length: target.arity }, (_, index) => $(`comparison-arg-${index}`).value);
@@ -49,7 +54,8 @@ function invalidateVariant() {
   } else {
     const value = $('comparison-new-value').value;
     $('comparison-before').textContent = `${target.label}`;
-    $('comparison-after').textContent = `${target.symbol}${target.kind === 'function' ? `${target.arguments.length ? `(${target.arguments.join(', ')})` : ''} →` : ':'} ${value}`;
+    $('comparison-after').textContent = target.kind === 'function'
+      ? functionValue(target.symbol, target.arguments, value) : `${target.symbol}: ${value}`;
     $('compare').disabled = value === target.before;
   }
   $('comparison-status').textContent = $('compare').disabled
@@ -81,7 +87,7 @@ function renderValue() {
 function renderTargets() {
   targets = [
     ...base.functions.flatMap(([symbol]) => base.function_rows[symbol].map(([args, before], index) =>
-      ({ kind: 'function', symbol, arguments: args, before, index, label: `${symbol}${args.length ? `(${args.join(', ')})` : ''} → ${before}` }))),
+      ({ kind: 'function', symbol, arguments: args, before, index, label: functionValue(symbol, args, before) }))),
     ...base.predicates.map(([symbol, arity]) => ({ kind: 'relation', symbol, arity, label: symbol })),
     ...base.assignments.map(([symbol, before], index) => ({ kind: 'assignment', symbol, before, index, label: `${symbol}: ${before}` })),
   ];
@@ -145,7 +151,7 @@ function renderSuggestions(trace) {
     const member = target.kind === 'relation' && relationMember(target, candidate.args);
     const text = target.kind === 'relation'
       ? `${member ? 'Quitar' : 'Añadir'} (${candidate.args.join(', ')}) ${member ? 'de' : 'a'} ${target.symbol}`
-      : `Cambiar ${target.label}`;
+      : `Cambiar: ${target.label}`;
     const button = node('button', text);
     button.type = 'button';
     button.setAttribute('aria-pressed', 'false');
@@ -208,10 +214,10 @@ async function runComparison() {
     if (current !== version || response.revision !== current) return;
     const result = response.comparison;
     const change = result.change;
-    const target = change.kind === 'assignment' ? change.symbol : `${change.symbol}(${change.arguments.join(', ')})`;
+    const target = change.kind === 'assignment' || !change.arguments.length ? change.symbol : `${change.symbol}(${change.arguments.join(', ')})`;
     const before = change.kind === 'relation' ? (change.before ? 'pertenece' : 'no pertenece') : change.before;
     const after = change.kind === 'relation' ? (change.after ? 'pertenece' : 'no pertenece') : change.after;
-    $('comparison-status').textContent = `${target}: ${before} → ${after}. ${result.truth_changed ? 'Cambia el valor de verdad.' : 'El valor de verdad se mantiene.'} ${result.evidence_changes.length} pasos con cambios de evidencia.`;
+    $('comparison-status').textContent = `${target}. Original: ${before}. Con el cambio: ${after}. ${result.truth_changed ? 'Cambia el valor de verdad.' : 'El valor de verdad se mantiene.'} ${result.evidence_changes.length} pasos con cambios de evidencia.`;
     const changedIds = new Set(result.evidence_changes.map((change) => change.trace_id));
     $('comparison-results').replaceChildren(scenarioPanel('Original', result.before, changedIds),
       scenarioPanel('Con el cambio', result.after, changedIds));

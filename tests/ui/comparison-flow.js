@@ -58,7 +58,7 @@
     assert($('compare').disabled && $('comparison-status').textContent.includes('diferente al original'),
       'Una imagen sin cambios no se anuncia como modificada ni permite comparar');
     change($('comparison-new-value'), 'b');
-    assert(!$('compare').disabled && $('comparison-after').textContent === 'i → b',
+    assert(!$('compare').disabled && $('comparison-after').textContent === 'Valor de i: b',
       'Seleccionar una imagen diferente habilita la comparación y muestra la propuesta');
     change($('comparison-new-value'), 'a');
     assert($('compare').disabled, 'Restaurar el valor original vuelve a deshabilitar la comparación');

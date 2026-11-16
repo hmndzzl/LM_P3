@@ -44,8 +44,8 @@ function selectStep(trace, context, path) {
 }
 
 function termNode(term) {
-  const separator = term.reason === 'variable_assignment' ? ':' : ' →';
-  const item = node('li', `${term.term}${separator} ${term.value} · ${term.reason === 'variable_assignment' ? 'asignación de variable' : 'consulta de función'}`);
+  const label = term.reason === 'variable_assignment' ? term.term : `Valor de ${term.term}`;
+  const item = node('li', `${label}: ${term.value} · ${term.reason === 'variable_assignment' ? 'asignación de variable' : 'consulta de función'}`);
   if (term.children.length) {
     const children = node('ul');
     for (const child of term.children) children.append(termNode(child));

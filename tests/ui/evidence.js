@@ -83,6 +83,12 @@
       && universal.lastElementChild.classList.contains('step-conclusion'), 'La conclusión se presenta después de las comprobaciones');
     assert([...atoms[0].querySelectorAll(':scope > .step-section > .step-heading')].map((item) => item.textContent).join('|') === 'Asignaciones|Conclusión',
       'El caso atómico separa asignaciones y conclusión sin repetirlas como viñetas');
+    $('example-select').value = 'funcion';
+    $('load-example').click();
+    await evaluate('P(x, f(x,y))');
+    await open($('evidence').firstElementChild);
+    assert($('evidence').textContent.includes('Valor de f(x, y): b') && !$('evidence').textContent.includes('→'),
+      'Las consultas funcionales expresan el valor en palabras sin usar la flecha de implicación');
     return { passed: checks.length, checks };
   } finally {
     window.confirm = oldConfirm;

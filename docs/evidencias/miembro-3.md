@@ -17,10 +17,10 @@ Verificación actual del catálogo:
 | tests/ui/assignments.js | 6 comprobaciones aprobadas |
 | tests/ui/examples.js | 33 comprobaciones aprobadas |
 | tests/ui/editor-arity.js | 9 comprobaciones aprobadas |
-| tests/ui/evidence.js | 15 comprobaciones aprobadas |
+| tests/ui/evidence.js | 16 comprobaciones aprobadas |
 | tests/ui/interpretation-summary.js | 14 comprobaciones aprobadas |
 | tests/ui/comparison-flow.js | 14 comprobaciones aprobadas |
-| tests/ui/unified-configuration.js | 7 comprobaciones aprobadas |
+| tests/ui/unified-configuration.js | 11 comprobaciones aprobadas |
 | tests/ui/background.js | 3 normales y 3 con movimiento reducido |
 | Anchos 1440/1024/768/320 con el selector nuevo | Sin scroll horizontal global |
 | Axe-core 4.12.1, ejemplo a 320 px | 0 infracciones, 42 reglas aprobadas; contraste incompleto en ocho nodos por símbolos/solapamiento del fondo |
@@ -41,7 +41,7 @@ El selector se titula Probar Ejemplos y su ayuda ya no muestra la referencia al 
 El panel Interpretación separa elementos del dominio, tuplas y argumentos/imagen
 de las funciones; permite desplegar las filas restantes en la misma tabla, sin
 repetir título ni encabezados. Se comprueba plegar y desplegar sin duplicar filas. Las constantes se
-identifican explícitamente. Los diez scripts pasan en conjunto: 163 comprobaciones
+identifican explícitamente. Los diez scripts pasan en conjunto: 168 comprobaciones
 normales. La terminología visible se ajustó a las notas del curso.
 
 El comparador ahora usa un selector directo, muestra Original y Cambio propuesto
@@ -67,6 +67,12 @@ retira el resultado y la comparación anteriores. Axe: 0 infracciones, 49 reglas
 aprobadas y una revisión de contraste incompleta. Suite Python repetida: 149 OK.
 Auditoría contra f772c92: sin cambios en modelos, semántica, sintaxis, validación
 ni aplicación de M1/M2; solo cambios de M3.
+
+Ajuste de continuidad: la cabecera del símbolo precede al resumen y permanece
+en su posición al desplegar el editor. Declaración e interpretación forman un
+único bloque sin repetir el título. Las consultas de función y las etiquetas de
+comparación usan «Valor de ...: ...»; la flecha → se conserva como símbolo lógico
+en las fórmulas y no se utiliza para representar sus resultados.
 
 El fondo tiene 60 letras y símbolos; se retiró su botón de pausa por solicitud
 del usuario. Conserva velocidad, opacidad y movimiento reducido. Se inspeccionaron
