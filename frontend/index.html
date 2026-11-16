@@ -24,16 +24,17 @@
     <section class="start-guide" aria-labelledby="start-title">
       <div>
         <h2 id="start-title">Prueba el evaluador</h2>
-        <p id="start-description">Carga los datos de tres estaciones y prueba una fórmula. Para usar tus propios datos, abre la configuración del mundo.</p>
-        <div id="example-note" class="notice" hidden>
-          <p><strong>Ejemplo editable: estaciones activas.</strong> Norte y centro están activas; sur no.</p>
-          <ol>
-            <li>Pulsa <strong>Evaluar fórmula</strong> con x: centro: obtendrás Verdadero.</li>
-            <li>Elige <strong>sur</strong> en la asignación de x y vuelve a evaluar: obtendrás Falso.</li>
-          </ol>
+        <p id="start-description">Elige un ejemplo de tus notas y carga sus datos. Para usar tus propios datos, abre la configuración del mundo.</p>
+        <div id="example-note" class="notice" hidden></div>
+      </div>
+      <div class="example-controls">
+        <label for="example-select">Ejemplo de tus notas</label>
+        <select id="example-select"></select>
+        <div class="actions">
+          <button id="load-example" type="button">Cargar ejemplo</button>
+          <button id="clear-example" type="button">Limpiar todo</button>
         </div>
       </div>
-      <button id="load-example" type="button">Cargar ejemplo</button>
     </section>
     <section id="errors" class="error-summary" tabindex="-1" aria-labelledby="errors-title" hidden>
       <h2 id="errors-title">Revisa la entrada</h2><ul id="error-list"></ul>
@@ -43,7 +44,7 @@
         <section class="panel" aria-labelledby="formula-title">
           <h2 id="formula-title">Evaluar una fórmula</h2>
           <label for="formula">Fórmula</label>
-          <textarea id="formula" class="formula" rows="2" spellcheck="false" aria-describedby="formula-help" placeholder="Por ejemplo: Activa(x)"></textarea>
+          <textarea id="formula" class="formula" rows="2" spellcheck="false" aria-describedby="formula-help" placeholder="Por ejemplo: P(x)"></textarea>
           <div id="symbol-toolbar" class="symbol-toolbar" role="group" aria-label="Insertar símbolos lógicos"></div>
           <p id="formula-help" class="help">Escribe una fórmula con los símbolos de tu mundo. Si estás empezando, carga el ejemplo de arriba.</p>
           <details class="notation-help">
@@ -97,7 +98,7 @@
         <details id="interpretation-config" class="panel configuration-section">
           <summary>Dominio y tablas <span class="help">Editar la interpretación</span></summary>
           <label for="domain">Dominio D</label>
-          <textarea id="domain" rows="3" aria-describedby="domain-help" placeholder="norte&#10;centro&#10;sur" spellcheck="false"></textarea>
+          <textarea id="domain" rows="3" aria-describedby="domain-help" placeholder="1&#10;2&#10;3" spellcheck="false"></textarea>
           <p id="domain-help" class="help">Un elemento por línea. D debe ser no vacío. El orden se conserva.</p>
           <p class="help">Cada fila de un predicado es una tupla que pertenece a su relación. Para funciones, define una salida por cada combinación. Cambiar símbolos conserva las filas para que puedas corregirlas.</p>
           <div id="interpretations"><p class="help">Declara un símbolo para introducir sus tablas.</p></div>

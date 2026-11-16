@@ -21,21 +21,25 @@
     $('workspace').requestSubmit();
     await until(() => !$('evaluate').disabled);
   };
+  const load = (id = 'pertenencia') => {
+    $('example-select').value = id;
+    $('load-example').click();
+  };
   const oldConfirm = window.confirm;
   const realFetch = window.fetch;
   window.confirm = () => true;
   try {
-    $('load-example').click();
+    load();
     assert(!$('language-config').open && !$('interpretation-config').open,
       'El ejemplo deja la configuración plegada y conserva el editor visible');
-    assert(!$('example-note').hidden && $('domain-overview').textContent.includes('centro')
-      && $('predicates-overview').textContent.includes('Activa'),
+    assert(!$('example-note').hidden && $('domain-overview').textContent.includes('2')
+      && $('predicates-overview').textContent.includes('P'),
     'La guía y el resumen del mundo muestran los datos cargados');
     await evaluate();
     assert(!$('result').hidden && $('result-value').textContent === 'Verdadero', 'Átomo verdadero calculado desde el formulario');
-    assert($('result-reason').textContent.includes('(centro)'), 'La explicación identifica la tupla realmente evaluada');
+    assert($('result-reason').textContent.includes('(1)'), 'La explicación identifica la tupla realmente evaluada');
 
-    $('assignment-0').value = 'sur';
+    $('assignment-0').value = '3';
     $('assignment-0').dispatchEvent(new Event('change', { bubbles: true }));
     assert($('result').hidden, 'Cambiar el entorno invalida el resultado anterior');
     assert(!$('example-note').hidden && $('environment-note').textContent.includes('x'),
@@ -44,10 +48,10 @@
     assert($('result-value').textContent === 'Falso' && $('errors').hidden, 'Falso válido se distingue de un error');
 
     const cases = [
-      ['∃x Activa(x)', 'Verdadero', 'Testigo: x: norte'],
-      ['∀x Activa(x)', 'Falso', 'Contraejemplo: x: sur'],
-      ['∀x (Activa(x) ∨ ¬Activa(x))', 'Verdadero', 'Comprobados 3 de 3'],
-      ['∃x (Activa(x) ∧ ¬Activa(x))', 'Falso', 'comprobados 3 de 3'],
+      ['∃x P(x)', 'Verdadero', 'Testigo: x: 1'],
+      ['∀x P(x)', 'Falso', 'Contraejemplo: x: 3'],
+      ['∀x (P(x) ∨ ¬P(x))', 'Verdadero', 'Comprobados 3 de 3'],
+      ['∃x (P(x) ∧ ¬P(x))', 'Falso', 'comprobados 3 de 3'],
     ];
     for (const [formula, value, reason] of cases) {
       fill($('formula'), formula);
@@ -61,15 +65,15 @@
     await until(() => $('evidence').querySelectorAll('details').length === 4);
     assert($('evidence').querySelectorAll('details').length === 4, 'Comprobación exhaustiva permite abrir sus tres asignaciones');
 
-    fill($('formula'), 'Activa(𝑥) ∧ Activa(x,x)');
+    fill($('formula'), 'P(𝑥) ∧ P(x,x)');
     await evaluate();
     assert(!$('errors').hidden && $('result').hidden, 'Error sintáctico bloquea resultado');
     $('error-list').querySelector('a').click();
     const editor = $('formula');
-    assert(editor.value.slice(editor.selectionStart, editor.selectionEnd) === 'Activa(x,x)',
+    assert(editor.value.slice(editor.selectionStart, editor.selectionEnd) === 'P(x,x)',
       'El error selecciona el rango correcto tras convertir Unicode a UTF-16');
 
-    fill($('formula'), 'Activa(z)');
+    fill($('formula'), 'P(z)');
     await evaluate();
     assert($('error-list').textContent.includes('Falta asignar z'), 'Variable libre pendiente se informa sin valor de verdad');
     fill($('domain'), '');
@@ -81,22 +85,22 @@
     assert($('interpretation-config').open && document.activeElement === $('domain'),
       'El enlace de error vuelve a abrir la sección y enfoca el campo');
 
-    $('load-example').click();
-    const name = [...document.querySelectorAll('#symbols input[type=text]')].find((input) => input.value === 'Activa');
+    load();
+    const name = [...document.querySelectorAll('#symbols input[type=text]')].find((input) => input.value === 'P');
     fill(name, '__proto__');
     name.dispatchEvent(new Event('change', { bubbles: true }));
     fill($('formula'), '__proto__(x)');
     await evaluate();
     assert(!$('result').hidden && $('result-value').textContent === 'Verdadero', 'Nombre personalizado conserva su tabla sin colisión con objetos JavaScript');
 
-    $('load-example').click();
-    const remove = [...document.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Quitar fila 3 de relevo');
+    load('funcion');
+    const remove = [...document.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Quitar fila 9 de f');
     remove.click();
     await evaluate();
-    assert($('result').hidden && $('error-list').textContent.includes('Falta definir relevo(sur)'),
+    assert($('result').hidden && $('error-list').textContent.includes('Falta definir f(c, c)'),
       'Función parcial bloquea incluso una fórmula que no la usa');
 
-    $('load-example').click();
+    load();
     let release;
     let waiting = false;
     window.fetch = async (...args) => {
@@ -109,7 +113,7 @@
     };
     $('workspace').requestSubmit();
     await until(() => waiting);
-    fill($('formula'), '¬Activa(x)');
+    fill($('formula'), '¬P(x)');
     release();
     await until(() => !$('evaluate').disabled);
     assert($('result').hidden && $('result-state').textContent.includes('Cambiaste los datos'),

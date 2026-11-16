@@ -27,12 +27,16 @@
     $('compare').click();
     await until(() => !$('compare').disabled);
   };
+  const load = (id = 'pertenencia') => {
+    $('example-select').value = id;
+    $('load-example').click();
+  };
   const oldConfirm = window.confirm;
   const realFetch = window.fetch;
   window.confirm = () => true;
   try {
     assert(document.title.startsWith('Evaluador semántico'), 'Nombre actualizado de la aplicación');
-    $('load-example').click();
+    load();
     const editor = $('formula');
     const buttons = [...$('symbol-toolbar').querySelectorAll('button')];
     assert(buttons.map((button) => button.textContent).join('') === '¬∧∨→↔∀∃()', 'Nueve botones lógicos disponibles');
@@ -49,12 +53,12 @@
     document.execCommand('redo');
     assert(editor.value === 'P))', 'Rehacer recupera la inserción lógica');
 
-    $('load-example').click();
-    const functionTable = [...document.querySelectorAll('.interpretation')].find((section) => section.querySelector('h3').textContent.startsWith('relevo'));
+    load('funcion');
+    const functionTable = [...document.querySelectorAll('.interpretation')].find((section) => section.querySelector('h3').textContent.startsWith('f'));
     assert(functionTable.querySelector('select').options.length === 4, 'Las tuplas usan selectores del dominio');
     assert(functionTable.querySelector('.help').textContent.includes('Faltan 0'), 'Conteo de salidas funcionales completas');
-    fill($('domain'), 'norte\ncentro');
-    assert([...document.querySelectorAll('#interpretations option')].some((option) => option.textContent === 'sur (fuera de D)'),
+    fill($('domain'), 'a\nb');
+    assert([...document.querySelectorAll('#interpretations option')].some((option) => option.textContent === 'c (fuera de D)'),
       'Editar el dominio conserva valores recuperables fuera de D');
     await evaluate();
     const outputIssue = [...$('error-list').querySelectorAll('a')].find((link) => link.textContent.includes('salida'));
@@ -62,56 +66,57 @@
     outputIssue.click();
     assert(document.activeElement.id.startsWith('output-'), 'Error funcional enfoca la salida exacta');
 
-    $('load-example').click();
-    await evaluate('Activa(relevo(relevo(x)))');
+    load('funcion');
+    await evaluate('P(x,f(x,f(x,y)))');
     $('evidence').querySelector('details').open = true;
     await until(() => $('evidence').querySelector('ul ul ul'));
     assert($('evidence').textContent.includes('asignación de variable'), 'Los términos anidados exponen todas las consultas');
-    await evaluate('∀𝑥 (Activa(𝑥) ∨ ¬Activa(𝑥))');
+    load();
+    await evaluate('∀𝑥 (P(𝑥) ∨ ¬P(𝑥))');
     $('evidence').querySelector('details').open = true;
     await until(() => $('evidence').querySelectorAll('details').length > 1);
     $('evidence').querySelectorAll('details')[1].open = true;
     await until(() => $('result-formula').querySelector('mark')?.textContent.startsWith('('));
-    assert($('result-formula').querySelector('mark').textContent === '(Activa(𝑥) ∨ ¬Activa(𝑥))',
+    assert($('result-formula').querySelector('mark').textContent === '(P(𝑥) ∨ ¬P(𝑥))',
       'Seleccionar una instancia resalta su subfórmula original Unicode');
 
-    $('load-example').click();
-    await evaluate('Activa(relevo(x))');
+    load('funcion');
+    await evaluate('P(f(x,y),y)');
     $('open-comparison').click();
-    fill($('comparison-target'), '1');
-    fill($('comparison-new-value'), 'norte');
+    fill($('comparison-target'), '4');
+    fill($('comparison-new-value'), 'a');
     await compare();
     assert(!$('comparison-results').hidden && $('comparison-status').textContent.includes('Cambia el valor de verdad'),
       'Cambiar una salida compara Falso con Verdadero');
-    assert($('result-value').textContent === 'Falso' && $('result-reason').textContent.includes('(sur)'),
+    assert($('result-value').textContent === 'Falso' && $('result-reason').textContent.includes('(b, b)'),
       'La comparación conserva el resultado base y la interpretación original');
     assert($('comparison-results').querySelectorAll('.evidence-changed').length === 2,
       'Las instancias afectadas quedan identificadas en ambos escenarios');
 
-    $('load-example').click();
-    await evaluate('∃x Activa(x)');
+    load();
+    await evaluate('∃x P(x)');
     $('open-comparison').click();
     fill($('comparison-kind'), 'relation');
     $('comparison-member').checked = false;
     $('comparison-member').dispatchEvent(new Event('input', { bubbles: true }));
     await compare();
     assert($('comparison-status').textContent.includes('se mantiene'), 'Cambiar el testigo conserva la verdad');
-    assert($('comparison-results').textContent.includes('Testigo: x: norte')
-      && $('comparison-results').textContent.includes('Testigo: x: centro'), 'Los dos testigos proceden de evaluaciones reales');
+    assert($('comparison-results').textContent.includes('Testigo: x: 1')
+      && $('comparison-results').textContent.includes('Testigo: x: 2'), 'Los dos testigos proceden de evaluaciones reales');
 
-    $('load-example').click();
+    load();
     await evaluate();
     $('open-comparison').click();
     fill($('comparison-kind'), 'assignment');
-    fill($('comparison-new-value'), 'sur');
+    fill($('comparison-new-value'), '3');
     await compare();
     assert($('comparison-status').textContent.includes('Cambia el valor de verdad'), 'Comparación de asignación libre');
-    fill($('formula'), '¬Activa(x)');
+    fill($('formula'), '¬P(x)');
     assert($('comparison-panel').hidden && $('result').hidden, 'Editar el contexto obliga a renovar la base');
 
-    $('load-example').click();
-    [...document.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Quitar fila 2 de Activa').click();
-    await evaluate('∃x Activa(x)');
+    load();
+    [...document.querySelectorAll('button')].find((button) => button.getAttribute('aria-label') === 'Quitar fila 2 de P').click();
+    await evaluate('∃x P(x)');
     $('open-comparison').click();
     fill($('comparison-kind'), 'relation');
     $('comparison-member').checked = false;
@@ -120,14 +125,14 @@
     assert(!$('comparison-errors').hidden && $('comparison-results').hidden && !$('result').hidden,
       'Variante que vacía la relación se rechaza y preserva el original');
 
-    $('load-example').click();
+    load();
     await evaluate();
     $('open-comparison').click();
     await compare();
     assert(!$('comparison-errors').hidden && $('comparison-errors').textContent.includes('exactamente un dato'),
       'Una variante sin cambios no se presenta como comparación válida');
     fill($('comparison-kind'), 'assignment');
-    fill($('comparison-new-value'), 'sur');
+    fill($('comparison-new-value'), '3');
     let release;
     let waiting = false;
     let delivered = false;
@@ -141,7 +146,7 @@
     };
     $('compare').click();
     await until(() => waiting);
-    fill($('comparison-new-value'), 'norte');
+    fill($('comparison-new-value'), '1');
     release();
     await until(() => delivered);
     assert($('comparison-results').hidden && $('comparison-status').textContent.includes('Variante modificada'),

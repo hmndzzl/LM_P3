@@ -73,7 +73,7 @@ class LocalHTTPTests(unittest.TestCase):
         for path, expected_type in [('/', 'text/html'), ('/css/tokens.css', 'text/css'),
                                     ('/css/styles.css', 'text/css'), ('/js/app.js', 'text/javascript'),
                                     ('/js/api.js', 'text/javascript'), ('/js/editors.js', 'text/javascript'),
-                                    ('/js/errors.js', 'text/javascript'), ('/js/evidence.js', 'text/javascript'),
+                                    ('/js/examples.js', 'text/javascript'), ('/js/errors.js', 'text/javascript'), ('/js/evidence.js', 'text/javascript'),
                                     ('/js/formula.js', 'text/javascript'), ('/js/comparison.js', 'text/javascript'),
                                     ('/js/background.js', 'text/javascript'), ('/css/background.css', 'text/css')]:
             with self.subTest(path=path):

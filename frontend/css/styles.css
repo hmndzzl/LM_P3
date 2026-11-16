@@ -102,8 +102,22 @@ p {
   color: var(--text-secondary);
 }
 
-.start-guide button {
-  flex-shrink: 0;
+.start-guide > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.start-guide .example-controls {
+  flex: 0 1 28rem;
+  width: 100%;
+}
+
+.example-controls select {
+  max-width: 100%;
+}
+
+.start-guide .notice p {
+  margin-top: var(--space-2);
 }
 
 .start-guide .notice {
@@ -462,6 +476,15 @@ footer {
 @media (max-width: 1023px) {
   #workspace {
     grid-template-columns: 1fr;
+  }
+
+  .start-guide {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .start-guide .example-controls {
+    flex: auto;
   }
 
 }

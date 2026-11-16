@@ -22,9 +22,12 @@ Para elegir puerto o abrir el navegador manualmente:
 python3 -B -m lm_p3 --no-browser --port 8765
 ```
 
-Pulsa **Cargar ejemplo** y luego **Evaluar fórmula**: `Activa(x)` con x=centro
-da Verdadero. Selecciona sur y reevalúa para obtener Falso. También puedes añadir
-tus propios símbolos y filas. El dominio se introduce con un elemento por línea.
+Elige uno de los nueve ejemplos de tus notas y pulsa **Cargar ejemplo**.
+El primero, `P(x)` con x: 1, da Verdadero; con x: 3 da Falso. Cada ejemplo
+indica su página del PDF y propone un cambio para probar. **Limpiar todo** borra
+fórmula, lenguaje, dominio, tablas, asignaciones, resultados y comparación.
+También puedes añadir tus propios símbolos y filas. El dominio se introduce
+con un elemento por línea.
 Puedes escribir con teclado o insertar símbolos desde la barra, conservando cursor,
 selección y deshacer/rehacer. Las tuplas y salidas usan selectores del dominio.
 

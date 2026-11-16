@@ -159,8 +159,16 @@ async function runComparison() {
 export function clearComparison() {
   base = null;
   version += 1;
+  targets = [];
   $('comparison-panel').hidden = true;
+  $('comparison-target').replaceChildren();
+  $('comparison-value').replaceChildren();
   $('comparison-results').replaceChildren();
+  $('comparison-results').hidden = true;
+  $('comparison-errors').replaceChildren();
+  $('comparison-errors').hidden = true;
+  $('comparison-status').textContent = 'Elige un único cambio.';
+  $('compare').disabled = false;
 }
 
 export function setComparisonBase(data) {

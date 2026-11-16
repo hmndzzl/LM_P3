@@ -290,28 +290,43 @@ export function initializeEditors() {
   }
 }
 
-export function loadExample() {
+export function clearEditors() {
   symbols = [];
+  nextId = 0;
   assignments.clear();
   freeVariables = [];
-  $('domain').value = 'norte\ncentro\nsur';
-  $('formula').value = 'Activa(x)';
-  addSymbol('function', 'relevo', 1, [
-    { arguments: ['norte'], output: 'centro' }, { arguments: ['centro'], output: 'sur' },
-    { arguments: ['sur'], output: 'norte' },
-  ]);
-  addSymbol('predicate', 'Activa', 1, [{ arguments: ['norte'] }, { arguments: ['centro'] }]);
-  addSymbol('predicate', 'Enlaza', 2, [
-    { arguments: ['norte', 'centro'] }, { arguments: ['centro', 'sur'] },
-    { arguments: ['sur', 'norte'] },
-  ]);
-  assignments.set('x', 'centro');
-  renderEnvironment(['x']);
-  $('environment-note').textContent = 'Variables libres: x. Ejemplo con x: centro.';
-  $('example-note').hidden = false;
-  $('start-description').hidden = true;
+  $('domain').value = '';
+  $('formula').value = '';
+  renderSymbols();
+  renderInterpretations();
+  renderEnvironment([]);
+  $('environment-note').textContent = 'Se identificarán las variables libres al evaluar. También puedes revisarlas antes para elegir sus valores.';
+  $('example-note').replaceChildren();
+  $('example-note').hidden = true;
+  $('start-description').hidden = false;
   $('language-config').open = false;
   $('interpretation-config').open = false;
+  updateWorldSummary();
+}
+
+export function loadExample(example) {
+  clearEditors();
+  // Cada carga tiene sus propias filas: editar un ejemplo no modifica el catálogo.
+  const data = structuredClone(example.data);
+  $('domain').value = data.domain.join('\n');
+  $('formula').value = data.formula;
+  for (const [name, arity] of data.functions) {
+    addSymbol('function', name, arity, data.function_rows[name].map(([args, output]) => ({ arguments: args, output })));
+  }
+  for (const [name, arity] of data.predicates) {
+    addSymbol('predicate', name, arity, data.relations[name].map((args) => ({ arguments: args })));
+  }
+  for (const [name, value] of data.assignments) assignments.set(name, value);
+  renderEnvironment(data.assignments.map(([name]) => name));
+  $('example-note').append(node('strong', `Notas del curso · ${example.source}`),
+    node('p', example.description), node('p', example.practice));
+  $('example-note').hidden = false;
+  $('start-description').hidden = true;
   updateWorldSummary();
   $('result-state').textContent = 'Ejemplo cargado. Listo para evaluar.';
   $('evaluate').focus();

@@ -1,12 +1,13 @@
 import { request } from './api.js';
 import {
-  inputData, renderEnvironment, errorTarget, initializeEditors, loadExample, updateWorldSummary,
+  inputData, renderEnvironment, errorTarget, initializeEditors, loadExample, clearEditors, updateWorldSummary,
 } from './editors.js';
 import { clearErrors, showErrors } from './errors.js';
 import { showResult } from './evidence.js';
 import { initializeFormulaEditor } from './formula.js';
 import { clearComparison, setComparisonBase, initializeComparison } from './comparison.js';
 import { initializeBackground } from './background.js';
+import { examples } from './examples.js';
 
 const $ = (id) => document.getElementById(id);
 let revision = 0;
@@ -77,8 +78,23 @@ initializeEditors();
 initializeFormulaEditor();
 initializeComparison();
 initializeBackground();
+for (const example of examples) $('example-select').append(new Option(example.title, example.id));
+
 $('load-example').addEventListener('click', () => {
   if (dirty && !confirm('Se reemplazarán tus datos por el ejemplo. ¿Continuar?')) return;
   invalidate();
-  loadExample();
+  loadExample(examples.find((example) => example.id === $('example-select').value));
+});
+$('clear-example').addEventListener('click', () => {
+  if (dirty && !confirm('Se borrarán fórmula, lenguaje, dominio, tablas, asignaciones y resultados. ¿Continuar?')) return;
+  invalidate();
+  clearEditors();
+  dirty = false;
+  $('result-formula').replaceChildren();
+  $('result-value').textContent = '';
+  $('result-value').removeAttribute('data-value');
+  $('result-reason').textContent = '';
+  $('evidence-selection').textContent = '';
+  $('result-state').textContent = 'Sin evaluar';
+  $('formula').focus();
 });

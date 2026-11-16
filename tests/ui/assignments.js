@@ -9,6 +9,7 @@
   const oldConfirm = window.confirm;
   window.confirm = () => true;
   try {
+    $('example-select').value = 'pertenencia';
     $('load-example').click();
     const originalDomain = $('domain').value;
     const saved = $('assignment-0').value;

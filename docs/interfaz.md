@@ -14,19 +14,61 @@ No hay dependencias externas que instalar. Los lanzadores de scripts/ resuelven
 la raíz aunque se ejecuten desde otro directorio: .sh para Linux, .command para
 macOS y .bat para Windows. Su ejecución nativa en macOS/Windows debe revisarse.
 
-Cargar ejemplo → Evaluar fórmula da Verdadero para Activa(x), x=centro.
-Seleccionar sur y reevaluar da Falso. El ejemplo editable incluye el mundo de M2:
-relevo, Activa y Enlaza sobre norte, centro, sur. No carga resultados prefijados.
+Seleccionar P(x): pertenencia y asignación → Cargar ejemplo → Evaluar fórmula
+da Verdadero con x: 1. Seleccionar 3 y reevaluar da Falso. Hay nueve ejemplos
+seleccionables de las notas del curso, cada uno con origen, explicación y práctica.
+Solo se cargan entradas; el resultado siempre se solicita al motor.
+Limpiar todo borra fórmula, lenguaje, dominio, tablas, asignaciones, guía, errores,
+resultado, evidencia y comparación. Pide confirmación si hay trabajo cargado;
+una respuesta pendiente no restaura datos después de limpiar.
 Para datos propios, abrir Lenguaje y Dominio y tablas. Plegar secciones conserva
 el trabajo; el resumen muestra hasta cuatro elementos/filas por símbolo y el
 resto sigue disponible en sus tablas. Los errores abren la sección afectada.
+
+## Ejemplos de las notas
+
+Fuente: Lógica TEO 2.pdf, 299 páginas. Los números siguientes corresponden a
+páginas del PDF, no a la numeración de las diapositivas. Se revisó el material
+completo para ubicar los casos aplicables: lógica proposicional, lenguaje y
+sintaxis de predicados, deducción, interpretaciones y entornos, metateoremas,
+indecidibilidad, aritmética de Peano e incompletitud de Gödel. Los ejemplos que
+encajan directamente con el evaluador están en interpretaciones y entornos.
+
+| Selector / fórmula | Página y procedencia | Resultado inicial |
+| --- | --- | --- |
+| P(x), x: 1 | 179, fórmula abierta añadida a su interpretación | Verdadero |
+| ∀x P(x) | 179, fórmula e interpretación originales | Falso; contraejemplo x: 3 |
+| ∀x ∃y R(x,y) | 179, fórmula e interpretación originales | Verdadero |
+| ∃x P(x) | 179, variante de práctica sobre la misma interpretación | Verdadero; testigo x: 1 |
+| ∃x (P(x) ∧ ¬P(x)) | 179, variante de práctica sobre la misma interpretación | Falso; comprueba los tres elementos |
+| ¬R(i) | 181, fórmula e interpretación originales | Verdadero; i produce a |
+| ∃y Q(i,y) | 181, fórmula e interpretación originales | Verdadero; testigo y: a |
+| P(x, f(x,y)), x: b, y: b | 187, ejemplo manuscrito y tabla completa | Falso; f(b,b) produce b y (b,b) no pertenece a P |
+| (∀x (H(x) → M(x))) ∧ H(s) | 108–115, adaptación finita del ejemplo de Sócrates | Verdadero |
+
+En el último se añade explícitamente D = {Sócrates, Platón}, con ambos en H y M;
+las notas motivan el lenguaje, pero no fijan ese dominio finito. En el ejemplo
+manuscrito solo se cargan las variables libres x e y: z aparece en su entorno,
+pero no en la fórmula. La transcripción está en frontend/js/examples.js; se copia
+antes de editar para que recargar un ejemplo restaure sus entradas originales.
+
+Las notas también usan igualdad nativa y dominios infinitos (cadenas y naturales).
+La gramática actual no incluye igualdad y el evaluador trabaja con dominios
+finitos: esos ejercicios no se presentan como si fueran compatibles sin cambios.
+El signo : identifica asignaciones en la interfaz; no se añade a la gramática de
+fórmulas. Un resultado en una interpretación concreta tampoco demuestra validez
+universal ni sustituye las demostraciones del curso.
 
 ## Editores
 
 Los nombres y aridades son configurables, incluida aridad cero. D se introduce
 con un elemento por línea. Argumentos, salidas y asignaciones usan selectores
-con valores de D. Si cambia el dominio, se conservan valores recuperables como
-«fuera de D» para poder corregirlos; no se inventan salidas funcionales.
+con valores de D. Si cambia el dominio, las tablas conservan valores recuperables
+como «fuera de D». En asignaciones, el valor anterior se muestra en un aviso
+separado y el selector ofrece solo elementos actuales de D. Restaurar D permite
+recuperar la asignación. No se inventan salidas funcionales. Las asignaciones se
+escriben x: valor en controles, evidencia, testigos y comparación; las consultas
+de funciones se muestran con →.
 Cada fila relacional expresa pertenencia a la relación; eliminarla quita esa
 pertenencia. Se muestran las salidas funcionales pendientes sin generar D^n.
 La validación integral y los conflictos se comprueban en M2 antes de evaluar.
@@ -66,6 +108,7 @@ antiguas de evaluación o comparación no sobrescriben una edición posterior.
 | --- | --- |
 | frontend/js/app.js | Coordina analizar → asignar → evaluar; run(), invalidate() |
 | frontend/js/editors.js | Formularios y sus datos; inputData(), renderEnvironment(), errorTarget() |
+| frontend/js/examples.js | Catálogo de entradas y explicaciones de las notas; examples |
 | frontend/js/formula.js | Barra de símbolos y selección; initializeFormulaEditor() |
 | frontend/js/api.js | Petición JSON y errores de transporte; request() |
 | lm_p3/server/http.py | Loopback, rutas, tamaños y respuestas; do_POST() |
@@ -108,7 +151,8 @@ Los límites son de recursos, no restricciones matemáticas ni garantía de tiem
 ## Verificación y aceptación
 
 [Evidencia reproducible y capturas](evidencias/miembro-3.md): 149 pruebas Python,
-67 comprobaciones de navegador y tres adicionales con movimiento reducido.
+104 comprobaciones de navegador y tres adicionales con movimiento reducido.
+El registro distingue las verificaciones históricas de las del catálogo actual.
 Se reprodujo el funcionamiento desde git archive, sin .git ni entorno virtual.
 La comparación se revisó a 1440, 1024, 768 y 320 px, sin scroll horizontal global.
 
@@ -120,14 +164,14 @@ su estado pendiente y se coordinan entre los tres. Ver la matriz general.
 ## Guiones de demostración y práctica
 
 **Primera ronda (ajustar duración al tiempo oficial):** M2 configura/explica el
-mundo; M1 evalúa ∃x Activa(x), ∀x Activa(x) y ∀x ∃y Enlaza(x,y); M3 abre un paso,
-localiza la subfórmula y compara ∃x Activa(x) quitando norte de Activa. La verdad
-se mantiene y el testigo cambia a centro. Mostrar un error y su reparación.
+mundo de la p. 179; M1 evalúa ∃x P(x), ∀x P(x) y ∀x ∃y R(x,y); M3 abre un paso,
+localiza la subfórmula y compara ∃x P(x) quitando 1 de P. La verdad
+se mantiene y el testigo cambia a 2. Mostrar un error y su reparación.
 
 **Defensa técnica:** recorrer una petición real desde app.js hasta el servicio,
 explicar filas versus diccionarios, un rango Unicode y el control de versiones.
-Comparar Activa(relevo(x)), x=centro, cambiando relevo(centro) de sur a norte:
-Falso → Verdadero. Mostrar que el original sigue igual y rechazar una variante
+Cargar ¬R(i), de la p. 181, y comparar la salida de la constante i de a a b:
+Verdadero → Falso. Mostrar que el original sigue igual y rechazar una variante
 que deje una relación vacía. Resolver una fórmula nueva sin modificar código.
 
 Los tres deben practicar preguntas fuera de su módulo y registrar la sesión real.

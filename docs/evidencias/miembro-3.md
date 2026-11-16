@@ -2,11 +2,35 @@
 
 ## Alcance
 
-Actualización del 16 de noviembre de 2026: por solicitud del usuario se amplió
-el fondo de 36 a 60 letras y símbolos, incluyendo letras griegas, x e y, y se
-retiró el botón de pausa. Se conservan velocidad, opacidad y movimiento reducido.
-La prueba actual de fondo pasa tres comprobaciones normales y tres con movimiento
-reducido. Los conteos y capturas del resto del informe describen la entrega del 15.
+Actualización del 16 de noviembre de 2026: el catálogo sustituye el ejemplo de
+estaciones por nueve ejemplos seleccionables de Lógica TEO 2.pdf, con páginas,
+explicación y práctica. Se distinguen transcripciones, variantes y la adaptación
+finita de Sócrates. No se cambiaron motor, parser, validadores ni corpus de M2.
+
+Verificación actual del catálogo:
+
+| Comprobación | Resultado real |
+| --- | --- |
+| Suite Python | 149 pruebas aprobadas |
+| tests/ui/smoke.js, con los ejemplos nuevos | 31 comprobaciones aprobadas |
+| tests/ui/completion.js, con los ejemplos nuevos | 31 comprobaciones aprobadas |
+| tests/ui/assignments.js | 6 comprobaciones aprobadas |
+| tests/ui/examples.js | 33 comprobaciones aprobadas |
+| tests/ui/background.js | 3 normales y 3 con movimiento reducido |
+| Anchos 1440/1024/768/320 con el selector nuevo | Sin scroll horizontal global |
+| Axe-core 4.12.1, ejemplo a 320 px | 0 infracciones, 42 reglas aprobadas; contraste incompleto en ocho nodos por símbolos/solapamiento del fondo |
+
+Se probaron los nueve resultados contra M1/M2, la independencia de las tablas al
+recargar, cancelar carga/limpieza, comparar antes de limpiar y descartar una
+respuesta pendiente después de limpiar. Los selectores de asignación contienen
+solo elementos del dominio actual; los valores anteriores se explican aparte.
+Controles, evidencia, testigos y comparación usan : para asignaciones.
+
+El fondo tiene 60 letras y símbolos; se retiró su botón de pausa por solicitud
+del usuario. Conserva velocidad, opacidad y movimiento reducido. Se inspeccionaron
+capturas nuevas de escritorio y móvil. El informe y las capturas siguientes
+conservan la fecha y los ejemplos de la entrega del 15; no representan el catálogo
+actual ni una nueva prueba desde git archive.
 
 Verificación del 15 de noviembre de 2026 en Linux, Python 3.14.8 y Chromium
 controlado con agent-browser. Se implementaron los recorridos gráficos de M3,
@@ -43,6 +67,8 @@ python3 -B -m lm_p3 --no-browser --port 8765
 agent-browser --session m3-revision open http://127.0.0.1:8765
 agent-browser --session m3-revision eval --stdin < tests/ui/smoke.js
 agent-browser --session m3-revision eval --stdin < tests/ui/completion.js
+agent-browser --session m3-revision eval --stdin < tests/ui/assignments.js
+agent-browser --session m3-revision eval --stdin < tests/ui/examples.js
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js
 agent-browser --session m3-revision set media light reduced-motion
 agent-browser --session m3-revision eval --stdin < tests/ui/background.js
