@@ -4,13 +4,58 @@ Proyecto de MM3032 Lógica Matemática: aplicación gráfica para evaluar fórmu
 
 ## Estado actual
 
-El motor de M1 y los módulos de sintaxis/validación integral de M2 están implementados, con integración Python real desde texto y filas externas. El parser acepta la notación y los alias confirmados por el usuario; ver [sintaxis](docs/sintaxis.md) y [validación](docs/validacion.md). El codec JSON/HTTP, servidor e interfaz propios siguen pendientes de M3, junto con las revisiones humanas. Aún no existe una aplicación gráfica ejecutable: `python -m lm_p3` depende de M3. Las copias de `bases/` siguen intactas y no equivalen a requisitos cumplidos.
+El motor de M1, la sintaxis/validación de M2 y la implementación técnica de M3 están conectados: editores gráficos, botones lógicos, resultados con evidencia navegable y comparación de un cambio. La aplicación se llama **Evaluador semántico**. Las revisiones humanas, el ensayo de defensa y la comprobación en otros sistemas siguen pendientes. Las copias de `bases/` siguen intactas.
+
+## Ejecutar la aplicación
+
+Desde la raíz, con Python 3.10 o posterior y sin paquetes adicionales:
+
+```sh
+python3 -B -m lm_p3
+```
+
+Se abre el navegador en la dirección local impresa en consola. Para cerrar el servidor,
+presiona Ctrl+C. En Windows puede utilizarse `py -3 -B -m lm_p3`.
+Para elegir puerto o abrir el navegador manualmente:
+
+```sh
+python3 -B -m lm_p3 --no-browser --port 8765
+```
+
+Elige uno de los once ejemplos y variantes del curso y pulsa **Cargar ejemplo**.
+La [guía de presentación y defensa](docs/presentacion.md) relaciona la demo con
+la rúbrica y explica el caso integrado.
+El primero, `P(x)` con x: 1, da Verdadero; con x: 3 da Falso. Cada ejemplo
+explica sus datos y propone un cambio para probar. **Limpiar todo** borra
+fórmula, lenguaje, dominio, tablas, asignaciones, resultados y comparación.
+También puedes añadir tus propios símbolos y filas. El dominio se introduce
+con un elemento por línea.
+Puedes escribir con teclado o insertar símbolos desde la barra, conservando cursor,
+selección y deshacer/rehacer. Las tuplas y salidas usan selectores del dominio.
+
+La fórmula, las asignaciones y el resultado ocupan la zona principal. El resumen
+de la interpretación permanece visible. **Editar dominio** modifica D; las fichas
+de constantes, funciones y predicados reúnen su declaración y su interpretación. Un error abre automáticamente la sección correspondiente.
+
+Después de evaluar, **Comparar un cambio** permite modificar una salida funcional,
+la pertenencia de una tupla o una asignación libre sobre una copia. Muestra la
+fórmula original y ofrece cambios tomados de su evidencia; puedes elegir otros
+manualmente. La base se conserva y se recalculan ambos escenarios. El fondo matemático está activo por
+defecto y respeta la preferencia de movimiento reducido del sistema.
+
+Lanzadores alternativos: `scripts/abrir_interfaz.sh` en Linux,
+`scripts/abrir_interfaz.command` en macOS y `scripts/abrir_interfaz.bat` en Windows.
+Todos resuelven la raíz del proyecto. El arranque POSIX está probado en Linux;
+la ejecución nativa en macOS/Windows necesita revisión del equipo.
+
+Recorrido del código y límites de esta entrega: [interfaz y servidor](docs/interfaz.md).
 
 ## Documentos para comenzar
 
 - [Estructura común](docs/estructura.md): rutas, responsabilidades, dependencias y comandos.
 - [Contratos entre módulos](docs/contratos.md): contrato Python de M1 y revisión pendiente con M2/M3.
 - [Motor semántico](docs/semantica.md): API, demostración ejecutable, límites y guía de defensa.
+- [Interfaz de M3](docs/interfaz.md): ejecución, funciones principales, pruebas y pendientes.
 - [Sintaxis de M2](docs/sintaxis.md): gramática, alias, alcance, nombres, errores y API para M1/M3.
 - [Validación de M2](docs/validacion.md): builders por filas, totalidad, duplicados, entorno y errores agrupados.
 - [Casos y defensa M2](docs/casos-didacticos.md): soluciones razonadas, 24 casos ejecutables y preparación de exposición.
@@ -36,7 +81,8 @@ python -B -m examples.semantica --json
 python -B -m examples.semantica --benchmark
 ```
 
-El ejemplo construye AST directamente; no sustituye la integración pendiente con el parser y la interfaz. Los casos se calculan con el motor real, sin respuestas prefijadas.
+El ejemplo construye AST directamente para estudiar M1; la aplicación gráfica usa
+el parser real de M2. Los casos se calculan sin respuestas prefijadas.
 
 ## Comprobar texto real con la entrega de M2
 
@@ -68,6 +114,8 @@ python -X utf8 -B -m examples.corpus --case C02
 python -X utf8 -B -m examples.corpus --case E03
 ```
 
-El corpus contiene 10 fórmulas, 3 comparaciones de un cambio y 11 entradas inválidas con reparaciones comprobadas. Q01–Q04 cubren los cuatro resultados cuantificados; C02 conserva la verdad y cambia el testigo. Toda salida se calcula con el código real, sin leer las expectativas de pruebas. Los ejemplos no modifican su mundo base.
+El corpus contiene 10 fórmulas, 3 comparaciones de un cambio y 11 entradas inválidas con reparaciones comprobadas. Q01–Q04 cubren los cuatro resultados cuantificados; C02 conserva la verdad y cambia el testigo. Toda salida se calcula con el código real, sin leer las expectativas de pruebas. Los ejemplos no modifican su interpretación base.
 
-La preparación de defensa y la revisión de M3 se encuentran en la guía de casos y la matriz general. Enseñanza mutua, revisión humana, uso con compañeros y pruebas gráficas siguen pendientes. Esta entrega no marca los tickets globalmente aceptados.
+La preparación de defensa y el recorrido de código están en [la guía de M3](docs/interfaz.md).
+Resultados y capturas: [evidencia M3](docs/evidencias/miembro-3.md).
+Enseñanza mutua, revisión humana y aceptación global siguen pendientes.

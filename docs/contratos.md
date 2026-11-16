@@ -2,7 +2,7 @@
 
 ## Estado
 
-Documento de coordinación asociado a [estructura.md](estructura.md). **M1 implementó el motor y M2 implementó lexer/parser, variables libres y validación integral**, incluidos builders de filas externas que conservan evidencia de duplicados. El usuario confirmó la notación y la asociatividad el 15 de noviembre de 2026; ver [sintaxis.md](sintaxis.md). La integración Python está probada; ver [validacion.md](validacion.md). El esquema JSON/HTTP y las revisiones humanas siguen pendientes; no hay endpoints implementados.
+Documento de coordinación asociado a [estructura.md](estructura.md). **M1 implementó el motor y M2 implementó lexer/parser, variables libres y validación integral**, incluidos builders de filas externas que conservan evidencia de duplicados. El usuario confirmó la notación y la asociatividad el 15 de noviembre de 2026; ver [sintaxis.md](sintaxis.md). M3 añade el transporte de análisis/evaluación/comparación descrito al final de este documento. La integración gráfica está implementada; las revisiones humanas siguen pendientes.
 
 ## Contrato Python inicial implementado por M1
 
@@ -130,3 +130,76 @@ Estos puntos siguen abiertos; no se cierran por tener el motor probado.
 | Entorno común y arranque de aplicación | Los tres; M3 integra arranque | Acordar versiones/navegadores y probar aplicación completa desde copia limpia; solo los comandos del motor están comprobados |
 
 La revisión de estos acuerdos sigue siendo parte de H0, aunque M1 ya dispone de una entrega técnica verificable. Cada pendiente se cierra registrando decisión, ejemplo y evidencia real, no solo cambiando una casilla. Ningún agente debe introducir un contrato alternativo sin revisar sus consumidores.
+
+## Transporte local de M3 — primer incremento
+
+Servidor en `127.0.0.1`, mismo origen que la interfaz. `POST /api/analyze` recibe
+exactamente `revision`, `functions`, `predicates` y `formula`. Devuelve
+`status: "analyzed"`, la misma revisión y `free_variables` ordenadas. No evalúa ni
+exige dominio/entorno. Las declaraciones se envían como filas, nunca como mapas.
+
+`POST /api/evaluate` recibe esos cuatro campos más `domain`, `function_rows`,
+`relations` y `assignments`. Ejemplo completo:
+
+```json
+{
+  "revision": 1,
+  "functions": [["f", 1]],
+  "predicates": [["P", 1]],
+  "domain": ["a", "b"],
+  "function_rows": {"f": [[["a"], "b"], [["b"], "a"]]},
+  "relations": {"P": [["a"]]},
+  "assignments": [["x", "a"]],
+  "formula": "P(f(x))"
+}
+```
+
+La respuesta válida contiene `status: "evaluated"`, `revision` y `evaluation`
+con `value`, `trace` y `steps` del motor real. En este ejemplo value es false.
+El navegador no envía AST, verdad esperada, traza ni límites del motor.
+
+Los fallos contienen `status`, `revision` (null si no pudo recuperarse) y una lista
+`errors` con `code`, `message`, `field`, `span` y `details`. Nunca contienen
+`evaluation` ni un booleano de resultado. Los rangos conservan puntos de código
+Python; la UI los convierte a UTF-16. `field` es una ruta lógica, no CSS.
+
+HTTP 200 incluye tanto Verdadero como Falso válidos; 400 indica JSON/entrada
+inválidos; 403, Host/Origin incorrectos; 404, ruta no permitida; 408, tiempo de
+lectura agotado; 413, petición mayor de 256 KB; 415, tipo distinto de JSON; 422,
+límite sin evaluación; 500, fallo interno con mensaje genérico.
+`status` es `invalid` en errores de entrada y `not_evaluated` en límites/fallos.
+
+Se rechazan claves JSON repetidas a cualquier profundidad y constantes no JSON.
+Los builders de M2 reciben las filas intactas y detectan conflictos antes de
+crear mapas. No hay sesiones globales. Cada petición se valida de nuevo.
+La lectura tiene timeout de 5 segundos y una respuesta de más de 8 MB se sustituye
+por un error sin verdad. Son límites de transporte, no garantías de tiempo total
+del parser/motor. Solo se sirven archivos estáticos enumerados de `frontend/`.
+
+El formato implementado reutiliza las firmas de M1/M2; falta revisión humana del
+equipo. La comparación HTTP y su visor se describen a continuación.
+
+
+## Comparación HTTP de M3
+
+`POST /api/compare` recibe exactamente `revision`, `base` y `variant`. La revisión
+exterior es un entero no negativo del contexto de comparación. Cada escenario
+contiene los mismos ocho campos de una petición completa de evaluación, incluida
+su revisión. No se aceptan AST, traza, resultado ni cambios precalculados.
+
+El codec construye los dos contextos con los builders de M2, analiza las fórmulas,
+valida con `validate_input` y llama al comparador real de M1. Este exige mismo
+lenguaje, fórmula y dominio ordenado; exactamente una salida funcional, pertenencia
+relacional o asignación libre cambia. Ambas interpretaciones deben ser válidas.
+
+HTTP 200 devuelve `status: "compared"`, `revision` y `comparison`, con `change`,
+`before`, `after`, `evidence_changes` y la propiedad explícita `truth_changed`.
+Los dos resultados incluyen sus trazas recalculadas. Los errores conservan el
+sobre normal sin resultado lógico. Una variante inválida no modifica la base.
+
+No hay sesiones ni caché de escenarios en el servidor. El navegador conserva una
+copia de la última entrada evaluada, produce otra copia para la variante y descarta
+respuestas que correspondan a una versión anterior. Editar el formulario principal
+invalida la base y obliga a evaluar de nuevo antes de comparar. Las instancias
+modificadas se identifican mediante `trace_id`; un cambio de testigo no implica
+por sí solo cambio de verdad.

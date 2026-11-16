@@ -1,0 +1,30 @@
+:root {
+  /* Colores de la interfaz */
+  --surface-canvas: #f3f6f8;
+  --surface-panel: #fff;
+  --text-primary: #172b3a;
+  --text-secondary: #475569;
+  --action-primary: #075985;
+  --action-hover: #0c4a6e;
+  --on-action: #fff;
+  --border-control: #64748b;
+  --border-subtle: #cbd5e1;
+  --surface-true: #edf7ef;
+  --surface-false: #fff3ed;
+  --state-true: #166534;
+  --state-false: #9a3412;
+  --state-error: #b91c1c;
+  --state-info: #075985;
+
+  /* Espaciado */
+  --space-1: .25rem;
+  --space-2: .5rem;
+  --space-3: .75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* Esquinas de controles y paneles */
+  --radius-control: .375rem;
+  --radius-panel: .625rem;
+}

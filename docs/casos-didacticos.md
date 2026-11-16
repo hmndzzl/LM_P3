@@ -2,7 +2,7 @@
 
 ## Propósito y reproducción
 
-Este mundo propio permite explicar alcance, funciones, cuantificación y cambios controlados con los mismos datos. Las soluciones de esta guía se razonaron manualmente; las pruebas las contrastan con parser, validador y motor reales. La revisión independiente de esas soluciones por M1 sigue pendiente. No se presentan como observaciones de usuarios ni como pruebas de una interfaz todavía inexistente.
+Este mundo propio permite explicar alcance, funciones, cuantificación y cambios controlados con los mismos datos. Las soluciones de esta guía se razonaron manualmente; las pruebas las contrastan con parser, validador y motor reales. La revisión independiente de esas soluciones por M1 sigue pendiente. No se presentan como observaciones de usuarios. Las pruebas posteriores de interfaz se registran en evidencias/miembro-3.md.
 
 Desde la raíz del repositorio, con el entorno seleccionado:
 
