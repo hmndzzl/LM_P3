@@ -54,26 +54,73 @@ function updateCoverage(symbol) {
     : 'Introduce un dominio y una aridad válidos para comprobar las salidas pendientes.';
 }
 
+function interpretationTable(symbol, entries) {
+  const table = node('table');
+  table.className = 'interpretation-table';
+  table.append(node('caption', `${symbol.name || 'Sin nombre'} · ${symbol.kind === 'function' && symbol.arity === 0 ? 'constante' : `aridad ${symbol.arity ?? 'sin definir'}`}`));
+  const head = node('thead');
+  const headings = node('tr');
+  for (const title of symbol.kind === 'function' ? ['Argumentos', 'Imagen'] : ['Tupla']) {
+    const cell = node('th', title);
+    cell.scope = 'col';
+    headings.append(cell);
+  }
+  head.append(headings);
+  const body = node('tbody');
+  for (const entry of entries) {
+    const row = node('tr');
+    row.append(node('td', `(${entry.arguments.map((value) => value || 'pendiente').join(', ')})`));
+    if (symbol.kind === 'function') row.append(node('td', entry.output || 'pendiente'));
+    body.append(row);
+  }
+  table.append(head, body);
+  return table;
+}
+
+function domainList(values) {
+  const list = node('ul');
+  list.className = 'domain-elements';
+  for (const value of values) list.append(node('li', value || 'Elemento vacío'));
+  return list;
+}
+
+function appendPreview(target, entries, render, unit = 'filas') {
+  target.append(render(entries.slice(0, 4)));
+  if (entries.length <= 4) return;
+  const more = node('details');
+  more.className = 'summary-more';
+  more.append(node('summary', `Ver ${unit} restantes (${entries.length - 4})`));
+  more.addEventListener('toggle', () => {
+    if (!more.open || more.dataset.loaded) return;
+    more.dataset.loaded = 'true';
+    more.append(render(entries.slice(4)));
+  });
+  target.append(more);
+}
+
 export function updateWorldSummary() {
   const domain = domainValues();
-  const preview = (values) => values.slice(0, 4).join(', ') + (values.length > 4 ? '…' : '');
-  $('domain-overview').textContent = domain.length ? preview(domain) : 'Todavía no hay elementos.';
+  $('domain-overview').replaceChildren();
+  if (domain.length) appendPreview($('domain-overview'), domain, domainList, 'elementos');
+  else $('domain-overview').textContent = 'Dominio sin definir.';
   $('language-count').textContent = symbols.length
     ? `${symbols.length} símbolos ingresados`
     : 'Sin símbolos declarados';
 
   for (const [kind, target, empty] of [
-    ['predicate', 'predicates-overview', 'Todavía no hay predicados.'],
-    ['function', 'functions-overview', 'Todavía no hay funciones.'],
+    ['predicate', 'predicates-overview', 'Sin predicados declarados.'],
+    ['function', 'functions-overview', 'Sin funciones ni constantes declaradas.'],
   ]) {
-    const descriptions = symbols.filter((symbol) => symbol.kind === kind).map((symbol) => {
-      const rows = symbol.rows.map((entry) => {
-        const argumentsText = entry.arguments.join(', ') || '()';
-        return kind === 'function' ? `${argumentsText} → ${entry.output || 'pendiente'}` : `(${entry.arguments.join(', ')})`;
-      });
-      return `${symbol.name || 'Sin nombre'}: ${rows.length ? preview(rows) : 'sin filas'}`;
-    });
-    $(target).textContent = descriptions.length ? descriptions.join('\n') : empty;
+    $(target).replaceChildren();
+    const group = symbols.filter((symbol) => symbol.kind === kind);
+    if (!group.length) $(target).textContent = empty;
+    for (const symbol of group) {
+      const section = node('div');
+      section.className = 'symbol-summary';
+      appendPreview(section, symbol.rows, (rows) => interpretationTable(symbol, rows));
+      if (!symbol.rows.length) section.append(node('p', 'Sin filas definidas.'));
+      $(target).append(section);
+    }
   }
 }
 

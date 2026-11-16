@@ -137,7 +137,48 @@ p {
 
 .world-data dd {
   margin: var(--space-1) 0 0;
-  white-space: pre-line;
+}
+
+.domain-elements {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.domain-elements li {
+  padding: var(--space-1) var(--space-2);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-control);
+}
+
+.symbol-summary + .symbol-summary {
+  margin-top: var(--space-4);
+}
+
+.interpretation-table caption {
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+.interpretation-table td, .interpretation-table th {
+  padding: var(--space-2);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.summary-more {
+  margin-top: var(--space-2);
+  border: 0;
+  padding: 0;
+}
+
+.summary-more summary {
+  color: var(--text-secondary);
+  font-size: .875rem;
 }
 
 .assignment-heading {

@@ -34,7 +34,7 @@
       'El ejemplo deja la configuración plegada y conserva el editor visible');
     assert(!$('example-note').hidden && $('domain-overview').textContent.includes('2')
       && $('predicates-overview').textContent.includes('P'),
-    'La guía y el resumen del mundo muestran los datos cargados');
+    'La guía y el resumen de la interpretación muestran los datos cargados');
     await evaluate();
     assert(!$('result').hidden && $('result-value').textContent === 'Verdadero', 'Átomo verdadero calculado desde el formulario');
     assert($('result-reason').textContent.includes('(1)'), 'La explicación identifica la tupla realmente evaluada');

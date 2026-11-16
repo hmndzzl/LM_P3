@@ -32,7 +32,7 @@ Puedes escribir con teclado o insertar símbolos desde la barra, conservando cur
 selección y deshacer/rehacer. Las tuplas y salidas usan selectores del dominio.
 
 La fórmula, las asignaciones y el resultado ocupan la zona principal. El resumen
-del mundo permanece visible; para modificar sus datos abre **Lenguaje** o
+de la interpretación permanece visible; para modificar sus datos abre **Lenguaje** o
 **Dominio y tablas**. Un error abre automáticamente la sección correspondiente.
 
 Después de evaluar, **Comparar un cambio** permite modificar una salida funcional,
@@ -111,7 +111,7 @@ python -X utf8 -B -m examples.corpus --case C02
 python -X utf8 -B -m examples.corpus --case E03
 ```
 
-El corpus contiene 10 fórmulas, 3 comparaciones de un cambio y 11 entradas inválidas con reparaciones comprobadas. Q01–Q04 cubren los cuatro resultados cuantificados; C02 conserva la verdad y cambia el testigo. Toda salida se calcula con el código real, sin leer las expectativas de pruebas. Los ejemplos no modifican su mundo base.
+El corpus contiene 10 fórmulas, 3 comparaciones de un cambio y 11 entradas inválidas con reparaciones comprobadas. Q01–Q04 cubren los cuatro resultados cuantificados; C02 conserva la verdad y cambia el testigo. Toda salida se calcula con el código real, sin leer las expectativas de pruebas. Los ejemplos no modifican su interpretación base.
 
 La preparación de defensa y el recorrido de código están en [la guía de M3](docs/interfaz.md).
 Resultados y capturas: [evidencia M3](docs/evidencias/miembro-3.md).

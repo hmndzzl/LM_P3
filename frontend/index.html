@@ -24,7 +24,7 @@
     <section class="start-guide" aria-labelledby="start-title">
       <div>
         <h2 id="start-title">Prueba el evaluador</h2>
-        <p id="start-description">Elige un ejemplo de tus notas y carga sus datos. Para usar tus propios datos, abre la configuración del mundo.</p>
+        <p id="start-description">Elige un ejemplo de tus notas y carga sus datos. Para usar tus propios datos, configura el lenguaje y la interpretación.</p>
         <div id="example-note" class="notice" hidden></div>
       </div>
       <div class="example-controls">
@@ -46,7 +46,7 @@
           <label for="formula">Fórmula</label>
           <textarea id="formula" class="formula" rows="2" spellcheck="false" aria-describedby="formula-help" placeholder="Por ejemplo: P(x)"></textarea>
           <div id="symbol-toolbar" class="symbol-toolbar" role="group" aria-label="Insertar símbolos lógicos"></div>
-          <p id="formula-help" class="help">Escribe una fórmula con los símbolos de tu mundo. Si estás empezando, carga el ejemplo de arriba.</p>
+          <p id="formula-help" class="help">Escribe una fórmula del lenguaje declarado o carga un ejemplo.</p>
           <details class="notation-help">
             <summary>Ayuda de escritura</summary>
             <p class="help">Puedes escribir ¬, ∧, ∨, →, ↔, ∀ y ∃, o sus alias ~, &amp;, |, -&gt;, &lt;-&gt;, Ax y Ex. Usa paréntesis para ampliar el alcance de un cuantificador.</p>
@@ -76,14 +76,14 @@
       </div>
       <aside class="configuration" aria-labelledby="world-title">
         <section class="panel world-overview">
-          <h2 id="world-title">El mundo de la fórmula</h2>
-          <p class="help">Estos son los datos que usará el evaluador.</p>
+          <h2 id="world-title">Interpretación</h2>
+          <p class="help">Dominio del discurso e interpretación de los símbolos no lógicos.</p>
           <dl class="world-data">
-            <dt>Dominio</dt><dd id="domain-overview">Todavía no hay elementos.</dd>
-            <dt>Predicados</dt><dd id="predicates-overview">Todavía no hay predicados.</dd>
-            <dt>Funciones</dt><dd id="functions-overview">Todavía no hay funciones.</dd>
+            <dt>Dominio del discurso D</dt><dd id="domain-overview">Dominio sin definir.</dd>
+            <dt>Relaciones</dt><dd id="predicates-overview">Sin predicados declarados.</dd>
+            <dt>Funciones y constantes</dt><dd id="functions-overview">Sin funciones ni constantes declaradas.</dd>
           </dl>
-          <p class="help">Para configurar o corregir estos datos, abre las secciones de abajo. Su validez se comprueba al evaluar.</p>
+          <p class="help">Modifica el lenguaje, el dominio y las tablas en las secciones siguientes. Los datos se validan al evaluar.</p>
         </section>
         <details id="language-config" class="panel configuration-section">
           <summary>Lenguaje <span id="language-count" class="help">Sin símbolos declarados</span></summary>

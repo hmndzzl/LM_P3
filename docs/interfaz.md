@@ -24,8 +24,11 @@ Limpiar todo borra fórmula, lenguaje, dominio, tablas, asignaciones, guía, err
 resultado, evidencia y comparación. Pide confirmación si hay trabajo cargado;
 una respuesta pendiente no restaura datos después de limpiar.
 Para datos propios, abrir Lenguaje y Dominio y tablas. Plegar secciones conserva
-el trabajo; el resumen muestra hasta cuatro elementos/filas por símbolo y el
-resto sigue disponible en sus tablas. Los errores abren la sección afectada.
+el trabajo. El panel Interpretación distingue dominio del discurso, relaciones
+y funciones/constantes. El dominio separa sus elementos; cada relación muestra una
+tupla por fila y cada función separa Argumentos e Imagen. Se muestran hasta cuatro
+elementos o filas inicialmente y un desplegable permite consultar los restantes.
+Cada símbolo tiene su propia tabla; los argumentos siempre conservan paréntesis. Los errores abren la sección afectada.
 
 ## Ejemplos de las notas
 
@@ -177,7 +180,7 @@ Los límites son de recursos, no restricciones matemáticas ni garantía de tiem
 ## Verificación y aceptación
 
 [Evidencia reproducible y capturas](evidencias/miembro-3.md): 149 pruebas Python,
-124 comprobaciones de navegador y tres adicionales con movimiento reducido.
+135 comprobaciones de navegador y tres adicionales con movimiento reducido.
 El registro distingue las verificaciones históricas de las del catálogo actual.
 Se reprodujo el funcionamiento desde git archive, sin .git ni entorno virtual.
 La comparación se revisó a 1440, 1024, 768 y 320 px, sin scroll horizontal global.
@@ -190,7 +193,7 @@ su estado pendiente y se coordinan entre los tres. Ver la matriz general.
 ## Guiones de demostración y práctica
 
 **Primera ronda (ajustar duración al tiempo oficial):** M2 configura/explica el
-mundo de la p. 179; M1 evalúa ∃x P(x), ∀x P(x) y ∀x ∃y R(x,y); M3 abre un paso,
+interpretación de la p. 179; M1 evalúa ∃x P(x), ∀x P(x) y ∀x ∃y R(x,y); M3 abre un paso,
 localiza la subfórmula y compara ∃x P(x) quitando 1 de P. La verdad
 se mantiene y el testigo cambia a 2. Mostrar un error y su reparación.
 
