@@ -12,9 +12,7 @@ Hugo Roberto Méndez Lee - 241265
 
 La publicación ejecutará el mismo motor Python en el navegador mediante Pyodide, sin instalar Python en el equipo del visitante. La primera evaluación descarga el intérprete y necesita conexión a Internet; la aplicación local descrita abajo sigue funcionando sin conexión.
 
-URL prevista después del primer despliegue correcto: **https://hmndzzl.github.io/LM_P3/**. El enlace no debe darse por activo hasta que el workflow de Pages termine correctamente.
-
-La configuración y comprobaciones de publicación se detallan en [docs/deploy-pages.md](docs/deploy-pages.md).
+URL prevista después del primer despliegue correcto: **https://hmndzzl.github.io/LM_P3/**.
 
 ## Características
 
