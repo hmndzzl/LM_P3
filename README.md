@@ -14,6 +14,12 @@ La publicación ejecutará el mismo motor Python en el navegador mediante Pyodid
 
 URL prevista después del primer despliegue correcto: **https://hmndzzl.github.io/LM_P3/**.
 
+## Video de Demostración
+
+
+https://github.com/user-attachments/assets/003b8b99-b8bf-4808-a946-f68fc7068888
+
+
 ## Características
 
 - Permite definir el dominio, las constantes, las funciones y los predicados.
