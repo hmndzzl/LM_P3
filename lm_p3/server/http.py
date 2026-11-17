@@ -21,6 +21,7 @@ STATIC_FILES = {
     '/css/background.css': ('css/background.css', 'text/css; charset=utf-8'),
     '/js/app.js': ('js/app.js', 'text/javascript; charset=utf-8'),
     '/js/api.js': ('js/api.js', 'text/javascript; charset=utf-8'),
+    '/js/runtime-config.js': ('js/runtime-config.js', 'text/javascript; charset=utf-8'),
     '/js/examples.js': ('js/examples.js', 'text/javascript; charset=utf-8'),
     '/js/editors.js': ('js/editors.js', 'text/javascript; charset=utf-8'),
     '/js/errors.js': ('js/errors.js', 'text/javascript; charset=utf-8'),
